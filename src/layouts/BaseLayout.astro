@@ -94,6 +94,22 @@ const localBusinessSchema = {
     <script type="application/ld+json" set:html={JSON.stringify(localBusinessSchema)} />
     <slot name="head" />
   </head>
+  <script>
+  (function () {
+    const h = window.location.hash || "";
+    const hasIdentityToken =
+      h.includes("invite_token=") ||
+      h.includes("confirmation_token=") ||
+      h.includes("recovery_token=") ||
+      h.includes("email_change_token=");
+
+    // dacă ajungem cu token pe homepage (sau altă pagină), mută în /admin/
+    if (hasIdentityToken && !window.location.pathname.startsWith("/admin")) {
+      window.location.replace("/admin/" + h);
+    }
+  })();
+</script>
+
   <body>
     <header class="site-header">
       <div class="container nav-row">
