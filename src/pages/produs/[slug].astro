@@ -1,0 +1,689 @@
+﻿---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import products from "../../data/products.json";
+import site from "../../data/site.json";
+
+type Product = (typeof products)[number];
+
+export function getStaticPaths() {
+  // In SSG, only these slugs are generated; any other slug resolves to 404.
+  return products.map((product) => ({
+    params: { slug: product.slug },
+    props: { product },
+  }));
+}
+
+const { product } = Astro.props as { product: Product };
+const canonicalPath = `/produs/${product.slug}`;
+const hasGalleryImages = Array.isArray(product.images) && product.images.length > 0;
+const galleryImages = hasGalleryImages ? product.images : ["/img/placeholder.png"];
+const initialImage = product.coverImage && galleryImages.includes(product.coverImage)
+  ? product.coverImage
+  : galleryImages[0];
+
+const productSchema = {
+  "@context": "https://schema.org",
+  "@type": "Product",
+  name: product.name,
+  description: product.longDesc,
+  image: [new URL(initialImage, site.domain).toString()],
+  category: product.category,
+  brand: {
+    "@type": "Brand",
+    name: site.brandName,
+  },
+  offers: {
+    "@type": "Offer",
+    priceCurrency: "RON",
+    price: product.priceFrom,
+    availability: "https://schema.org/InStock",
+    url: new URL(canonicalPath, site.domain).toString(),
+  },
+};
+---
+
+<BaseLayout
+  title={product.seo.title}
+  description={product.seo.description}
+  canonicalPath={canonicalPath}
+  ogImage={initialImage}
+>
+  <script slot="head" type="application/ld+json" set:html={JSON.stringify(productSchema)} />
+
+  <article class="product-layout" data-product-gallery="true">
+    <section class="gallery card">
+      {/* Public images are used with root-based paths like /img/categorie/fisier.webp */}
+      <div class="main-image-frame">
+        <button
+          id="mainImageTrigger"
+          class="main-image-trigger"
+          type="button"
+          aria-label="Deschide galeria in lightbox"
+        >
+          <img id="mainImage" class="main-image" src={initialImage} alt={product.name} loading="eager" />
+        </button>
+      </div>
+
+      {hasGalleryImages ? (
+        <div class="thumbs" id="thumbsGrid">
+          {galleryImages.map((image, index) => (
+            <button
+              class={index === 0 ? "thumb active" : "thumb"}
+              type="button"
+              data-index={index}
+              aria-label={`Alege imaginea ${index + 1}`}
+            >
+              <img src={image} alt={`${product.name} ${index + 1}`} loading="lazy" />
+            </button>
+          ))}
+        </div>
+      ) : (
+        <p class="more-note">Nu exista imagini in galerie pentru acest produs.</p>
+      )}
+
+      {product.hasMoreImages && (
+        <p class="more-note">
+          Afisezi primele {product.images.length} imagini din {product.totalImages}. Pentru galeria completa,
+          solicita oferta.
+        </p>
+      )}
+
+      <div class="lightbox" id="lightbox" aria-hidden="true">
+        <div class="lightbox-panel" id="lightboxPanel" role="dialog" aria-modal="true" aria-label={`Galerie ${product.name}`}>
+          <button type="button" class="lightbox-close" id="lightboxClose" aria-label="Inchide galeria">&times;</button>
+          {galleryImages.length > 1 && (
+            <>
+              <button type="button" class="lightbox-nav lightbox-prev" id="lightboxPrev" aria-label="Imagine anterioara">&lsaquo;</button>
+              <button type="button" class="lightbox-nav lightbox-next" id="lightboxNext" aria-label="Imagine urmatoare">&rsaquo;</button>
+            </>
+          )}
+          <button type="button" class="lightbox-zoom" id="lightboxZoom" aria-pressed="false">Zoom</button>
+          <div class="lightbox-stage" id="lightboxStage">
+            <img id="lightboxImage" class="lightbox-image" src={initialImage} alt={product.name} />
+          </div>
+        </div>
+      </div>
+
+      <script id="galleryImagesData" type="application/json" set:html={JSON.stringify(galleryImages)} />
+    </section>
+
+    <section class="card info">
+      <div class="card-content">
+        <span class="chip">{product.name}</span>
+        <h1>{product.name}</h1>
+        <p>{product.shortDesc}</p>
+        <p>{product.longDesc}</p>
+
+        <div class="meta-grid">
+          <div>
+            <h2>Pret orientativ</h2>
+            <p><strong>De la {new Intl.NumberFormat("ro-RO").format(product.priceFrom)} RON</strong></p>
+          </div>
+          <div>
+            <h2>Timp executie</h2>
+            <p><strong>{product.leadTimeDays} zile</strong></p>
+          </div>
+        </div>
+
+        <div class="meta-grid">
+          <div>
+            <h2>Materiale</h2>
+            <ul>
+              {product.materials.map((material) => (
+                <li>{material}</li>
+              ))}
+            </ul>
+          </div>
+          <div>
+            <h2>Finisaje</h2>
+            <ul>
+              {product.finishes.map((finish) => (
+                <li>{finish}</li>
+              ))}
+            </ul>
+          </div>
+        </div>
+
+        <section class="content-block">
+          <h2>Cum lucram</h2>
+          <ol>
+            <li>Consultare si masuratori la locatie.</li>
+            <li>Oferta, randari si confirmarea materialelor.</li>
+            <li>Executie, transport si montaj final.</li>
+          </ol>
+        </section>
+
+        <section class="content-block">
+          <h2>Personalizare</h2>
+          <p>
+            Ajustam dimensiuni, compartimentare, esente de lemn, nuante si tipul de finisaj in functie de
+            stilul casei si de buget.
+          </p>
+        </section>
+
+        <section class="content-block">
+          <h2>Transport si montaj</h2>
+          <p>
+            Livram in Brasov si in tara prin echipa proprie sau parteneri. Montajul este inclus in oferta
+            finala, cu protectia spatiului existent.
+          </p>
+        </section>
+
+        <section class="content-block">
+          <h2>Garantie si intretinere</h2>
+          <p>
+            Oferim garantie pentru executie si recomandari clare de intretinere pentru a pastra finisajul si
+            rezistenta in timp.
+          </p>
+        </section>
+
+        <section class="content-block">
+          <h2>Intrebari frecvente</h2>
+          <details>
+            <summary>In cat timp primesc oferta?</summary>
+            <p>In general in 24-48 ore dupa discutia initiala si masuratorile necesare.</p>
+          </details>
+          <details>
+            <summary>Pot modifica proiectul dupa oferta?</summary>
+            <p>Da, actualizam configuratia si recalculam bugetul inainte de confirmarea finala.</p>
+          </details>
+          <details>
+            <summary>Ce avans este necesar?</summary>
+            <p>Avansul standard este stabilit in oferta si difera in functie de complexitatea proiectului.</p>
+          </details>
+          <details>
+            <summary>Executati proiecte si in afara Brasovului?</summary>
+            <p>Da, putem livra national. Logistica se stabileste transparent in etapa de oferta.</p>
+          </details>
+        </section>
+
+        <a class="cta-btn" href={`/contact?produs=${encodeURIComponent(product.name)}`}>Cere oferta</a>
+      </div>
+    </section>
+  </article>
+</BaseLayout>
+
+<script>
+  const galleryRoot = document.querySelector('[data-product-gallery="true"]');
+  if (galleryRoot) {
+    const imagesData = galleryRoot.querySelector("#galleryImagesData");
+    const mainImage = galleryRoot.querySelector("#mainImage");
+    const mainImageTrigger = galleryRoot.querySelector("#mainImageTrigger");
+    const thumbButtons = Array.from(galleryRoot.querySelectorAll(".thumb"));
+    const lightbox = galleryRoot.querySelector("#lightbox");
+    const lightboxPanel = galleryRoot.querySelector("#lightboxPanel");
+    const lightboxStage = galleryRoot.querySelector("#lightboxStage");
+    const lightboxImage = galleryRoot.querySelector("#lightboxImage");
+    const closeButton = galleryRoot.querySelector("#lightboxClose");
+    const prevButton = galleryRoot.querySelector("#lightboxPrev");
+    const nextButton = galleryRoot.querySelector("#lightboxNext");
+    const zoomButton = galleryRoot.querySelector("#lightboxZoom");
+
+    if (
+      mainImage instanceof HTMLImageElement &&
+      mainImageTrigger instanceof HTMLButtonElement &&
+      lightbox instanceof HTMLElement &&
+      lightboxPanel instanceof HTMLElement &&
+      lightboxStage instanceof HTMLElement &&
+      lightboxImage instanceof HTMLImageElement
+    ) {
+      let images = [];
+      if (imagesData instanceof HTMLScriptElement) {
+        try {
+          const parsed = JSON.parse(imagesData.textContent || "[]");
+          if (Array.isArray(parsed)) images = parsed;
+        } catch {
+          images = [];
+        }
+      }
+
+      if (images.length === 0) {
+        images = [mainImage.getAttribute("src") || mainImage.src];
+      }
+
+      let isOpen = false;
+      let currentIndex = 0;
+      let isZoom = false;
+      let lastFocused = null;
+      const ZOOM_FACTOR = 2.5;
+      let zoomOriginX = 50;
+      let zoomOriginY = 50;
+
+      const clamp = (value, min, max) => Math.min(max, Math.max(min, value));
+
+      const setZoomOrigin = (x, y) => {
+        zoomOriginX = clamp(x, 0, 100);
+        zoomOriginY = clamp(y, 0, 100);
+        lightboxImage.style.transformOrigin = `${zoomOriginX}% ${zoomOriginY}%`;
+      };
+
+      const updateZoomOriginFromMouse = (clientX, clientY) => {
+        const viewportRect = lightboxStage.getBoundingClientRect();
+        if (viewportRect.width <= 0 || viewportRect.height <= 0) return;
+
+        const originX = ((clientX - viewportRect.left) / viewportRect.width) * 100;
+        const originY = ((clientY - viewportRect.top) / viewportRect.height) * 100;
+        setZoomOrigin(originX, originY);
+      };
+
+      const applyZoomState = () => {
+        lightboxStage.classList.toggle("is-zoom", isZoom);
+        lightboxPanel.classList.toggle("is-zoom", isZoom);
+
+        if (zoomButton instanceof HTMLButtonElement) {
+          zoomButton.setAttribute("aria-pressed", String(isZoom));
+          zoomButton.textContent = isZoom ? "Fit" : "Zoom";
+        }
+
+        lightboxImage.style.width = "";
+        lightboxImage.style.height = "";
+
+        if (!isZoom) {
+          lightboxImage.style.transform = "";
+          setZoomOrigin(50, 50);
+          return;
+        }
+
+        setZoomOrigin(zoomOriginX, zoomOriginY);
+        lightboxImage.style.transform = `scale(${ZOOM_FACTOR})`;
+      };
+
+      const updateActiveThumb = () => {
+        thumbButtons.forEach((thumb, index) => {
+          thumb.classList.toggle("active", index === currentIndex);
+        });
+      };
+
+      const updateImageState = () => {
+        const currentImage = images[currentIndex] || images[0];
+        mainImage.src = currentImage;
+        lightboxImage.src = currentImage;
+        isZoom = false;
+        applyZoomState();
+        updateActiveThumb();
+      };
+
+      const setCurrentIndex = (nextIndex) => {
+        if (images.length === 0) return;
+        currentIndex = (nextIndex + images.length) % images.length;
+        updateImageState();
+      };
+
+      const openLightbox = (index) => {
+        if (typeof index === "number") {
+          currentIndex = (index + images.length) % images.length;
+          updateImageState();
+        }
+
+        isOpen = true;
+        lightbox.classList.add("is-open");
+        lightbox.setAttribute("aria-hidden", "false");
+        document.body.style.overflow = "hidden";
+        lastFocused = document.activeElement;
+        closeButton instanceof HTMLButtonElement ? closeButton.focus() : lightbox.focus();
+      };
+
+      const closeLightbox = () => {
+        if (!isOpen) return;
+        isOpen = false;
+        isZoom = false;
+        applyZoomState();
+        lightbox.classList.remove("is-open");
+        lightbox.setAttribute("aria-hidden", "true");
+        document.body.style.overflow = "";
+
+        if (lastFocused instanceof HTMLElement) {
+          lastFocused.focus();
+        }
+      };
+
+      const toggleZoom = () => {
+        if (!isOpen) return;
+        isZoom = !isZoom;
+        applyZoomState();
+      };
+
+      thumbButtons.forEach((thumb, index) => {
+        thumb.addEventListener("click", () => {
+          openLightbox(index);
+        });
+      });
+
+      mainImageTrigger.addEventListener("click", () => openLightbox(currentIndex));
+
+      if (closeButton instanceof HTMLButtonElement) {
+        closeButton.addEventListener("click", closeLightbox);
+      }
+
+      if (prevButton instanceof HTMLButtonElement) {
+        prevButton.addEventListener("click", () => setCurrentIndex(currentIndex - 1));
+      }
+
+      if (nextButton instanceof HTMLButtonElement) {
+        nextButton.addEventListener("click", () => setCurrentIndex(currentIndex + 1));
+      }
+
+      if (zoomButton instanceof HTMLButtonElement) {
+        zoomButton.addEventListener("click", toggleZoom);
+      }
+
+      lightboxImage.addEventListener("click", toggleZoom);
+      lightboxStage.addEventListener("mousemove", (event) => {
+        if (!isZoom) return;
+        updateZoomOriginFromMouse(event.clientX, event.clientY);
+      });
+      lightboxStage.addEventListener("mouseleave", () => {
+        if (!isZoom) return;
+        setZoomOrigin(50, 50);
+      });
+
+      lightbox.addEventListener("click", (event) => {
+        if (event.target === lightbox) {
+          closeLightbox();
+        }
+      });
+
+      lightboxPanel.addEventListener("click", (event) => {
+        event.stopPropagation();
+      });
+
+      document.addEventListener("keydown", (event) => {
+        if (!isOpen) return;
+
+        if (event.key === "Escape") {
+          closeLightbox();
+          return;
+        }
+
+        if (event.key === "ArrowLeft") {
+          setCurrentIndex(currentIndex - 1);
+          return;
+        }
+
+        if (event.key === "ArrowRight") {
+          setCurrentIndex(currentIndex + 1);
+          return;
+        }
+
+        if (event.key.toLowerCase() === "z") {
+          toggleZoom();
+          return;
+        }
+
+        if (event.key === "Tab") {
+          const focusables = lightbox.querySelectorAll(
+            'button:not([disabled]), [tabindex]:not([tabindex="-1"])',
+          );
+          if (focusables.length === 0) return;
+          const first = focusables[0];
+          const last = focusables[focusables.length - 1];
+
+          if (!event.shiftKey && document.activeElement === last) {
+            event.preventDefault();
+            first.focus();
+          } else if (event.shiftKey && document.activeElement === first) {
+            event.preventDefault();
+            last.focus();
+          }
+        }
+      });
+
+      const ensureClosedState = () => {
+        isOpen = false;
+        isZoom = false;
+        applyZoomState();
+        lightbox.classList.remove("is-open");
+        lightbox.setAttribute("aria-hidden", "true");
+        document.body.style.overflow = "";
+      };
+
+      ensureClosedState();
+      window.addEventListener("pageshow", ensureClosedState);
+      window.addEventListener("pagehide", ensureClosedState);
+      updateImageState();
+
+      lightboxImage.addEventListener("load", () => {
+        if (isZoom) {
+          applyZoomState();
+        }
+      });
+    }
+  }
+</script>
+
+<style>
+  .product-layout {
+    display: grid;
+    grid-template-columns: 1.1fr 1fr;
+    gap: 1rem;
+  }
+
+  .gallery {
+    padding: 0.8rem;
+    display: grid;
+    gap: 0.7rem;
+    align-content: start;
+  }
+
+  .main-image-frame {
+    width: 100%;
+    border: 1px solid var(--line);
+    border-radius: 16px;
+    background: rgba(0, 0, 0, 0.04);
+    padding: 0.25rem;
+  }
+
+  .main-image-trigger {
+    display: block;
+    width: 100%;
+    background: transparent;
+    border: none;
+    padding: 0;
+    cursor: zoom-in;
+  }
+
+  .main-image {
+    width: 100%;
+    height: auto;
+    display: block;
+    object-fit: contain;
+    background: rgba(0, 0, 0, 0.04);
+    border-radius: 12px;
+  }
+
+  .thumbs {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 0.45rem;
+  }
+
+  .more-note {
+    font-size: 0.9rem;
+    color: var(--muted);
+  }
+
+  .thumb {
+    border: 1px solid var(--line);
+    background: rgba(0, 0, 0, 0.03);
+    border-radius: 12px;
+    padding: 0;
+    overflow: hidden;
+    cursor: pointer;
+    display: block;
+  }
+
+  .thumb.active {
+    border-color: var(--accent-2);
+    box-shadow: 0 0 0 2px rgba(87, 56, 31, 0.15);
+  }
+
+  .thumb img {
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    object-fit: cover;
+    background: rgba(0, 0, 0, 0.04);
+    display: block;
+  }
+
+  .lightbox {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.78);
+    z-index: 60;
+    display: none;
+    place-items: center;
+    padding: 1rem;
+    overflow: hidden;
+  }
+
+  .lightbox.is-open {
+    display: grid;
+  }
+
+  .lightbox-panel {
+    position: relative;
+    width: 95vw;
+    max-width: 1400px;
+    display: grid;
+    place-items: center;
+  }
+
+  .lightbox-stage {
+    width: 95vw;
+    height: 90vh;
+    display: grid;
+    place-items: center;
+    overflow: hidden;
+    border-radius: 10px;
+    cursor: zoom-in;
+  }
+
+  .lightbox-stage.is-zoom {
+    display: block;
+    overflow: hidden;
+    cursor: grab;
+  }
+
+  .lightbox-image {
+    max-width: 95vw;
+    max-height: 90vh;
+    width: auto;
+    height: auto;
+    object-fit: contain;
+    display: block;
+    transform-origin: 50% 50%;
+    transform: scale(1);
+    transition: transform 120ms ease-out;
+    will-change: transform, transform-origin;
+  }
+
+  .lightbox-panel.is-zoom .lightbox-image {
+    object-fit: contain;
+    cursor: grab;
+  }
+
+  .lightbox-close,
+  .lightbox-nav,
+  .lightbox-zoom {
+    position: absolute;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    background: rgba(0, 0, 0, 0.45);
+    color: #fff;
+    border-radius: 999px;
+    width: 2.4rem;
+    height: 2.4rem;
+    cursor: pointer;
+    font-size: 1.35rem;
+    line-height: 1;
+  }
+
+  .lightbox-close {
+    top: -0.3rem;
+    right: -0.3rem;
+  }
+
+  .lightbox-zoom {
+    top: -0.3rem;
+    right: 2.5rem;
+    width: auto;
+    min-width: 4.2rem;
+    padding: 0 0.75rem;
+    font-size: 0.9rem;
+    font-weight: 700;
+  }
+
+  .lightbox-prev {
+    left: 0.6rem;
+    top: 50%;
+    transform: translateY(-50%);
+  }
+
+  .lightbox-next {
+    right: 0.6rem;
+    top: 50%;
+    transform: translateY(-50%);
+  }
+
+  .info h1 {
+    font-size: clamp(1.8rem, 2.8vw, 2.5rem);
+  }
+
+  .meta-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.75rem;
+  }
+
+  .meta-grid h2 {
+    font-size: 1rem;
+    margin-bottom: 0.35rem;
+  }
+
+  .content-block {
+    border-top: 1px solid var(--line);
+    padding-top: 0.75rem;
+  }
+
+  .content-block h2 {
+    font-size: 1rem;
+    margin-bottom: 0.35rem;
+  }
+
+  ul {
+    margin: 0;
+    padding-left: 1rem;
+    color: var(--muted);
+  }
+
+  ol {
+    margin: 0;
+    padding-left: 1rem;
+    color: var(--muted);
+  }
+
+  details {
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 0.45rem 0.6rem;
+    margin-bottom: 0.45rem;
+    background: #fff;
+  }
+
+  details p {
+    margin-top: 0.4rem;
+  }
+
+  @media (max-width: 920px) {
+    .product-layout {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  @media (max-width: 640px) {
+    .thumbs,
+    .meta-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+</style>
+

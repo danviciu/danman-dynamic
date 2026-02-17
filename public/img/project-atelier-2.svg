@@ -1,0 +1,15 @@
+﻿<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 1000" role="img" aria-label="DanMan Project Placeholder 2">
+  <defs>
+    <linearGradient id="p2" x1="0" x2="1" y1="0" y2="0">
+      <stop offset="0%" stop-color="#f0e7da" />
+      <stop offset="100%" stop-color="#cab49a" />
+    </linearGradient>
+  </defs>
+  <rect width="1600" height="1000" fill="url(#p2)" />
+  <rect x="120" y="120" width="1360" height="760" rx="42" fill="#fffaf1" stroke="#9a7b58" stroke-width="8" />
+  <circle cx="420" cy="420" r="210" fill="#d4b08a" />
+  <rect x="700" y="220" width="660" height="180" rx="20" fill="#e4cfb6" />
+  <rect x="700" y="440" width="300" height="320" rx="20" fill="#c79d74" />
+  <rect x="1060" y="440" width="300" height="320" rx="20" fill="#dcc2a5" />
+  <text x="800" y="870" text-anchor="middle" font-family="Georgia, serif" font-size="68" fill="#5b3f24">DanMan Interior Project</text>
+</svg>

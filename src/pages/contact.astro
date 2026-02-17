@@ -1,0 +1,156 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import site from "../data/site.json";
+
+const phoneHref = `tel:${site.phone.replace(/\s+/g, "")}`;
+const whatsappHref = `https://wa.me/${site.phone.replace(/[^\d]/g, "")}`;
+const mapAddress = encodeURIComponent(site.address);
+---
+
+<BaseLayout
+  title="Contact | DanMan"
+  description="Cere oferta pentru mobilier la comanda. Contact direct DanMan pe WhatsApp, email sau telefon."
+  canonicalPath="/contact"
+>
+  <section class="contact-head">
+    <h1 class="section-title">Contact</h1>
+    <p class="section-lead">
+      Spune-ne pe scurt ce ai nevoie si iti raspundem cu o estimare orientativa, timp de executie si
+      recomandari de materiale.
+    </p>
+  </section>
+
+  <section class="contact-grid">
+    <article class="card contact-card">
+      <div class="card-content">
+        <h2>Trimite detalii proiect</h2>
+        <form id="contactForm">
+          <label for="name">Nume</label>
+          <input id="name" name="name" type="text" required />
+
+          <label for="email">Email</label>
+          <input id="email" name="email" type="email" required />
+
+          <label for="phone">Telefon</label>
+          <input id="phone" name="phone" type="tel" />
+
+          <label for="message">Mesaj</label>
+          <textarea
+            id="message"
+            name="message"
+            rows="5"
+            placeholder="Dimensiuni, material preferat, termen..."
+            required
+          ></textarea>
+
+          <button class="cta-btn" type="submit">Trimite solicitarea</button>
+          <p id="formStatus" class="form-status" aria-live="polite"></p>
+        </form>
+      </div>
+    </article>
+
+    <article class="card contact-card">
+      <div class="card-content">
+        <h2>Canale rapide</h2>
+        <a class="quick-link" href={whatsappHref} target="_blank" rel="noopener noreferrer">WhatsApp</a>
+        <a class="quick-link" href={`mailto:${site.email}`}>Email: {site.email}</a>
+        <a class="quick-link" href={phoneHref}>Telefon: {site.phone}</a>
+        <p>Adresa atelier: {site.address}</p>
+        <p><strong>Program:</strong> Luni - Vineri, 09:00 - 18:00</p>
+        <p><strong>Timp de raspuns:</strong> in medie 2-6 ore in zilele lucratoare.</p>
+      </div>
+    </article>
+  </section>
+
+  <section class="map-wrap">
+    <iframe
+      title="Harta locatie DanMan"
+      src={`https://www.google.com/maps?q=${mapAddress}&output=embed`}
+      loading="lazy"
+      referrerpolicy="no-referrer-when-downgrade"
+    ></iframe>
+  </section>
+</BaseLayout>
+
+<script>
+  const form = document.getElementById("contactForm");
+  const formStatus = document.getElementById("formStatus");
+
+  if (form instanceof HTMLFormElement && formStatus) {
+    form.addEventListener("submit", (event) => {
+      event.preventDefault();
+      const data = new FormData(form);
+      const name = String(data.get("name") || "").trim();
+      formStatus.textContent = `Multumim, ${name || "prieten"}! Mesajul a fost pregatit local (fara backend).`;
+      form.reset();
+    });
+  }
+</script>
+
+<style>
+  .contact-head {
+    margin-bottom: 1.2rem;
+  }
+
+  .contact-grid {
+    display: grid;
+    grid-template-columns: 1.3fr 1fr;
+    gap: 1rem;
+    margin-bottom: 1rem;
+  }
+
+  .contact-card {
+    overflow: hidden;
+  }
+
+  form {
+    display: grid;
+    gap: 0.55rem;
+  }
+
+  label {
+    font-weight: 700;
+    color: #5e4a33;
+  }
+
+  input,
+  textarea {
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 0.7rem 0.8rem;
+    font: inherit;
+    background: #fff;
+    color: var(--text);
+  }
+
+  textarea {
+    resize: vertical;
+  }
+
+  .form-status {
+    min-height: 1.6rem;
+    font-size: 0.94rem;
+    color: #4f483f;
+  }
+
+  .quick-link {
+    display: inline-flex;
+    width: fit-content;
+    margin-bottom: 0.4rem;
+    color: var(--accent-dark);
+    font-weight: 700;
+  }
+
+  .map-wrap iframe {
+    width: 100%;
+    min-height: 310px;
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+  }
+
+  @media (max-width: 860px) {
+    .contact-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

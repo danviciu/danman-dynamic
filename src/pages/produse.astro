@@ -1,0 +1,173 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import products from "../data/products.json";
+
+const filterOptions = ["Toate", ...products.map((product) => product.name)];
+---
+
+<BaseLayout
+  title="Produse | DanMan"
+  description="Catalog DanMan generat din categoriile reale de imagini: mobilier, scari, usi, paturi, mese si altele."
+  canonicalPath="/produse"
+>
+  <section>
+    <h1 class="section-title">Produse</h1>
+    <p class="section-lead">
+      Catalogul este generat automat din folderele din <code>/public/img</code>. Fiecare card reprezinta o
+      categorie de produse.
+    </p>
+  </section>
+
+  <section class="filters card">
+    <div class="search-row">
+      <label for="searchInput">Cauta produse</label>
+      <input id="searchInput" type="search" placeholder="Ex: paturi, usi, marchize..." />
+    </div>
+    <div class="buttons" id="categoryFilters">
+      {filterOptions.map((name, index) => (
+        <button type="button" class={index === 0 ? "active" : ""} data-category={name}>{name}</button>
+      ))}
+    </div>
+    <p class="result-line">
+      Rezultate: <strong id="resultCount">{products.length}</strong>
+    </p>
+  </section>
+
+  <section class="card-grid" id="productsGrid">
+    {products.map((product) => (
+      <article
+        class="card product-card"
+        data-category={product.name}
+        data-search={`${product.name} ${product.shortDesc}`.toLowerCase()}
+      >
+        {/* Public images are referenced from web root, e.g. /img/paturi/file.webp */}
+        <img src={product.coverImage} alt={product.name} loading="lazy" />
+        <div class="card-content">
+          <span class="chip">{product.name}</span>
+          <h2>{product.name}</h2>
+          <p>{product.shortDesc}</p>
+          <div class="meta">
+            <span>De la {new Intl.NumberFormat("ro-RO").format(product.priceFrom)} RON</span>
+            <span>{product.leadTimeDays} zile</span>
+          </div>
+          <a class="link-arrow" href={`/produs/${product.slug}`}>Vezi categoria</a>
+        </div>
+      </article>
+    ))}
+  </section>
+</BaseLayout>
+
+<script>
+  const searchInput = document.getElementById("searchInput");
+  const categoryFilters = document.getElementById("categoryFilters");
+  const productsGrid = document.getElementById("productsGrid");
+  const resultCount = document.getElementById("resultCount");
+
+  let activeCategory = "Toate";
+
+  const applyFilters = () => {
+    if (!searchInput || !categoryFilters || !productsGrid || !resultCount) return;
+
+    const query = searchInput.value.trim().toLowerCase();
+    const cards = Array.from(productsGrid.querySelectorAll(".product-card"));
+    let visible = 0;
+
+    cards.forEach((card) => {
+      const category = card.dataset.category || "";
+      const searchText = card.dataset.search || "";
+      const matchesCategory = activeCategory === "Toate" || category === activeCategory;
+      const matchesSearch = searchText.includes(query);
+      const shouldShow = matchesCategory && matchesSearch;
+      card.hidden = !shouldShow;
+      if (shouldShow) visible += 1;
+    });
+
+    resultCount.textContent = String(visible);
+  };
+
+  searchInput?.addEventListener("input", applyFilters);
+
+  categoryFilters?.addEventListener("click", (event) => {
+    const target = event.target;
+    if (!(target instanceof HTMLButtonElement)) return;
+
+    activeCategory = target.dataset.category || "Toate";
+    categoryFilters.querySelectorAll("button").forEach((button) => {
+      button.classList.toggle("active", button === target);
+    });
+    applyFilters();
+  });
+</script>
+
+<style>
+  .filters {
+    padding: 1rem;
+    margin-bottom: 1.2rem;
+    display: grid;
+    gap: 0.85rem;
+  }
+
+  .search-row label {
+    display: block;
+    margin-bottom: 0.3rem;
+    font-weight: 700;
+    color: #564838;
+  }
+
+  .search-row input {
+    width: min(560px, 100%);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 0.72rem 0.88rem;
+    font: inherit;
+    background: #fff;
+  }
+
+  .buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  .buttons button {
+    border: 1px solid var(--line);
+    background: #fff;
+    color: var(--text);
+    border-radius: 999px;
+    padding: 0.46rem 0.75rem;
+    font: inherit;
+    font-weight: 600;
+    cursor: pointer;
+  }
+
+  .buttons button.active {
+    background: var(--accent-2);
+    border-color: var(--accent-2);
+    color: #fff;
+  }
+
+  .result-line {
+    font-size: 0.95rem;
+  }
+
+  .product-card img {
+    width: 100%;
+    aspect-ratio: 4 / 3;
+    object-fit: cover;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .product-card h2 {
+    font-size: 1.28rem;
+  }
+
+  .meta {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+    color: #4f463c;
+    font-weight: 600;
+    font-size: 0.92rem;
+  }
+</style>

@@ -1,0 +1,207 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import products from "../data/products.json";
+import projects from "../data/projects.json";
+
+const featuredProducts = products.filter((product) => product.featured).slice(0, 4);
+const heroImage = featuredProducts[0]?.coverImage ?? featuredProducts[0]?.images?.[0] ?? "/img/placeholder.png";
+
+const placeholderProjectImages = new Set([
+  "/img/placeholder.png",
+  "/img/project-atelier-1.svg",
+  "/img/project-atelier-2.svg",
+  "/img/product-wood-1.svg",
+  "/img/product-wood-2.svg",
+]);
+
+const realProjects = projects.filter((project) =>
+  project.images.some((image) => !placeholderProjectImages.has(image)),
+);
+const featuredRealProjects = realProjects.filter((project) => project.featured);
+const projectsForHome = (featuredRealProjects.length > 0 ? featuredRealProjects : realProjects).slice(0, 3);
+---
+
+<BaseLayout
+  title="DanMan | Mobilier la comanda si tamplarie premium"
+  description="DanMan proiecteaza si executa mobilier premium la comanda pentru locuinte si spatii comerciale."
+  canonicalPath="/"
+  ogImage={heroImage}
+>
+  <section class="hero card">
+    <div class="hero-content">
+      <p class="hero-kicker">Atelier premium de tamplarie</p>
+      <h1>Mobilier la comanda care transforma spatiul intr-o experienta.</h1>
+      <p>
+        De la bucatarie la proiecte comerciale, realizam piese durabile cu detalii curate, materiale atent
+        selectate si montaj profesionist.
+      </p>
+      <div class="hero-actions">
+        <a class="cta-btn" href="/contact">Cere oferta</a>
+        <a class="secondary-btn" href="/produse">Vezi produsele</a>
+      </div>
+    </div>
+    <img src={heroImage} alt="Lucrari DanMan" loading="eager" />
+  </section>
+
+  <section class="section-block">
+    <h2 class="section-title">De ce DanMan</h2>
+    <p class="section-lead">
+      Combinam designul tehnic cu executia de atelier pentru rezultate premium, repetabile si clare ca buget
+      si termen.
+    </p>
+    <div class="benefit-grid">
+      <article class="benefit-card">
+        <h3>Masuratori exacte</h3>
+        <p>Fiecare proiect incepe cu relevare la fata locului si validare functionala.</p>
+      </article>
+      <article class="benefit-card">
+        <h3>Materiale premium</h3>
+        <p>Folosim lemn, furnir si feronerie de calitate pentru rezistenta pe termen lung.</p>
+      </article>
+      <article class="benefit-card">
+        <h3>Montaj curat</h3>
+        <p>Echipa proprie de montaj, cu atentie la detalii si protectia finisajelor existente.</p>
+      </article>
+    </div>
+  </section>
+
+  <section class="section-block">
+    <h2 class="section-title">Produse recomandate</h2>
+    <p class="section-lead">Cele mai solicitate configuratii pentru proiecte rezidentiale si comerciale.</p>
+    <div class="card-grid">
+      {featuredProducts.map((product) => (
+        <article class="card">
+          <img src={product.coverImage || product.images[0]} alt={product.name} loading="lazy" />
+          <div class="card-content">
+            <span class="chip">{product.category}</span>
+            <h3>{product.name}</h3>
+            <p>{product.shortDesc}</p>
+            <p><strong>De la {new Intl.NumberFormat("ro-RO").format(product.priceFrom)} RON</strong></p>
+            <a class="link-arrow" href={`/produs/${product.slug}`}>Vezi produsul</a>
+          </div>
+        </article>
+      ))}
+    </div>
+  </section>
+
+  {projectsForHome.length > 0 && (
+    <section class="section-block">
+      <h2 class="section-title">Proiecte recente</h2>
+      <p class="section-lead">Selectie de lucrari livrate cu accent pe ergonomie, finisaj si durabilitate.</p>
+      <div class="card-grid">
+        {projectsForHome.map((project) => (
+          <article class="card">
+            <img src={project.images[0]} alt={project.title} loading="lazy" />
+            <div class="card-content">
+              <span class="chip">{project.location}</span>
+              <h3>{project.title}</h3>
+              <p>{project.story}</p>
+              <a class="link-arrow" href="/proiecte">Vezi toate proiectele</a>
+            </div>
+          </article>
+        ))}
+      </div>
+    </section>
+  )}
+
+  <section class="cta-banner">
+    <h2>Ai un proiect in lucru?</h2>
+    <p>Trimite schita, dimensiunile si ideea ta. Revenim rapid cu recomandari si estimare.</p>
+    <a class="cta-btn" href="/contact">Cere oferta</a>
+  </section>
+</BaseLayout>
+
+<style>
+  .hero {
+    display: grid;
+    grid-template-columns: 1.2fr 1fr;
+    gap: 1.2rem;
+    padding: 1.2rem;
+    margin-bottom: 2.4rem;
+  }
+
+  .hero-content {
+    display: grid;
+    gap: 0.95rem;
+    align-content: center;
+  }
+
+  .hero-content h1 {
+    font-size: clamp(1.9rem, 4.2vw, 3rem);
+  }
+
+  .hero img {
+    width: 100%;
+    min-height: 320px;
+    object-fit: cover;
+  }
+
+  .hero-kicker {
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    font-size: 0.82rem;
+    font-weight: 700;
+    color: #6e512f;
+  }
+
+  .hero-actions {
+    display: flex;
+    gap: 0.8rem;
+    flex-wrap: wrap;
+  }
+
+  .secondary-btn {
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    padding: 0.62rem 1rem;
+    font-weight: 700;
+    background: #efe7da;
+  }
+
+  .section-block {
+    margin-bottom: 2.4rem;
+  }
+
+  .benefit-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 1rem;
+  }
+
+  .benefit-card {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    padding: 1rem;
+    box-shadow: var(--shadow);
+  }
+
+  .benefit-card h3 {
+    margin-bottom: 0.5rem;
+  }
+
+  .cta-banner {
+    background: linear-gradient(145deg, #1f1c17 0%, #3f2b1d 100%);
+    color: #fff;
+    border-radius: calc(var(--radius) + 2px);
+    padding: 1.5rem;
+    display: grid;
+    gap: 0.8rem;
+    margin-top: 2rem;
+  }
+
+  .cta-banner p {
+    color: #f3e6d8;
+    max-width: 720px;
+  }
+
+  .cta-banner .cta-btn {
+    width: fit-content;
+  }
+
+  @media (max-width: 860px) {
+    .hero {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

@@ -1,0 +1,55 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import projects from "../data/projects.json";
+---
+
+<BaseLayout
+  title="Proiecte realizate | DanMan"
+  description="Selecție de proiecte DanMan pentru locuințe și spații comerciale din România."
+  canonicalPath="/proiecte"
+>
+  <section class="intro">
+    <h1 class="section-title">Proiecte</h1>
+    <p class="section-lead">
+      Lucrări livrate cu focus pe proporție, funcționalitate și finisaj premium. Fiecare proiect este
+      personalizat în funcție de arhitectura spațiului și stilul clientului.
+    </p>
+  </section>
+
+  <section class="card-grid">
+    {projects.map((project) => (
+      <article class="card project-card">
+        <img src={project.images[0]} alt={project.title} loading="lazy" />
+        <div class="card-content">
+          <div class="project-meta">
+            <span class="chip">{project.location}</span>
+            <span>{project.year}</span>
+          </div>
+          <h2>{project.title}</h2>
+          <p>{project.story}</p>
+          <a class="link-arrow" href="/contact">Discutăm un proiect similar</a>
+        </div>
+      </article>
+    ))}
+  </section>
+</BaseLayout>
+
+<style>
+  .intro {
+    margin-bottom: 1.4rem;
+  }
+
+  .project-card h2 {
+    font-size: 1.24rem;
+  }
+
+  .project-meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 0.5rem;
+    font-weight: 700;
+    color: #665643;
+    font-size: 0.9rem;
+  }
+</style>

@@ -1,0 +1,633 @@
+[
+  {
+    "id": "bar",
+    "slug": "bar",
+    "name": "Bar",
+    "category": "Bar",
+    "shortDesc": "Bar la comanda din lemn masiv, configurat pentru uz rezidential sau comercial.",
+    "longDesc": "Bar personalizat in functie de dimensiuni, stil si utilizare. Executam din lemn masiv, cu atentie la detalii, finisaje premium si montaj profesionist pentru un rezultat durabil.",
+    "priceFrom": 7800,
+    "leadTimeDays": 20,
+    "materials": [
+      "lemn masiv",
+      "metal"
+    ],
+    "finishes": [
+      "ulei",
+      "lac",
+      "bait"
+    ],
+    "images": [
+      "/img/bar/20251125_1310_Bar%20Rustic%20din%20Lemn_remix_01kaxb6kxaf58b7khsc5fp0y0x.webp"
+    ],
+    "coverImage": "/img/bar/20251125_1310_Bar%20Rustic%20din%20Lemn_remix_01kaxb6kxaf58b7khsc5fp0y0x.webp",
+    "featured": false,
+    "totalImages": 1,
+    "hasMoreImages": false,
+    "seo": {
+      "title": "Bar la comanda | DanMan",
+      "description": "Bar realizat la comanda din lemn masiv, finisaje premium si montaj profesionist - DanMan."
+    }
+  },
+  {
+    "id": "biblioteca",
+    "slug": "biblioteca",
+    "name": "Biblioteca",
+    "category": "Biblioteca",
+    "shortDesc": "Biblioteca personalizata pentru living, birou sau zona de lucru.",
+    "longDesc": "Biblioteca personalizat in functie de dimensiuni, stil si utilizare. Executam din lemn masiv, cu atentie la detalii, finisaje premium si montaj profesionist pentru un rezultat durabil.",
+    "priceFrom": 4600,
+    "leadTimeDays": 16,
+    "materials": [
+      "lemn masiv",
+      "MDF furniruit"
+    ],
+    "finishes": [
+      "ulei",
+      "lac",
+      "bait"
+    ],
+    "images": [
+      "/img/biblioteca/20251118_0837_Design%20Interior%20Elegant_remix_01kaatr83bfpw8gkx3tj22dngg.webp"
+    ],
+    "coverImage": "/img/biblioteca/20251118_0837_Design%20Interior%20Elegant_remix_01kaatr83bfpw8gkx3tj22dngg.webp",
+    "featured": false,
+    "totalImages": 1,
+    "hasMoreImages": false,
+    "seo": {
+      "title": "Biblioteca la comanda | DanMan",
+      "description": "Biblioteca realizat la comanda din lemn masiv, finisaje premium si montaj profesionist - DanMan."
+    }
+  },
+  {
+    "id": "blaturi",
+    "slug": "blaturi",
+    "name": "Blaturi",
+    "category": "Blaturi",
+    "shortDesc": "Blaturi din lemn masiv, finisate premium pentru rezistenta zilnica.",
+    "longDesc": "Blaturi personalizat in functie de dimensiuni, stil si utilizare. Executam din lemn masiv, cu atentie la detalii, finisaje premium si montaj profesionist pentru un rezultat durabil.",
+    "priceFrom": 3200,
+    "leadTimeDays": 14,
+    "materials": [
+      "lemn masiv",
+      "stejar"
+    ],
+    "finishes": [
+      "ulei",
+      "lac",
+      "bait"
+    ],
+    "images": [
+      "/img/blaturi/20251125_1222_Buc%C4%83t%C4%83rie%20Profesional%C4%83%20Decorat%C4%83_remix_01kax8f6x0fprsf9wrnqnpsabx.webp",
+      "/img/blaturi/20251125_1530_Mas%C4%83%20Lemn%20Profesionist%C4%83_remix_01kaxk65e0eqz827pqf3hcayx3.webp"
+    ],
+    "coverImage": "/img/blaturi/20251125_1222_Buc%C4%83t%C4%83rie%20Profesional%C4%83%20Decorat%C4%83_remix_01kax8f6x0fprsf9wrnqnpsabx.webp",
+    "featured": false,
+    "totalImages": 2,
+    "hasMoreImages": false,
+    "seo": {
+      "title": "Blaturi la comanda | DanMan",
+      "description": "Blaturi realizat la comanda din lemn masiv, finisaje premium si montaj profesionist - DanMan."
+    }
+  },
+  {
+    "id": "bucatarie",
+    "slug": "bucatarie",
+    "name": "Bucatarie",
+    "category": "Bucatarie",
+    "shortDesc": "Bucatarie la comanda cu compartimentare optimizata si finisaj premium.",
+    "longDesc": "Bucatarie personalizat in functie de dimensiuni, stil si utilizare. Executam din lemn masiv, cu atentie la detalii, finisaje premium si montaj profesionist pentru un rezultat durabil.",
+    "priceFrom": 9800,
+    "leadTimeDays": 25,
+    "materials": [
+      "lemn masiv",
+      "MDF vopsit"
+    ],
+    "finishes": [
+      "ulei",
+      "lac",
+      "bait"
+    ],
+    "images": [
+      "/img/bucatarie/20251125_1302_Mobilier%20Lemn%20Elegant_remix_01kaxaperhfb9vr1eydyqcdcak.webp",
+      "/img/bucatarie/20251125_1322_Buc%C4%83t%C4%83rie%20Rustic%C4%83%20Elegant%C4%83_remix_01kaxbv94mfrzbtyp30h5a6twx.webp",
+      "/img/bucatarie/20251210_1952_Buc%C4%83t%C4%83rie%20Rustic%C4%83%20Profesional%C4%83_remix_01kc4p5bh7enb9ps21nc4xgna5.webp"
+    ],
+    "coverImage": "/img/bucatarie/20251125_1302_Mobilier%20Lemn%20Elegant_remix_01kaxaperhfb9vr1eydyqcdcak.webp",
+    "featured": false,
+    "totalImages": 3,
+    "hasMoreImages": false,
+    "seo": {
+      "title": "Bucatarie la comanda | DanMan",
+      "description": "Bucatarie realizat la comanda din lemn masiv, finisaje premium si montaj profesionist - DanMan."
+    }
+  },
+  {
+    "id": "cadouri",
+    "slug": "cadouri",
+    "name": "Cadouri",
+    "category": "Cadouri",
+    "shortDesc": "Cadouri personalizate din lemn masiv, realizate artizanal.",
+    "longDesc": "Cadouri personalizat in functie de dimensiuni, stil si utilizare. Executam din lemn masiv, cu atentie la detalii, finisaje premium si montaj profesionist pentru un rezultat durabil.",
+    "priceFrom": 900,
+    "leadTimeDays": 7,
+    "materials": [
+      "lemn masiv",
+      "esente selectate"
+    ],
+    "finishes": [
+      "ulei",
+      "lac",
+      "bait"
+    ],
+    "images": [
+      "/img/cadouri/20251125_1240_Mas%C4%83%20Lemn%20Profesional%C4%83_remix_01kax9g7nmftcs4bk2csrxzq0y.webp",
+      "/img/cadouri/20251125_1241_Mobilier%20din%20Lemn_remix_01kax9j22pf4dbpcmtxx0xd4gg.webp",
+      "/img/cadouri/20251125_1307_Cutie%20Lemn%20Profesional%C4%83_remix_01kaxb1ygje3k9bxj92wj214pg.webp",
+      "/img/cadouri/20251125_1323_Suport%20Lemn%20Lustruit_remix_01kaxbx4h7f7896g1t99z6eted.webp",
+      "/img/cadouri/20251125_1324_Cutie%20Lemn%20Detaliat%C4%83_remix_01kaxc0a2nfrgtygmsk59ryeqd.webp",
+      "/img/cadouri/20251125_1327_Cutie%20Lemn%20Elegant%C4%83_remix_01kaxc5mx5f318aakkj0adfs09.webp",
+      "/img/cadouri/20251125_1329_Prezentare%20Suport%20Telefon_remix_01kaxc7radfmsbzp76xz23vcry.webp",
+      "/img/cadouri/20251125_1502_Design%20Profesional%20Mobilier_remix_01kaxhjssrfc5vpgncr7e5xbft.webp",
+      "/img/cadouri/20251125_1512_Cartea%20%C3%AEn%20Suport%20Diagonal_remix_01kaxj4hh9fz49a7nsb0tw83tp.webp"
+    ],
+    "coverImage": "/img/cadouri/20251125_1240_Mas%C4%83%20Lemn%20Profesional%C4%83_remix_01kax9g7nmftcs4bk2csrxzq0y.webp",
+    "featured": true,
+    "totalImages": 9,
+    "hasMoreImages": false,
+    "seo": {
+      "title": "Cadouri la comanda | DanMan",
+      "description": "Cadouri realizat la comanda din lemn masiv, finisaje premium si montaj profesionist - DanMan."
+    }
+  },
+  {
+    "id": "categorii",
+    "slug": "categorii",
+    "name": "Categorii",
+    "category": "Categorii",
+    "shortDesc": "Selectie de piese realizate la comanda din lemn masiv.",
+    "longDesc": "Categorii personalizat in functie de dimensiuni, stil si utilizare. Executam din lemn masiv, cu atentie la detalii, finisaje premium si montaj profesionist pentru un rezultat durabil.",
+    "priceFrom": 3500,
+    "leadTimeDays": 15,
+    "materials": [
+      "lemn masiv"
+    ],
+    "finishes": [
+      "ulei",
+      "lac",
+      "bait"
+    ],
+    "images": [
+      "/img/categorii/20251124_0816_Cadru%20Pat%20Catalog_remix_01kat7zh7gfvttwjvt4yfcz5w11.webp",
+      "/img/categorii/20251125_1322_Buc%C4%83t%C4%83rie%20Rustic%C4%83%20Elegant%C4%83_remix_01kaxbv94mfrzbtyp30h5a6twx.webp",
+      "/img/categorii/20251125_1516_Scar%C4%83%20Interioar%C4%83%20Elegant%C4%83_remix_01kaxjd7j0fqb9emx1nv2c2cws.webp",
+      "/img/categorii/20251125_1516_Scar%C4%83%20Modern%C4%83%20Elegant%C4%83_remix_01kaxjc57bfhftz45v8efbkgap.webp",
+      "/img/categorii/20251125_1520_Masa%20din%20lemn%20elegant%C4%83_remix_01kaxjkb5aetevj0x2zjqss8by.webp"
+    ],
+    "coverImage": "/img/categorii/20251124_0816_Cadru%20Pat%20Catalog_remix_01kat7zh7gfvttwjvt4yfcz5w11.webp",
+    "featured": false,
+    "totalImages": 5,
+    "hasMoreImages": false,
+    "seo": {
+      "title": "Categorii la comanda | DanMan",
+      "description": "Categorii realizat la comanda din lemn masiv, finisaje premium si montaj profesionist - DanMan."
+    }
+  },
+  {
+    "id": "din-palet",
+    "slug": "din-palet",
+    "name": "Din Palet",
+    "category": "Din Palet",
+    "shortDesc": "Mobilier rustic din lemn recuperat si palet, refinisat profesional.",
+    "longDesc": "Din Palet personalizat in functie de dimensiuni, stil si utilizare. Executam din lemn masiv, cu atentie la detalii, finisaje premium si montaj profesionist pentru un rezultat durabil.",
+    "priceFrom": 2400,
+    "leadTimeDays": 12,
+    "materials": [
+      "lemn masiv",
+      "lemn recuperat"
+    ],
+    "finishes": [
+      "ulei",
+      "lac",
+      "bait"
+    ],
+    "images": [
+      "/img/din%20palet/20251125_1218_Dulap%20Lemn%20Profesionist_remix_01kax87d71e3stbzymdf550533.webp",
+      "/img/din%20palet/20251125_1218_Masa%20Din%20Pale%C8%9Bi_remix_01kax86px7ew2brbtpchg898j5.webp"
+    ],
+    "coverImage": "/img/din%20palet/20251125_1218_Dulap%20Lemn%20Profesionist_remix_01kax87d71e3stbzymdf550533.webp",
+    "featured": false,
+    "totalImages": 2,
+    "hasMoreImages": false,
+    "seo": {
+      "title": "Din Palet la comanda | DanMan",
+      "description": "Din Palet realizat la comanda din lemn masiv, finisaje premium si montaj profesionist - DanMan."
+    }
+  },
+  {
+    "id": "diverse",
+    "slug": "diverse",
+    "name": "Diverse",
+    "category": "Diverse",
+    "shortDesc": "Proiecte diverse la comanda, adaptate exact pe dimensiunile spatiului.",
+    "longDesc": "Diverse personalizat in functie de dimensiuni, stil si utilizare. Executam din lemn masiv, cu atentie la detalii, finisaje premium si montaj profesionist pentru un rezultat durabil.",
+    "priceFrom": 2800,
+    "leadTimeDays": 15,
+    "materials": [
+      "lemn masiv"
+    ],
+    "finishes": [
+      "ulei",
+      "lac",
+      "bait"
+    ],
+    "images": [
+      "/img/diverse/20251125_1227_Tavan%20cu%20Grinzi%20Ornamentale_remix_01kax8nxgafv0rph597fs45nyt.webp",
+      "/img/diverse/20251125_1228_Amenajare%20Interior%20Modern_remix_01kax8qsyae16s98z9qj060e8c.webp",
+      "/img/diverse/20251125_1235_Verand%C4%83%20cu%20Vedere%20Panoramic%C4%83_remix_01kax95j07e13r9m5t6kr3v47r.webp",
+      "/img/diverse/20251125_1236_Balcon%20cu%20Priveli%C8%99te%20Montan%C4%83_remix_01kax97e4cet5t4qxm6k4kz1df.webp",
+      "/img/diverse/20251125_1241_Mobilier%20din%20Lemn_remix_01kax9j22pf4dbpcmtxx0xd4gg.webp",
+      "/img/diverse/20251125_1250_Hol%20cu%20Decor%20Elegant_remix_01kaxa1k30erxvsc80y4pchdsc.webp",
+      "/img/diverse/20251125_1503_Cadru%20Profesional%20Realizat_remix_01kaxhmy7wedgvh9g8902twe74.webp",
+      "/img/diverse/20251125_1503_Cadru%20Profesional%20Realizat_remix_01kaxhmy7xfx1a3vn4fs467tzx.webp"
+    ],
+    "coverImage": "/img/diverse/20251125_1227_Tavan%20cu%20Grinzi%20Ornamentale_remix_01kax8nxgafv0rph597fs45nyt.webp",
+    "featured": true,
+    "totalImages": 8,
+    "hasMoreImages": false,
+    "seo": {
+      "title": "Diverse la comanda | DanMan",
+      "description": "Diverse realizat la comanda din lemn masiv, finisaje premium si montaj profesionist - DanMan."
+    }
+  },
+  {
+    "id": "dulap-de-baie",
+    "slug": "dulap-de-baie",
+    "name": "Dulap De Baie",
+    "category": "Dulap De Baie",
+    "shortDesc": "Dulap de baie la comanda, rezistent la umiditate si usor de intretinut.",
+    "longDesc": "Dulap De Baie personalizat in functie de dimensiuni, stil si utilizare. Executam din lemn masiv, cu atentie la detalii, finisaje premium si montaj profesionist pentru un rezultat durabil.",
+    "priceFrom": 4200,
+    "leadTimeDays": 16,
+    "materials": [
+      "lemn masiv",
+      "MDF rezistent la umiditate"
+    ],
+    "finishes": [
+      "ulei",
+      "lac",
+      "bait"
+    ],
+    "images": [
+      "/img/dulap%20de%20baie/20251118_1650_Dulap%20Baie%20Profesional_remix_01kabpz9m2f2btcdfa2d4416xk.webp",
+      "/img/dulap%20de%20baie/20251123_1727_Chiuvet%C4%83%20Elegant%C4%83%20Baie_remix_01karn240pfm8rd03bmxxs831q.webp",
+      "/img/dulap%20de%20baie/20251125_1253_Mobilier%20Modern%20de%20Prezentare_remix_01kaxa75awf3ab0rt6n7sgnw54.webp",
+      "/img/dulap%20de%20baie/20251125_1259_Mobilier%20Profesional%20Prezentare_remix_01kaxahk3sfc98vnzm66ftte0c.webp",
+      "/img/dulap%20de%20baie/20251125_1545_Dulap%20Baie%20Profesionist_remix_01kaxm13mcfj8bcjqt9p2905k7.webp"
+    ],
+    "coverImage": "/img/dulap%20de%20baie/20251118_1650_Dulap%20Baie%20Profesional_remix_01kabpz9m2f2btcdfa2d4416xk.webp",
+    "featured": false,
+    "totalImages": 5,
+    "hasMoreImages": false,
+    "seo": {
+      "title": "Dulap De Baie la comanda | DanMan",
+      "description": "Dulap De Baie realizat la comanda din lemn masiv, finisaje premium si montaj profesionist - DanMan."
+    }
+  },
+  {
+    "id": "foisoare",
+    "slug": "foisoare",
+    "name": "Foisoare",
+    "category": "Foisoare",
+    "shortDesc": "Foisoare si structuri exterioare din lemn masiv, proiectate la comanda.",
+    "longDesc": "Foisoare personalizat in functie de dimensiuni, stil si utilizare. Executam din lemn masiv, cu atentie la detalii, finisaje premium si montaj profesionist pentru un rezultat durabil.",
+    "priceFrom": 14500,
+    "leadTimeDays": 30,
+    "materials": [
+      "lemn masiv",
+      "elemente structurale"
+    ],
+    "finishes": [
+      "ulei",
+      "lac",
+      "bait"
+    ],
+    "images": [
+      "/img/foisoare/20251125_1317_Garaj%20Rustic%20Modern_remix_01kaxbk6t9fa8va501qrsj5ahr.webp",
+      "/img/foisoare/20251125_1319_Construc%C8%9Bie%20din%20Lemn_remix_01kaxbp3tvexjtx6kpegt2de70.webp"
+    ],
+    "coverImage": "/img/foisoare/20251125_1317_Garaj%20Rustic%20Modern_remix_01kaxbk6t9fa8va501qrsj5ahr.webp",
+    "featured": false,
+    "totalImages": 2,
+    "hasMoreImages": false,
+    "seo": {
+      "title": "Foisoare la comanda | DanMan",
+      "description": "Foisoare realizat la comanda din lemn masiv, finisaje premium si montaj profesionist - DanMan."
+    }
+  },
+  {
+    "id": "jucarii",
+    "slug": "jucarii",
+    "name": "Jucarii",
+    "category": "Jucarii",
+    "shortDesc": "Jucarii din lemn masiv, finisate cu produse sigure pentru copii.",
+    "longDesc": "Jucarii personalizat in functie de dimensiuni, stil si utilizare. Executam din lemn masiv, cu atentie la detalii, finisaje premium si montaj profesionist pentru un rezultat durabil.",
+    "priceFrom": 650,
+    "leadTimeDays": 8,
+    "materials": [
+      "lemn masiv",
+      "vopsea non-toxica"
+    ],
+    "finishes": [
+      "ulei",
+      "lac",
+      "bait"
+    ],
+    "images": [
+      "/img/placeholder.png"
+    ],
+    "coverImage": "/img/placeholder.png",
+    "featured": false,
+    "totalImages": 0,
+    "hasMoreImages": false,
+    "seo": {
+      "title": "Jucarii la comanda | DanMan",
+      "description": "Jucarii realizat la comanda din lemn masiv, finisaje premium si montaj profesionist - DanMan."
+    }
+  },
+  {
+    "id": "marchize",
+    "slug": "marchize",
+    "name": "Marchize",
+    "category": "Marchize",
+    "shortDesc": "Marchize din lemn cu protectie la intemperii si design personalizat.",
+    "longDesc": "Marchize personalizat in functie de dimensiuni, stil si utilizare. Executam din lemn masiv, cu atentie la detalii, finisaje premium si montaj profesionist pentru un rezultat durabil.",
+    "priceFrom": 7600,
+    "leadTimeDays": 24,
+    "materials": [
+      "lemn masiv",
+      "metal"
+    ],
+    "finishes": [
+      "ulei",
+      "lac",
+      "bait"
+    ],
+    "images": [
+      "/img/marchize/20251125_1245_Intrare%20Cu%20Element%20Rustice_remix_01kax9pw5fe0yvgfmt9bam4z7q.webp",
+      "/img/marchize/20251125_1247_Intrare%20cu%20Detalii%20Arhitecturale_remix_01kax9tqv3fqcr7ag5sjpgac6k.webp",
+      "/img/marchize/20251125_1457_Intrare%20Profesional%C4%83%20Cas%C4%83_remix_01kaxh8wxrfbk80n7076mxahzk.webp",
+      "/img/marchize/20251125_1457_Peisaj%20De%20Iarn%C4%83_remix_01kaxh86b1fkg9vvbknnfpxegp.webp",
+      "/img/marchize/20251125_1500_Intrare%20Cu%20Copertin%C4%83%20Modern%C4%83_remix_01kaxhfam4ejt9sh9pf0pkx3z8.webp",
+      "/img/marchize/20251127_0913_Terasa%20Elegant%C4%83_remix_01kb22drayf5yamb7rxhbvsrmc.webp",
+      "/img/marchize/20251211_1724_Verand%C4%83%20Profesionist%20Retu%C8%99at%C4%83_remix_01kc701h2qejx9sepw6ct9x4jr.webp"
+    ],
+    "coverImage": "/img/marchize/20251125_1245_Intrare%20Cu%20Element%20Rustice_remix_01kax9pw5fe0yvgfmt9bam4z7q.webp",
+    "featured": true,
+    "totalImages": 7,
+    "hasMoreImages": false,
+    "seo": {
+      "title": "Marchize la comanda | DanMan",
+      "description": "Marchize realizat la comanda din lemn masiv, finisaje premium si montaj profesionist - DanMan."
+    }
+  },
+  {
+    "id": "mese",
+    "slug": "mese",
+    "name": "Mese",
+    "category": "Mese",
+    "shortDesc": "Mese din lemn masiv, dimensionate pentru dining, living sau birou.",
+    "longDesc": "Mese personalizat in functie de dimensiuni, stil si utilizare. Executam din lemn masiv, cu atentie la detalii, finisaje premium si montaj profesionist pentru un rezultat durabil.",
+    "priceFrom": 5600,
+    "leadTimeDays": 22,
+    "materials": [
+      "lemn masiv",
+      "stejar"
+    ],
+    "finishes": [
+      "ulei",
+      "lac",
+      "bait"
+    ],
+    "images": [
+      "/img/mese/20251125_1222_Mobilier%20Rustic%20Profesional_remix_01kax8e58cfgn9ks8zfswhbnfn.webp",
+      "/img/mese/20251125_1320_Masa%20Lemn%20Modern%C4%83_remix_01kaxbrtj6ek2tmt5x35432j81.webp",
+      "/img/mese/20251125_1520_Masa%20din%20lemn%20elegant%C4%83_remix_01kaxjkb59ezgrq7zmb6gczbzn.webp",
+      "/img/mese/20251125_1520_Masa%20din%20lemn%20elegant%C4%83_remix_01kaxjkb5aetevj0x2zjqss8by.webp",
+      "/img/mese/20251125_1530_Mas%C4%83%20Lemn%20Profesionist%C4%83_remix_01kaxk65e0eqz827pqf3hcayx3.webp",
+      "/img/mese/20251210_1941_Mas%C4%83%20Lemn%20Elegan%C8%9B%C4%83_remix_01kc4ngejqeb99yvxpvfbv85qt.webp",
+      "/img/mese/20251210_2005_Masa%20Eleganta%20Finisat%C4%83_remix_01kc4pxnacebs9yj1ye576dahk.webp"
+    ],
+    "coverImage": "/img/mese/20251125_1222_Mobilier%20Rustic%20Profesional_remix_01kax8e58cfgn9ks8zfswhbnfn.webp",
+    "featured": true,
+    "totalImages": 7,
+    "hasMoreImages": false,
+    "seo": {
+      "title": "Mese la comanda | DanMan",
+      "description": "Mese realizat la comanda din lemn masiv, finisaje premium si montaj profesionist - DanMan."
+    }
+  },
+  {
+    "id": "paturi",
+    "slug": "paturi",
+    "name": "Paturi",
+    "category": "Paturi",
+    "shortDesc": "Paturi din lemn masiv cu structura robusta si finisaje premium.",
+    "longDesc": "Paturi personalizat in functie de dimensiuni, stil si utilizare. Executam din lemn masiv, cu atentie la detalii, finisaje premium si montaj profesionist pentru un rezultat durabil.",
+    "priceFrom": 7200,
+    "leadTimeDays": 24,
+    "materials": [
+      "lemn masiv",
+      "furnir natural"
+    ],
+    "finishes": [
+      "ulei",
+      "lac",
+      "bait"
+    ],
+    "images": [
+      "/img/paturi/20251124_0812_Pat%20din%20Lemn_remix_01kat7qvzmfqxvt38b39mq7rj9.webp",
+      "/img/paturi/20251124_0816_Cadru%20Pat%20Catalog_remix_01kat7zh7gfvttwjvt4yfcz5w1.webp",
+      "/img/paturi/20251124_0816_Cadru%20Pat%20Catalog_remix_01kat7zh7gfvttwjvt4yfcz5w11.webp",
+      "/img/paturi/20251125_1232_Dormitor%20Curat%20Profesional_remix_01kax8ztbjfqx844j946agdgb3.webp",
+      "/img/paturi/20251125_1250_Pat%20Elegant%20Minimalist_remix_01kaxa2ahmec0bng4pcccffhge.webp",
+      "/img/paturi/20251125_1304_Pat%20Supraetajat%20Profesional_remix_01kaxat17de57agazw28dbq343.webp",
+      "/img/paturi/20251125_1507_Cadru%20Pat%20Profesional_remix_01kaxhwz0ae7dtq31s7jqb3ffv.webp",
+      "/img/paturi/20251125_1507_Cadru%20Pat%20Profesional_remix_01kaxhwz0be1w84343q2sxmn5z.webp",
+      "/img/paturi/20251125_1510_Pat%20Lemn%20Profesionist_remix_01kaxj1q9af09vr1hdv16yyrm5.webp",
+      "/img/paturi/20251125_1510_Pat%20Lemn%20Profesionist_remix_01kaxj1q9bfbyvc5hh7v0532aq.webp",
+      "/img/paturi/20251125_1513_Cadru%20Pat%20Profesional_remix_01kaxj70rmeksb8jndyjcqp01w.webp",
+      "/img/paturi/20251210_1948_Adaug%C4%83%20A%C8%99ternuturi_remix_01kc4nxgyhe32t44jz7bqv4w7a.webp"
+    ],
+    "coverImage": "/img/paturi/20251124_0812_Pat%20din%20Lemn_remix_01kat7qvzmfqxvt38b39mq7rj9.webp",
+    "featured": true,
+    "totalImages": 12,
+    "hasMoreImages": false,
+    "seo": {
+      "title": "Paturi la comanda | DanMan",
+      "description": "Paturi realizat la comanda din lemn masiv, finisaje premium si montaj profesionist - DanMan."
+    }
+  },
+  {
+    "id": "porti",
+    "slug": "porti",
+    "name": "Porti",
+    "category": "Porti",
+    "shortDesc": "Porti din lemn masiv cu feronerie premium si executie rezistenta.",
+    "longDesc": "Porti personalizat in functie de dimensiuni, stil si utilizare. Executam din lemn masiv, cu atentie la detalii, finisaje premium si montaj profesionist pentru un rezultat durabil.",
+    "priceFrom": 8900,
+    "leadTimeDays": 26,
+    "materials": [
+      "lemn masiv",
+      "feronerie premium"
+    ],
+    "finishes": [
+      "ulei",
+      "lac",
+      "bait"
+    ],
+    "images": [
+      "/img/porti/20251125_1238_Poart%C4%83%20Rustic%C4%83%20Profesional%C4%83_remix_01kax9b1mqf92t7j5yw8n78y1s.webp",
+      "/img/porti/20251125_1239_Poart%C4%83%20Lemn%20Elegant%C4%83_remix_01kax9d509ey9t43dq5gbnfjhs.webp",
+      "/img/porti/20251125_1523_Poart%C4%83%20%C8%99i%20Hidrants_remix_01kaxjsy93ejy88wcbvsaxqxmn.webp"
+    ],
+    "coverImage": "/img/porti/20251125_1238_Poart%C4%83%20Rustic%C4%83%20Profesional%C4%83_remix_01kax9b1mqf92t7j5yw8n78y1s.webp",
+    "featured": false,
+    "totalImages": 3,
+    "hasMoreImages": false,
+    "seo": {
+      "title": "Porti la comanda | DanMan",
+      "description": "Porti realizat la comanda din lemn masiv, finisaje premium si montaj profesionist - DanMan."
+    }
+  },
+  {
+    "id": "rafturi",
+    "slug": "rafturi",
+    "name": "Rafturi",
+    "category": "Rafturi",
+    "shortDesc": "Rafturi la comanda pentru depozitare eficienta si aspect coerent.",
+    "longDesc": "Rafturi personalizat in functie de dimensiuni, stil si utilizare. Executam din lemn masiv, cu atentie la detalii, finisaje premium si montaj profesionist pentru un rezultat durabil.",
+    "priceFrom": 2200,
+    "leadTimeDays": 12,
+    "materials": [
+      "lemn masiv",
+      "MDF furniruit"
+    ],
+    "finishes": [
+      "ulei",
+      "lac",
+      "bait"
+    ],
+    "images": [
+      "/img/rafturi/20251125_1218_Masa%20Din%20Pale%C8%9Bi_remix_01kax86px7ew2brbtpchg898j5.webp",
+      "/img/rafturi/20251125_1243_Amenajare%20Mansard%C4%83%20Modern%C4%83_remix_01kax9mf3ae79t6jhfrzxa289s.webp",
+      "/img/rafturi/20251125_1316_Rafturi%20din%20Lemn%20Elegant_remix_01kaxbgme2egkvkagdksw37561.webp"
+    ],
+    "coverImage": "/img/rafturi/20251125_1218_Masa%20Din%20Pale%C8%9Bi_remix_01kax86px7ew2brbtpchg898j5.webp",
+    "featured": false,
+    "totalImages": 3,
+    "hasMoreImages": false,
+    "seo": {
+      "title": "Rafturi la comanda | DanMan",
+      "description": "Rafturi realizat la comanda din lemn masiv, finisaje premium si montaj profesionist - DanMan."
+    }
+  },
+  {
+    "id": "riflaj",
+    "slug": "riflaj",
+    "name": "Riflaj",
+    "category": "Riflaj",
+    "shortDesc": "Riflaj decorativ din lemn pentru pereti, scari si separari de spatiu.",
+    "longDesc": "Riflaj personalizat in functie de dimensiuni, stil si utilizare. Executam din lemn masiv, cu atentie la detalii, finisaje premium si montaj profesionist pentru un rezultat durabil.",
+    "priceFrom": 3000,
+    "leadTimeDays": 12,
+    "materials": [
+      "lemn masiv",
+      "furnir"
+    ],
+    "finishes": [
+      "ulei",
+      "lac",
+      "bait"
+    ],
+    "images": [
+      "/img/riflaj/riflaj-panou.png",
+      "/img/riflaj/riflaj-scara.png"
+    ],
+    "coverImage": "/img/riflaj/riflaj-panou.png",
+    "featured": false,
+    "totalImages": 2,
+    "hasMoreImages": false,
+    "seo": {
+      "title": "Riflaj la comanda | DanMan",
+      "description": "Riflaj realizat la comanda din lemn masiv, finisaje premium si montaj profesionist - DanMan."
+    }
+  },
+  {
+    "id": "scari",
+    "slug": "scari",
+    "name": "Scari",
+    "category": "Scari",
+    "shortDesc": "Scari din lemn masiv si metal, proiectate pentru trafic intensiv.",
+    "longDesc": "Scari personalizat in functie de dimensiuni, stil si utilizare. Executam din lemn masiv, cu atentie la detalii, finisaje premium si montaj profesionist pentru un rezultat durabil.",
+    "priceFrom": 12500,
+    "leadTimeDays": 28,
+    "materials": [
+      "lemn masiv",
+      "metal"
+    ],
+    "finishes": [
+      "ulei",
+      "lac",
+      "bait"
+    ],
+    "images": [
+      "/img/scari/20251125_1230_Scar%C4%83%20Interioar%C4%83%20Elegant%C4%83_remix_01kax8wdwvemx8szvm5e37z4ds.webp",
+      "/img/scari/20251125_1233_Scar%C4%83%20Lemn%20Elegant%C4%83_remix_01kax92a1rfm7rbjkdkjn2kgmw.webp",
+      "/img/scari/20251125_1305_Sc%C4%83ri%20Lemn%20Elegante_remix_01kaxavz0aem1v0wkrab5sjc6q.webp",
+      "/img/scari/20251125_1307_Sc%C4%83ri%20Interioare%20Elegante_remix_01kaxazw3ee8xre4kt452ts2jc.webp",
+      "/img/scari/20251125_1309_Scar%C4%83%20Interioar%C4%83%20Modern%C4%83_remix_01kaxb4g4qfcv82320t1cb0gdc.webp",
+      "/img/scari/20251125_1516_Scar%C4%83%20Interioar%C4%83%20Elegant%C4%83_remix_01kaxjd7j0fqb9emx1nv2c2cws.webp",
+      "/img/scari/20251125_1516_Scar%C4%83%20Modern%C4%83%20Elegant%C4%83_remix_01kaxjc57bfhftz45v8efbkgap.webp"
+    ],
+    "coverImage": "/img/scari/20251125_1230_Scar%C4%83%20Interioar%C4%83%20Elegant%C4%83_remix_01kax8wdwvemx8szvm5e37z4ds.webp",
+    "featured": true,
+    "totalImages": 7,
+    "hasMoreImages": false,
+    "seo": {
+      "title": "Scari la comanda | DanMan",
+      "description": "Scari realizat la comanda din lemn masiv, finisaje premium si montaj profesionist - DanMan."
+    }
+  },
+  {
+    "id": "usi",
+    "slug": "usi",
+    "name": "Usi",
+    "category": "Usi",
+    "shortDesc": "Usi interioare la comanda, cu toc, feronerie si finisaj premium.",
+    "longDesc": "Usi personalizat in functie de dimensiuni, stil si utilizare. Executam din lemn masiv, cu atentie la detalii, finisaje premium si montaj profesionist pentru un rezultat durabil.",
+    "priceFrom": 4300,
+    "leadTimeDays": 18,
+    "materials": [
+      "lemn masiv",
+      "MDF"
+    ],
+    "finishes": [
+      "ulei",
+      "lac",
+      "bait"
+    ],
+    "images": [
+      "/img/usi/20251125_1334_U%C8%99%C4%83%20din%20Lemn_remix_01kaxcjb6dfq6b8k42st80qtzf.webp",
+      "/img/usi/20251125_1535_Intrare%20%C8%99i%20Fereastr%C4%83%20Elegant%C4%83_remix_01kaxkf0v7e978b0255zy7hvq5.webp"
+    ],
+    "coverImage": "/img/usi/20251125_1334_U%C8%99%C4%83%20din%20Lemn_remix_01kaxcjb6dfq6b8k42st80qtzf.webp",
+    "featured": false,
+    "totalImages": 2,
+    "hasMoreImages": false,
+    "seo": {
+      "title": "Usi la comanda | DanMan",
+      "description": "Usi realizat la comanda din lemn masiv, finisaje premium si montaj profesionist - DanMan."
+    }
+  }
+]

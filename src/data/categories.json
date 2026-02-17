@@ -1,0 +1,116 @@
+[
+  {
+    "name": "Bar",
+    "slug": "bar",
+    "imageCount": 1,
+    "coverImage": "/img/bar/20251125_1310_Bar%20Rustic%20din%20Lemn_remix_01kaxb6kxaf58b7khsc5fp0y0x.webp"
+  },
+  {
+    "name": "Biblioteca",
+    "slug": "biblioteca",
+    "imageCount": 1,
+    "coverImage": "/img/biblioteca/20251118_0837_Design%20Interior%20Elegant_remix_01kaatr83bfpw8gkx3tj22dngg.webp"
+  },
+  {
+    "name": "Blaturi",
+    "slug": "blaturi",
+    "imageCount": 2,
+    "coverImage": "/img/blaturi/20251125_1222_Buc%C4%83t%C4%83rie%20Profesional%C4%83%20Decorat%C4%83_remix_01kax8f6x0fprsf9wrnqnpsabx.webp"
+  },
+  {
+    "name": "Bucatarie",
+    "slug": "bucatarie",
+    "imageCount": 3,
+    "coverImage": "/img/bucatarie/20251125_1302_Mobilier%20Lemn%20Elegant_remix_01kaxaperhfb9vr1eydyqcdcak.webp"
+  },
+  {
+    "name": "Cadouri",
+    "slug": "cadouri",
+    "imageCount": 9,
+    "coverImage": "/img/cadouri/20251125_1240_Mas%C4%83%20Lemn%20Profesional%C4%83_remix_01kax9g7nmftcs4bk2csrxzq0y.webp"
+  },
+  {
+    "name": "Categorii",
+    "slug": "categorii",
+    "imageCount": 5,
+    "coverImage": "/img/categorii/20251124_0816_Cadru%20Pat%20Catalog_remix_01kat7zh7gfvttwjvt4yfcz5w11.webp"
+  },
+  {
+    "name": "Din Palet",
+    "slug": "din-palet",
+    "imageCount": 2,
+    "coverImage": "/img/din%20palet/20251125_1218_Dulap%20Lemn%20Profesionist_remix_01kax87d71e3stbzymdf550533.webp"
+  },
+  {
+    "name": "Diverse",
+    "slug": "diverse",
+    "imageCount": 8,
+    "coverImage": "/img/diverse/20251125_1227_Tavan%20cu%20Grinzi%20Ornamentale_remix_01kax8nxgafv0rph597fs45nyt.webp"
+  },
+  {
+    "name": "Dulap De Baie",
+    "slug": "dulap-de-baie",
+    "imageCount": 5,
+    "coverImage": "/img/dulap%20de%20baie/20251118_1650_Dulap%20Baie%20Profesional_remix_01kabpz9m2f2btcdfa2d4416xk.webp"
+  },
+  {
+    "name": "Foisoare",
+    "slug": "foisoare",
+    "imageCount": 2,
+    "coverImage": "/img/foisoare/20251125_1317_Garaj%20Rustic%20Modern_remix_01kaxbk6t9fa8va501qrsj5ahr.webp"
+  },
+  {
+    "name": "Jucarii",
+    "slug": "jucarii",
+    "imageCount": 0,
+    "coverImage": "/img/placeholder.png"
+  },
+  {
+    "name": "Marchize",
+    "slug": "marchize",
+    "imageCount": 7,
+    "coverImage": "/img/marchize/20251125_1245_Intrare%20Cu%20Element%20Rustice_remix_01kax9pw5fe0yvgfmt9bam4z7q.webp"
+  },
+  {
+    "name": "Mese",
+    "slug": "mese",
+    "imageCount": 7,
+    "coverImage": "/img/mese/20251125_1222_Mobilier%20Rustic%20Profesional_remix_01kax8e58cfgn9ks8zfswhbnfn.webp"
+  },
+  {
+    "name": "Paturi",
+    "slug": "paturi",
+    "imageCount": 12,
+    "coverImage": "/img/paturi/20251124_0812_Pat%20din%20Lemn_remix_01kat7qvzmfqxvt38b39mq7rj9.webp"
+  },
+  {
+    "name": "Porti",
+    "slug": "porti",
+    "imageCount": 3,
+    "coverImage": "/img/porti/20251125_1238_Poart%C4%83%20Rustic%C4%83%20Profesional%C4%83_remix_01kax9b1mqf92t7j5yw8n78y1s.webp"
+  },
+  {
+    "name": "Rafturi",
+    "slug": "rafturi",
+    "imageCount": 3,
+    "coverImage": "/img/rafturi/20251125_1218_Masa%20Din%20Pale%C8%9Bi_remix_01kax86px7ew2brbtpchg898j5.webp"
+  },
+  {
+    "name": "Riflaj",
+    "slug": "riflaj",
+    "imageCount": 2,
+    "coverImage": "/img/riflaj/riflaj-panou.png"
+  },
+  {
+    "name": "Scari",
+    "slug": "scari",
+    "imageCount": 7,
+    "coverImage": "/img/scari/20251125_1230_Scar%C4%83%20Interioar%C4%83%20Elegant%C4%83_remix_01kax8wdwvemx8szvm5e37z4ds.webp"
+  },
+  {
+    "name": "Usi",
+    "slug": "usi",
+    "imageCount": 2,
+    "coverImage": "/img/usi/20251125_1334_U%C8%99%C4%83%20din%20Lemn_remix_01kaxcjb6dfq6b8k42st80qtzf.webp"
+  }
+]
