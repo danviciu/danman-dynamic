@@ -93,7 +93,19 @@ const localBusinessSchema = {
     <script type="application/ld+json" set:html={JSON.stringify(localBusinessSchema)} />
     <slot name="head" />
   </head>
-  <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
+ <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
+<script>
+  if (window.netlifyIdentity) {
+    window.netlifyIdentity.on("init", user => {
+      if (!user) {
+        window.netlifyIdentity.on("login", () => {
+          document.location.href = "/admin/";
+        });
+      }
+    });
+  }
+</script>
+
   <body>
     <header class="site-header">
       <div class="container nav-row">
