@@ -4,3 +4,20 @@
 
 [build.environment]
   NODE_VERSION = "20"
+[build]
+  command = "npm run build"
+  publish = "dist"
+
+[build.environment]
+  NODE_VERSION = "20"
+
+# IMPORTANT: /admin este o mini-SPA. Fara asta, /admin/ sau /admin/#/ poate pica in 404 in anumite cazuri.
+[[redirects]]
+  from = "/admin"
+  to = "/admin/"
+  status = 301
+
+[[redirects]]
+  from = "/admin/*"
+  to = "/admin/index.html"
+  status = 200

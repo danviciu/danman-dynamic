@@ -90,22 +90,10 @@ const localBusinessSchema = {
     <meta name="twitter:description" content={description} />
     <meta name="twitter:image" content={ogImageUrl} />
 
+    <script is:inline src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
     <script type="application/ld+json" set:html={JSON.stringify(localBusinessSchema)} />
     <slot name="head" />
   </head>
- <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
-<script>
-  if (window.netlifyIdentity) {
-    window.netlifyIdentity.on("init", user => {
-      if (!user) {
-        window.netlifyIdentity.on("login", () => {
-          document.location.href = "/admin/";
-        });
-      }
-    });
-  }
-</script>
-
   <body>
     <header class="site-header">
       <div class="container nav-row">
@@ -146,6 +134,25 @@ const localBusinessSchema = {
         </div>
       </div>
     </footer>
+
+    <script is:inline>
+      (function () {
+        if (typeof window === "undefined") return;
+        function initIdentity() {
+          var identity = window.netlifyIdentity;
+          if (!identity || typeof identity.on !== "function") return;
+          if (typeof identity.init === "function") identity.init();
+          identity.on("init", function (user) {
+            if (!user) {
+              identity.on("login", function () {
+                window.location.href = "/admin/";
+              });
+            }
+          });
+        }
+        initIdentity();
+      })();
+    </script>
   </body>
 </html>
 

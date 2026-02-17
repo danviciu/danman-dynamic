@@ -600,6 +600,35 @@
     }
   },
   {
+    "id": "uploads",
+    "slug": "uploads",
+    "name": "Uploads",
+    "category": "Uploads",
+    "shortDesc": "Realizat la comanda din lemn masiv, finisaj premium.",
+    "longDesc": "Uploads personalizat in functie de dimensiuni, stil si utilizare. Executam din lemn masiv, cu atentie la detalii, finisaje premium si montaj profesionist pentru un rezultat durabil.",
+    "priceFrom": 3500,
+    "leadTimeDays": 15,
+    "materials": [
+      "lemn masiv"
+    ],
+    "finishes": [
+      "ulei",
+      "lac",
+      "bait"
+    ],
+    "images": [
+      "/img/placeholder.png"
+    ],
+    "coverImage": "/img/placeholder.png",
+    "featured": false,
+    "totalImages": 0,
+    "hasMoreImages": false,
+    "seo": {
+      "title": "Uploads la comanda | DanMan",
+      "description": "Uploads realizat la comanda din lemn masiv, finisaje premium si montaj profesionist - DanMan."
+    }
+  },
+  {
     "id": "usi",
     "slug": "usi",
     "name": "Usi",
