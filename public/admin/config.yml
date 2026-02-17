@@ -10,39 +10,31 @@ collections:
     label: "Produse"
     folder: "src/content/products"
     create: true
-    format: "frontmatter"
-    extension: "md"
     slug: "{{slug}}"
     fields:
       - { label: "Title", name: "title", widget: "string" }
       - { label: "Slug", name: "slug", widget: "string" }
       - { label: "Category", name: "category", widget: "string" }
-      - { label: "Featured", name: "featured", widget: "boolean" }
-      - { label: "Price From", name: "priceFrom", widget: "number" }
-      - { label: "Lead Time Days", name: "leadTimeDays", widget: "number" }
-      - { label: "Materials", name: "materials", widget: "list" }
-      - { label: "Finishes", name: "finishes", widget: "list" }
+      - { label: "Featured", name: "featured", widget: "boolean", required: false }
+      - { label: "Price From", name: "priceFrom", widget: "number", required: false }
+      - { label: "Lead Time Days", name: "leadTimeDays", widget: "number", required: false }
+      - { label: "Materials", name: "materials", widget: "list", required: false }
+      - { label: "Finishes", name: "finishes", widget: "list", required: false }
       - { label: "Short Description", name: "shortDesc", widget: "string" }
       - { label: "Long Description", name: "longDesc", widget: "text" }
       - label: "Images"
         name: "images"
         widget: "list"
-        field: { label: "Image", name: "image", widget: "image" }
-      - { label: "SEO Title", name: "seoTitle", widget: "string" }
-      - { label: "SEO Description", name: "seoDesc", widget: "text" }
+        fields:
+          - { label: "Image", name: "image", widget: "image" }
+      - { label: "SEO Title", name: "seoTitle", widget: "string", required: false }
+      - { label: "SEO Description", name: "seoDesc", widget: "text", required: false }
 
   - name: "projects"
     label: "Proiecte"
     folder: "src/content/projects"
     create: true
-    format: "frontmatter"
-    extension: "md"
     slug: "{{slug}}"
     fields:
       - { label: "Title", name: "title", widget: "string" }
-      - { label: "Slug", name: "slug", widget: "string" }
-      - { label: "Short Description", name: "shortDesc", widget: "string" }
-      - label: "Images"
-        name: "images"
-        widget: "list"
-        field: { label: "Image", name: "image", widget: "image" }
+      - { label: "Body", name: "body", widget: "markdown" }
