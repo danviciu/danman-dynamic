@@ -5,12 +5,27 @@ import site from "../data/site.json";
 const phoneHref = `tel:${site.phone.replace(/\s+/g, "")}`;
 const whatsappHref = `https://wa.me/${site.phone.replace(/[^\d]/g, "")}`;
 const mapAddress = encodeURIComponent(site.address);
+const contactImages = [
+  {
+    src: "/img/marchize/20251125_1245_Intrare%20Cu%20Element%20Rustice_remix_01kax9pw5fe0yvgfmt9bam4z7q.webp",
+    alt: "Marchiza din lemn realizata la comanda",
+  },
+  {
+    src: "/img/scari/20251125_1230_Scar%C4%83%20Interioar%C4%83%20Elegant%C4%83_remix_01kax8wdwvemx8szvm5e37z4ds.webp",
+    alt: "Scara interioara din lemn",
+  },
+  {
+    src: "/img/paturi/20251124_0812_Pat%20din%20Lemn_remix_01kat7qvzmfqxvt38b39mq7rj9.webp",
+    alt: "Pat din lemn masiv",
+  },
+];
 ---
 
 <BaseLayout
   title="Contact | DanMan"
   description="Cere oferta pentru mobilier la comanda. Contact direct DanMan pe WhatsApp, email sau telefon."
   canonicalPath="/contact"
+  ogImage={contactImages[0].src}
 >
   <section class="contact-head">
     <h1 class="section-title">Contact</h1>
@@ -24,7 +39,20 @@ const mapAddress = encodeURIComponent(site.address);
     <article class="card contact-card">
       <div class="card-content">
         <h2>Trimite detalii proiect</h2>
-        <form id="contactForm">
+        <form
+          id="contactForm"
+          name="contact"
+          method="POST"
+          action="/contact?trimis=1"
+          data-netlify="true"
+          netlify-honeypot="bot-field"
+        >
+          <input type="hidden" name="form-name" value="contact" />
+          <p class="honeypot-field">
+            <label for="bot-field">Nu completa acest camp.</label>
+            <input id="bot-field" name="bot-field" type="text" tabindex="-1" autocomplete="off" />
+          </p>
+
           <label for="name">Nume</label>
           <input id="name" name="name" type="text" required />
 
@@ -51,6 +79,7 @@ const mapAddress = encodeURIComponent(site.address);
 
     <article class="card contact-card">
       <div class="card-content">
+        <img class="contact-photo" src={contactImages[0].src} alt={contactImages[0].alt} loading="lazy" />
         <h2>Canale rapide</h2>
         <a class="quick-link" href={whatsappHref} target="_blank" rel="noopener noreferrer">WhatsApp</a>
         <a class="quick-link" href={`mailto:${site.email}`}>Email: {site.email}</a>
@@ -60,6 +89,14 @@ const mapAddress = encodeURIComponent(site.address);
         <p><strong>Timp de raspuns:</strong> in medie 2-6 ore in zilele lucratoare.</p>
       </div>
     </article>
+  </section>
+
+  <section class="contact-gallery">
+    {contactImages.map((item) => (
+      <article class="card gallery-card">
+        <img src={item.src} alt={item.alt} loading="lazy" />
+      </article>
+    ))}
   </section>
 
   <section class="map-wrap">
@@ -73,17 +110,18 @@ const mapAddress = encodeURIComponent(site.address);
 </BaseLayout>
 
 <script>
-  const form = document.getElementById("contactForm");
   const formStatus = document.getElementById("formStatus");
 
-  if (form instanceof HTMLFormElement && formStatus) {
-    form.addEventListener("submit", (event) => {
-      event.preventDefault();
-      const data = new FormData(form);
-      const name = String(data.get("name") || "").trim();
-      formStatus.textContent = `Multumim, ${name || "prieten"}! Mesajul a fost pregatit local (fara backend).`;
-      form.reset();
-    });
+  if (formStatus) {
+    const params = new URLSearchParams(window.location.search);
+    if (params.get("trimis") === "1") {
+      formStatus.textContent = "Multumim! Mesajul a fost trimis. Revenim in cel mai scurt timp.";
+      formStatus.classList.add("is-success");
+
+      const cleanUrl = new URL(window.location.href);
+      cleanUrl.searchParams.delete("trimis");
+      window.history.replaceState({}, "", `${cleanUrl.pathname}${cleanUrl.search}${cleanUrl.hash}`);
+    }
   }
 </script>
 
@@ -101,6 +139,15 @@ const mapAddress = encodeURIComponent(site.address);
 
   .contact-card {
     overflow: hidden;
+  }
+
+  .contact-photo {
+    width: 100%;
+    height: 190px;
+    object-fit: cover;
+    border-radius: 12px;
+    border: 1px solid var(--line);
+    margin-bottom: 0.6rem;
   }
 
   form {
@@ -133,6 +180,18 @@ const mapAddress = encodeURIComponent(site.address);
     color: #4f483f;
   }
 
+  .form-status.is-success {
+    color: #2f6b32;
+  }
+
+  .honeypot-field {
+    position: absolute;
+    left: -10000px;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+  }
+
   .quick-link {
     display: inline-flex;
     width: fit-content;
@@ -146,6 +205,24 @@ const mapAddress = encodeURIComponent(site.address);
     min-height: 310px;
     border: 1px solid var(--line);
     border-radius: var(--radius);
+  }
+
+  .contact-gallery {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 0.8rem;
+    margin-bottom: 1rem;
+  }
+
+  .gallery-card {
+    overflow: hidden;
+  }
+
+  .gallery-card img {
+    width: 100%;
+    height: 190px;
+    object-fit: cover;
+    display: block;
   }
 
   @media (max-width: 860px) {

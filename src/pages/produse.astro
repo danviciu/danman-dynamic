@@ -1,20 +1,77 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
-import products from "../data/products.json";
+import { getCollection } from "astro:content";
+import {
+  getCategoryCoverImage,
+  getExistingImages,
+  getFallbackCategories,
+  normalizeCategoryKey,
+  pickBestImage,
+} from "../utils/catalog";
 
-const filterOptions = ["Toate", ...products.map((product) => product.name)];
+const productsFromContent = (await getCollection("products")).map((entry) => {
+  const images = getExistingImages((entry.data.images ?? []).map((item) => item.image));
+  const categoryCover = getCategoryCoverImage(entry.data.category);
+
+  return {
+    slug: entry.slug,
+    title: entry.data.title,
+    category: entry.data.category,
+    shortDesc: entry.data.shortDesc,
+    priceFrom: entry.data.priceFrom,
+    leadTimeDays: entry.data.leadTimeDays,
+    coverImage: pickBestImage([...images, categoryCover]),
+    href: `/produs/${entry.slug}`,
+    ctaLabel: "Vezi produsul",
+    sortOrder: 0,
+  };
+});
+
+const existingCategoryKeys = new Set(
+  productsFromContent.map((product) => normalizeCategoryKey(product.category)),
+);
+
+const fallbackCategoryProducts = getFallbackCategories(existingCategoryKeys).map((category) => ({
+  slug: `categorie-${category.slug}`,
+  title: `Categoria ${category.name}`,
+  category: category.name,
+  shortDesc: `${category.imageCount} imagini reale disponibile. Proiecte personalizate la comanda.`,
+  priceFrom: undefined,
+  leadTimeDays: undefined,
+  coverImage: category.coverImage,
+  href: `/contact?categorie=${encodeURIComponent(category.name)}`,
+  ctaLabel: "Cere oferta",
+  sortOrder: 1,
+}));
+
+const products = [...productsFromContent, ...fallbackCategoryProducts].sort(
+  (a, b) =>
+    a.sortOrder - b.sortOrder ||
+    a.category.localeCompare(b.category, "ro", { sensitivity: "base" }) ||
+    a.title.localeCompare(b.title, "ro", { sensitivity: "base" }),
+);
+
+const filterOptions = [
+  "Toate",
+  ...new Set(
+    products
+      .map((product) => product.category)
+      .sort((a, b) => a.localeCompare(b, "ro", { sensitivity: "base" })),
+  ),
+];
 ---
 
 <BaseLayout
   title="Produse | DanMan"
   description="Catalog DanMan generat din categoriile reale de imagini: mobilier, scari, usi, paturi, mese si altele."
   canonicalPath="/produse"
+  ogImage={products[0]?.coverImage ?? "/img/IMG_20250914_202642.webp"}
 >
   <section>
     <h1 class="section-title">Produse</h1>
     <p class="section-lead">
-      Catalogul este generat automat din folderele din <code>/public/img</code>. Fiecare card reprezinta o
-      categorie de produse.
+      Catalogul este generat din produsele CMS si din categoriile reale de imagini. Filtrezi rapid dupa
+      categorie si cauti dupa nume sau descriere.
     </p>
   </section>
 
@@ -35,25 +92,29 @@ const filterOptions = ["Toate", ...products.map((product) => product.name)];
 
   <section class="card-grid" id="productsGrid">
     {products.map((product) => (
-      <article
-        class="card product-card"
-        data-category={product.name}
-        data-search={`${product.name} ${product.shortDesc}`.toLowerCase()}
-      >
-        {/* Public images are referenced from web root, e.g. /img/paturi/file.webp */}
-        <img src={product.coverImage} alt={product.name} loading="lazy" />
-        <div class="card-content">
-          <span class="chip">{product.name}</span>
-          <h2>{product.name}</h2>
-          <p>{product.shortDesc}</p>
-          <div class="meta">
-            <span>De la {new Intl.NumberFormat("ro-RO").format(product.priceFrom)} RON</span>
-            <span>{product.leadTimeDays} zile</span>
+        <article
+          class="card product-card"
+          data-category={product.category}
+          data-search={`${product.title} ${product.category} ${product.shortDesc}`.toLowerCase()}
+        >
+          {/* Public images are referenced from web root, e.g. /img/paturi/file.webp */}
+          <img src={product.coverImage} alt={product.title} loading="lazy" />
+          <div class="card-content">
+            <span class="chip">{product.category}</span>
+            <h2>{product.title}</h2>
+            <p>{product.shortDesc}</p>
+            <div class="meta">
+              <span>
+                {typeof product.priceFrom === "number"
+                  ? `De la ${new Intl.NumberFormat("ro-RO").format(product.priceFrom)} RON`
+                  : "Pret la cerere"}
+              </span>
+              <span>{typeof product.leadTimeDays === "number" ? `${product.leadTimeDays} zile` : "Termen la cerere"}</span>
+            </div>
+            <a class="link-arrow" href={product.href}>{product.ctaLabel}</a>
           </div>
-          <a class="link-arrow" href={`/produs/${product.slug}`}>Vezi categoria</a>
-        </div>
-      </article>
-    ))}
+        </article>
+      ))}
   </section>
 </BaseLayout>
 

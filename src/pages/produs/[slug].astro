@@ -1,33 +1,41 @@
-﻿---
+---
 import BaseLayout from "../../layouts/BaseLayout.astro";
-import products from "../../data/products.json";
+import { getCollection, type CollectionEntry } from "astro:content";
 import site from "../../data/site.json";
+import {
+  getCategoryCoverImage,
+  getExistingImages,
+  pickBestImage,
+  PLACEHOLDER_IMAGE,
+} from "../../utils/catalog";
 
-type Product = (typeof products)[number];
-
-export function getStaticPaths() {
-  // In SSG, only these slugs are generated; any other slug resolves to 404.
+export async function getStaticPaths() {
+  const products = await getCollection("products");
   return products.map((product) => ({
     params: { slug: product.slug },
     props: { product },
   }));
 }
 
-const { product } = Astro.props as { product: Product };
+const { product } = Astro.props as { product: CollectionEntry<"products"> };
+const data = product.data;
 const canonicalPath = `/produs/${product.slug}`;
-const hasGalleryImages = Array.isArray(product.images) && product.images.length > 0;
-const galleryImages = hasGalleryImages ? product.images : ["/img/placeholder.png"];
-const initialImage = product.coverImage && galleryImages.includes(product.coverImage)
-  ? product.coverImage
-  : galleryImages[0];
+
+const galleryImages = getExistingImages((data.images ?? []).map((item) => item.image));
+const hasGalleryImages = galleryImages.length > 0;
+const categoryFallback = getCategoryCoverImage(data.category);
+const normalizedGallery = hasGalleryImages
+  ? galleryImages
+  : [pickBestImage([categoryFallback, PLACEHOLDER_IMAGE], PLACEHOLDER_IMAGE)];
+const initialImage = normalizedGallery[0] ?? PLACEHOLDER_IMAGE;
 
 const productSchema = {
   "@context": "https://schema.org",
   "@type": "Product",
-  name: product.name,
-  description: product.longDesc,
+  name: data.title,
+  description: data.longDesc,
   image: [new URL(initialImage, site.domain).toString()],
-  category: product.category,
+  category: data.category,
   brand: {
     "@type": "Brand",
     name: site.brandName,
@@ -35,7 +43,7 @@ const productSchema = {
   offers: {
     "@type": "Offer",
     priceCurrency: "RON",
-    price: product.priceFrom,
+    ...(typeof data.priceFrom === "number" ? { price: data.priceFrom } : {}),
     availability: "https://schema.org/InStock",
     url: new URL(canonicalPath, site.domain).toString(),
   },
@@ -43,8 +51,8 @@ const productSchema = {
 ---
 
 <BaseLayout
-  title={product.seo.title}
-  description={product.seo.description}
+  title={data.seoTitle || data.title}
+  description={data.seoDesc || data.shortDesc}
   canonicalPath={canonicalPath}
   ogImage={initialImage}
 >
@@ -52,7 +60,6 @@ const productSchema = {
 
   <article class="product-layout" data-product-gallery="true">
     <section class="gallery card">
-      {/* Public images are used with root-based paths like /img/categorie/fisier.webp */}
       <div class="main-image-frame">
         <button
           id="mainImageTrigger"
@@ -60,20 +67,20 @@ const productSchema = {
           type="button"
           aria-label="Deschide galeria in lightbox"
         >
-          <img id="mainImage" class="main-image" src={initialImage} alt={product.name} loading="eager" />
+          <img id="mainImage" class="main-image" src={initialImage} alt={data.title} loading="eager" />
         </button>
       </div>
 
       {hasGalleryImages ? (
         <div class="thumbs" id="thumbsGrid">
-          {galleryImages.map((image, index) => (
+          {normalizedGallery.map((image, index) => (
             <button
               class={index === 0 ? "thumb active" : "thumb"}
               type="button"
               data-index={index}
               aria-label={`Alege imaginea ${index + 1}`}
             >
-              <img src={image} alt={`${product.name} ${index + 1}`} loading="lazy" />
+              <img src={image} alt={`${data.title} ${index + 1}`} loading="lazy" />
             </button>
           ))}
         </div>
@@ -81,17 +88,10 @@ const productSchema = {
         <p class="more-note">Nu exista imagini in galerie pentru acest produs.</p>
       )}
 
-      {product.hasMoreImages && (
-        <p class="more-note">
-          Afisezi primele {product.images.length} imagini din {product.totalImages}. Pentru galeria completa,
-          solicita oferta.
-        </p>
-      )}
-
       <div class="lightbox" id="lightbox" aria-hidden="true">
-        <div class="lightbox-panel" id="lightboxPanel" role="dialog" aria-modal="true" aria-label={`Galerie ${product.name}`}>
+        <div class="lightbox-panel" id="lightboxPanel" role="dialog" aria-modal="true" aria-label={`Galerie ${data.title}`}>
           <button type="button" class="lightbox-close" id="lightboxClose" aria-label="Inchide galeria">&times;</button>
-          {galleryImages.length > 1 && (
+          {normalizedGallery.length > 1 && (
             <>
               <button type="button" class="lightbox-nav lightbox-prev" id="lightboxPrev" aria-label="Imagine anterioara">&lsaquo;</button>
               <button type="button" class="lightbox-nav lightbox-next" id="lightboxNext" aria-label="Imagine urmatoare">&rsaquo;</button>
@@ -99,48 +99,62 @@ const productSchema = {
           )}
           <button type="button" class="lightbox-zoom" id="lightboxZoom" aria-pressed="false">Zoom</button>
           <div class="lightbox-stage" id="lightboxStage">
-            <img id="lightboxImage" class="lightbox-image" src={initialImage} alt={product.name} />
+            <img id="lightboxImage" class="lightbox-image" src={initialImage} alt={data.title} />
           </div>
         </div>
       </div>
 
-      <script id="galleryImagesData" type="application/json" set:html={JSON.stringify(galleryImages)} />
+      <script id="galleryImagesData" type="application/json" set:html={JSON.stringify(normalizedGallery)} />
     </section>
 
     <section class="card info">
       <div class="card-content">
-        <span class="chip">{product.name}</span>
-        <h1>{product.name}</h1>
-        <p>{product.shortDesc}</p>
-        <p>{product.longDesc}</p>
+        <span class="chip">{data.category}</span>
+        <h1>{data.title}</h1>
+        <p>{data.shortDesc}</p>
+        <p>{data.longDesc}</p>
 
         <div class="meta-grid">
           <div>
             <h2>Pret orientativ</h2>
-            <p><strong>De la {new Intl.NumberFormat("ro-RO").format(product.priceFrom)} RON</strong></p>
+            <p>
+              <strong>
+                {typeof data.priceFrom === "number"
+                  ? `De la ${new Intl.NumberFormat("ro-RO").format(data.priceFrom)} RON`
+                  : "Pret la cerere"}
+              </strong>
+            </p>
           </div>
           <div>
             <h2>Timp executie</h2>
-            <p><strong>{product.leadTimeDays} zile</strong></p>
+            <p><strong>{typeof data.leadTimeDays === "number" ? `${data.leadTimeDays} zile` : "Termen la cerere"}</strong></p>
           </div>
         </div>
 
         <div class="meta-grid">
           <div>
             <h2>Materiale</h2>
-            <ul>
-              {product.materials.map((material) => (
-                <li>{material}</li>
-              ))}
-            </ul>
+            {data.materials?.length ? (
+              <ul>
+                {data.materials.map((material) => (
+                  <li>{material}</li>
+                ))}
+              </ul>
+            ) : (
+              <p>Materialele se stabilesc la oferta.</p>
+            )}
           </div>
           <div>
             <h2>Finisaje</h2>
-            <ul>
-              {product.finishes.map((finish) => (
-                <li>{finish}</li>
-              ))}
-            </ul>
+            {data.finishes?.length ? (
+              <ul>
+                {data.finishes.map((finish) => (
+                  <li>{finish}</li>
+                ))}
+              </ul>
+            ) : (
+              <p>Finisajele se stabilesc la oferta.</p>
+            )}
           </div>
         </div>
 
@@ -197,7 +211,7 @@ const productSchema = {
           </details>
         </section>
 
-        <a class="cta-btn" href={`/contact?produs=${encodeURIComponent(product.name)}`}>Cere oferta</a>
+        <a class="cta-btn" href={`/contact?produs=${encodeURIComponent(data.title)}`}>Cere oferta</a>
       </div>
     </section>
   </article>
@@ -411,9 +425,7 @@ const productSchema = {
         }
 
         if (event.key === "Tab") {
-          const focusables = lightbox.querySelectorAll(
-            'button:not([disabled]), [tabindex]:not([tabindex="-1"])',
-          );
+          const focusables = lightbox.querySelectorAll('button:not([disabled]), [tabindex]:not([tabindex="-1"])');
           if (focusables.length === 0) return;
           const first = focusables[0];
           const last = focusables[focusables.length - 1];
@@ -649,12 +661,7 @@ const productSchema = {
     margin-bottom: 0.35rem;
   }
 
-  ul {
-    margin: 0;
-    padding-left: 1rem;
-    color: var(--muted);
-  }
-
+  ul,
   ol {
     margin: 0;
     padding-left: 1rem;
@@ -686,4 +693,3 @@ const productSchema = {
     }
   }
 </style>
-

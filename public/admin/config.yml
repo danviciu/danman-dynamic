@@ -2,6 +2,9 @@ backend:
   name: git-gateway
   branch: main
 
+# Permite editare in localhost prin proxy server (fara login Netlify local).
+local_backend: true
+
 media_folder: "public/img/uploads"
 public_folder: "/img/uploads"
 
@@ -36,4 +39,14 @@ collections:
     slug: "{{slug}}"
     fields:
       - { label: "Title", name: "title", widget: "string" }
-      - { label: "Description", name: "body", widget: "markdown" }
+      - { label: "Slug", name: "slug", widget: "string" }
+      - { label: "Location", name: "location", widget: "string" }
+      - { label: "Year", name: "year", widget: "number" }
+      - { label: "Featured", name: "featured", widget: "boolean", required: false }
+      - { label: "Story", name: "story", widget: "text" }
+      - label: "Images"
+        name: "images"
+        widget: "list"
+        field: { label: "Image", name: "image", widget: "image" }
+      - { label: "SEO Title", name: "seoTitle", widget: "string", required: false }
+      - { label: "SEO Description", name: "seoDesc", widget: "text", required: false }

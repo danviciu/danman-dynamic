@@ -1,14 +1,32 @@
 <!doctype html>
-<html lang="en">
+<html lang="ro">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="robots" content="noindex" />
     <link href="/admin/config.yml" type="text/yaml" rel="cms-config-url" />
-    <title>Content Manager</title>
+    <title>Admin</title>
   </head>
   <body>
+    <div id="nc-root"></div>
+
     <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
+    <script>
+      (function () {
+        if (location.search && !location.hash) {
+          location.replace("/admin/#" + location.search.replace(/^\?/, ""));
+        }
+      })();
+
+      if (window.netlifyIdentity) {
+        window.netlifyIdentity.on("login", function () {
+          window.netlifyIdentity.close();
+          if (location.pathname !== "/admin/" || location.hash !== "#/") {
+            location.href = "/admin/#/";
+          }
+        });
+      }
+    </script>
     <script src="https://unpkg.com/decap-cms@3/dist/decap-cms.js"></script>
   </body>
 </html>

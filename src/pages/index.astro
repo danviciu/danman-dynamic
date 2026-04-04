@@ -1,13 +1,49 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
-import products from "../data/products.json";
-import projects from "../data/projects.json";
+import { getCollection } from "astro:content";
+import {
+  getCategoryCoverImage,
+  getExistingImages,
+  pickBestImage,
+  PLACEHOLDER_IMAGE,
+} from "../utils/catalog";
+
+const products = (await getCollection("products")).map((entry) => {
+  const images = getExistingImages((entry.data.images ?? []).map((item) => item.image));
+  const categoryCover = getCategoryCoverImage(entry.data.category);
+  const coverImage = pickBestImage([...images, categoryCover], PLACEHOLDER_IMAGE);
+
+  return {
+    slug: entry.slug,
+    title: entry.data.title,
+    category: entry.data.category,
+    featured: entry.data.featured ?? false,
+    shortDesc: entry.data.shortDesc,
+    priceFrom: entry.data.priceFrom,
+    coverImage,
+    images: images.length > 0 ? images : [coverImage],
+  };
+});
+
+const projects = (await getCollection("projects")).map((entry) => {
+  const images = getExistingImages((entry.data.images ?? []).map((item) => item.image));
+  const coverImage = pickBestImage(images, PLACEHOLDER_IMAGE);
+
+  return {
+    title: entry.data.title,
+    location: entry.data.location || "Proiect personalizat",
+    story: entry.data.story || entry.data.shortDesc || "Proiect realizat la comanda.",
+    featured: entry.data.featured ?? false,
+    images: images.length > 0 ? images : [coverImage],
+  };
+});
 
 const featuredProducts = products.filter((product) => product.featured).slice(0, 4);
-const heroImage = featuredProducts[0]?.coverImage ?? featuredProducts[0]?.images?.[0] ?? "/img/placeholder.png";
+const productsForHome = (featuredProducts.length > 0 ? featuredProducts : products).slice(0, 4);
+const heroImage = productsForHome[0]?.coverImage ?? PLACEHOLDER_IMAGE;
 
 const placeholderProjectImages = new Set([
-  "/img/placeholder.png",
+  PLACEHOLDER_IMAGE,
   "/img/project-atelier-1.svg",
   "/img/project-atelier-2.svg",
   "/img/product-wood-1.svg",
@@ -69,14 +105,18 @@ const projectsForHome = (featuredRealProjects.length > 0 ? featuredRealProjects 
     <h2 class="section-title">Produse recomandate</h2>
     <p class="section-lead">Cele mai solicitate configuratii pentru proiecte rezidentiale si comerciale.</p>
     <div class="card-grid">
-      {featuredProducts.map((product) => (
+      {productsForHome.map((product) => (
         <article class="card">
-          <img src={product.coverImage || product.images[0]} alt={product.name} loading="lazy" />
+          <img src={product.coverImage} alt={product.title} loading="lazy" />
           <div class="card-content">
             <span class="chip">{product.category}</span>
-            <h3>{product.name}</h3>
+            <h3>{product.title}</h3>
             <p>{product.shortDesc}</p>
-            <p><strong>De la {new Intl.NumberFormat("ro-RO").format(product.priceFrom)} RON</strong></p>
+            {typeof product.priceFrom === "number" ? (
+              <p><strong>De la {new Intl.NumberFormat("ro-RO").format(product.priceFrom)} RON</strong></p>
+            ) : (
+              <p><strong>Pret la cerere</strong></p>
+            )}
             <a class="link-arrow" href={`/produs/${product.slug}`}>Vezi produsul</a>
           </div>
         </article>

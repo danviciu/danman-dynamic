@@ -15,7 +15,7 @@ const {
   title = `${site.brandName} | Mobilier la comanda`,
   description = "Mobilier si proiecte din lemn masiv, realizate la comanda de DanMan.",
   canonicalPath = Astro.url.pathname,
-  ogImage = "/img/placeholder.png",
+  ogImage = "/img/IMG_20250914_202642.webp",
   noIndex = false,
 } = Astro.props;
 
@@ -92,23 +92,23 @@ const localBusinessSchema = {
 
     <script is:inline src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
     <script type="application/ld+json" set:html={JSON.stringify(localBusinessSchema)} />
+    <script is:inline>
+      (function () {
+        const h = window.location.hash || "";
+        const hasIdentityToken =
+          h.includes("invite_token=") ||
+          h.includes("confirmation_token=") ||
+          h.includes("recovery_token=") ||
+          h.includes("email_change_token=");
+
+        // Daca tokenul ajunge pe alta pagina, il redirectionam spre /admin/.
+        if (hasIdentityToken && !window.location.pathname.startsWith("/admin")) {
+          window.location.replace("/admin/" + h);
+        }
+      })();
+    </script>
     <slot name="head" />
   </head>
-  <script>
-  (function () {
-    const h = window.location.hash || "";
-    const hasIdentityToken =
-      h.includes("invite_token=") ||
-      h.includes("confirmation_token=") ||
-      h.includes("recovery_token=") ||
-      h.includes("email_change_token=");
-
-    // dacă ajungem cu token pe homepage (sau altă pagină), mută în /admin/
-    if (hasIdentityToken && !window.location.pathname.startsWith("/admin")) {
-      window.location.replace("/admin/" + h);
-    }
-  })();
-</script>
 
   <body>
     <header class="site-header">
@@ -123,6 +123,7 @@ const localBusinessSchema = {
           <a class={isActive("/proiecte") ? "active" : ""} href="/proiecte">Proiecte</a>
           <a class={isActive("/contact") ? "active" : ""} href="/contact">Contact</a>
         </nav>
+        <a id="admin-link" class="nav-admin" href="/admin/">Admin</a>
         <a class="cta-btn" href="/contact">Cere oferta</a>
       </div>
     </header>
@@ -167,6 +168,21 @@ const localBusinessSchema = {
           });
         }
         initIdentity();
+      })();
+    </script>
+
+    <script is:inline>
+      (function () {
+        if (typeof window === "undefined") return;
+        var adminLink = document.getElementById("admin-link");
+        if (!adminLink) return;
+        adminLink.addEventListener("click", function (e) {
+          var identity = window.netlifyIdentity;
+          if (identity && typeof identity.open === "function") {
+            e.preventDefault();
+            identity.open();
+          }
+        });
       })();
     </script>
   </body>
@@ -387,3 +403,4 @@ const localBusinessSchema = {
     }
   }
 </style>
+
