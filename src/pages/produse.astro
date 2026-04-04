@@ -7,17 +7,19 @@ import {
   getFallbackCategories,
   normalizeCategoryKey,
   pickBestImage,
+  removeProductCodeLine,
 } from "../utils/catalog";
 
 const productsFromContent = (await getCollection("products")).map((entry) => {
   const images = getExistingImages((entry.data.images ?? []).map((item) => item.image));
   const categoryCover = getCategoryCoverImage(entry.data.category);
+  const shortDesc = removeProductCodeLine(entry.data.shortDesc) || "Produs personalizat la comanda.";
 
   return {
     slug: entry.slug,
     title: entry.data.title,
     category: entry.data.category,
-    shortDesc: entry.data.shortDesc,
+    shortDesc,
     priceFrom: entry.data.priceFrom,
     leadTimeDays: entry.data.leadTimeDays,
     coverImage: pickBestImage([...images, categoryCover]),

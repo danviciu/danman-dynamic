@@ -42,6 +42,14 @@ export const normalizeCategoryKey = (value: string) =>
     .replace(/[^a-z0-9]+/g, " ")
     .trim();
 
+const PRODUCT_CODE_LINE_PATTERN = /^\s*cod\s*produs\b.*$/gim;
+
+export const removeProductCodeLine = (value: string | undefined | null) =>
+  String(value ?? "")
+    .replace(PRODUCT_CODE_LINE_PATTERN, "")
+    .replace(/\n{3,}/g, "\n\n")
+    .trim();
+
 export const hasPublicAsset = (path: string) => {
   const normalizedPath = normalizePublicPath(path);
   if (!normalizedPath) return false;

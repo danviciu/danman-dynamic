@@ -6,19 +6,21 @@ import {
   getExistingImages,
   pickBestImage,
   PLACEHOLDER_IMAGE,
+  removeProductCodeLine,
 } from "../utils/catalog";
 
 const products = (await getCollection("products")).map((entry) => {
   const images = getExistingImages((entry.data.images ?? []).map((item) => item.image));
   const categoryCover = getCategoryCoverImage(entry.data.category);
   const coverImage = pickBestImage([...images, categoryCover], PLACEHOLDER_IMAGE);
+  const shortDesc = removeProductCodeLine(entry.data.shortDesc) || "Produs personalizat la comanda.";
 
   return {
     slug: entry.slug,
     title: entry.data.title,
     category: entry.data.category,
     featured: entry.data.featured ?? false,
-    shortDesc: entry.data.shortDesc,
+    shortDesc,
     priceFrom: entry.data.priceFrom,
     coverImage,
     images: images.length > 0 ? images : [coverImage],
