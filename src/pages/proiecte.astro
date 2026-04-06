@@ -1,7 +1,7 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
 import { getCollection } from "astro:content";
-import { getExistingImages, pickBestImage } from "../utils/catalog";
+import { getExistingImages, getOptimizedImageUrl, pickBestImage } from "../utils/catalog";
 
 const PROJECT_FALLBACK_IMAGE = "/img/IMG_20250914_202642.webp";
 
@@ -39,7 +39,12 @@ const photoHighlights = Array.from(new Set(projects.flatMap((project) => project
   {photoHighlights.length > 0 && (
     <section class="photo-strip">
       {photoHighlights.map((image, index) => (
-        <img src={image} alt={`Lucrare DanMan ${index + 1}`} loading="lazy" />
+        <img
+          src={getOptimizedImageUrl(image, { width: 480, height: 290, quality: 70, fit: "cover" })}
+          alt={`Lucrare DanMan ${index + 1}`}
+          loading="lazy"
+          decoding="async"
+        />
       ))}
     </section>
   )}
@@ -47,7 +52,12 @@ const photoHighlights = Array.from(new Set(projects.flatMap((project) => project
   <section class="card-grid">
     {projects.map((project) => (
       <article class="card project-card">
-        <img src={project.coverImage} alt={project.title} loading="lazy" />
+        <img
+          src={getOptimizedImageUrl(project.coverImage, { width: 760, height: 520, quality: 72, fit: "cover" })}
+          alt={project.title}
+          loading="lazy"
+          decoding="async"
+        />
         <div class="card-content">
           <div class="project-meta">
             <span class="chip">{project.location}</span>

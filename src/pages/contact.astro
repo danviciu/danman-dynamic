@@ -1,6 +1,7 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
 import site from "../data/site.json";
+import { getOptimizedImageUrl } from "../utils/catalog";
 
 const phoneHref = `tel:${site.phone.replace(/\s+/g, "")}`;
 const whatsappHref = `https://wa.me/${site.phone.replace(/[^\d]/g, "")}`;
@@ -79,7 +80,13 @@ const contactImages = [
 
     <article class="card contact-card">
       <div class="card-content">
-        <img class="contact-photo" src={contactImages[0].src} alt={contactImages[0].alt} loading="lazy" />
+        <img
+          class="contact-photo"
+          src={getOptimizedImageUrl(contactImages[0].src, { width: 760, height: 400, quality: 72, fit: "cover" })}
+          alt={contactImages[0].alt}
+          loading="lazy"
+          decoding="async"
+        />
         <h2>Canale rapide</h2>
         <a class="quick-link" href={whatsappHref} target="_blank" rel="noopener noreferrer">WhatsApp</a>
         <a class="quick-link" href={`mailto:${site.email}`}>Email: {site.email}</a>
@@ -94,7 +101,12 @@ const contactImages = [
   <section class="contact-gallery">
     {contactImages.map((item) => (
       <article class="card gallery-card">
-        <img src={item.src} alt={item.alt} loading="lazy" />
+        <img
+          src={getOptimizedImageUrl(item.src, { width: 620, height: 420, quality: 72, fit: "cover" })}
+          alt={item.alt}
+          loading="lazy"
+          decoding="async"
+        />
       </article>
     ))}
   </section>
