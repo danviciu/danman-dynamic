@@ -5,7 +5,6 @@ import {
   getCategoryCoverImage,
   getExistingImages,
   getFallbackCategories,
-  getOptimizedImageUrl,
   normalizeCategoryKey,
   pickBestImage,
   removeProductCodeLine,
@@ -101,12 +100,7 @@ const filterOptions = [
           data-search={`${product.title} ${product.category} ${product.shortDesc}`.toLowerCase()}
         >
           {/* Public images are referenced from web root, e.g. /img/paturi/file.webp */}
-          <img
-            src={getOptimizedImageUrl(product.coverImage, { width: 720, height: 540, quality: 72, fit: "cover" })}
-            alt={product.title}
-            loading="lazy"
-            decoding="async"
-          />
+          <img src={product.coverImage} alt={product.title} loading="lazy" />
           <div class="card-content">
             <span class="chip">{product.category}</span>
             <h2>{product.title}</h2>

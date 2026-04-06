@@ -62,41 +62,6 @@ export const hasPublicAsset = (path: string) => {
   return existsSync(resolve(PUBLIC_DIR, decoded));
 };
 
-type ImageFormat = "webp" | "avif" | "jpg" | "auto";
-type ImageFit = "cover" | "contain" | "fill" | "inside" | "outside";
-
-interface OptimizedImageOptions {
-  width?: number;
-  height?: number;
-  quality?: number;
-  format?: ImageFormat;
-  fit?: ImageFit;
-}
-
-export const getOptimizedImageUrl = (
-  path: string | undefined | null,
-  options: OptimizedImageOptions = {},
-) => {
-  const normalizedPath = normalizePublicPath(path ?? "");
-  if (!normalizedPath) return PLACEHOLDER_IMAGE;
-  if (/^https?:\/\//i.test(normalizedPath)) return normalizedPath;
-
-  // In local dev, the Netlify image endpoint is unavailable, so keep original paths.
-  if (!import.meta.env.PROD) return normalizedPath;
-
-  const params = new URLSearchParams({
-    url: normalizedPath,
-    w: String(options.width ?? 960),
-    q: String(options.quality ?? 72),
-    fm: options.format ?? "webp",
-  });
-
-  if (typeof options.height === "number") params.set("h", String(options.height));
-  if (options.fit) params.set("fit", options.fit);
-
-  return `/.netlify/images?${params.toString()}`;
-};
-
 export const getExistingImages = (paths: Array<string | undefined | null>) => {
   const normalizedPaths = paths
     .map((path) => normalizePublicPath(path ?? ""))

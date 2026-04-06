@@ -5,7 +5,6 @@ import site from "../../data/site.json";
 import {
   getCategoryCoverImage,
   getExistingImages,
-  getOptimizedImageUrl,
   pickBestImage,
   PLACEHOLDER_IMAGE,
   removeProductCodeLine,
@@ -29,36 +28,15 @@ const categoryFallback = getCategoryCoverImage(data.category);
 const normalizedGallery = hasGalleryImages
   ? galleryImages
   : [pickBestImage([categoryFallback, PLACEHOLDER_IMAGE], PLACEHOLDER_IMAGE)];
-const seoImage = normalizedGallery[0] ?? PLACEHOLDER_IMAGE;
-const optimizedGalleryImages = normalizedGallery.map((image) =>
-  getOptimizedImageUrl(image, { width: 1800, quality: 78, fit: "contain" }),
-);
-const optimizedThumbImages = normalizedGallery.map((image) =>
-  getOptimizedImageUrl(image, { width: 320, height: 320, quality: 68, fit: "cover" }),
-);
-const initialImage = optimizedGalleryImages[0] ?? getOptimizedImageUrl(PLACEHOLDER_IMAGE, { width: 1200 });
+const initialImage = normalizedGallery[0] ?? PLACEHOLDER_IMAGE;
 const shortDesc = removeProductCodeLine(data.shortDesc);
-const sizeOptions = (data.sizeOptions ?? []).filter(
-  (option) => option.size.trim().length > 0 && Number.isFinite(option.price),
-);
-const hasSizeOptions = sizeOptions.length > 0;
-const formatPrice = (value: number) => new Intl.NumberFormat("ro-RO").format(value);
-const basePriceLabel =
-  typeof data.priceFrom === "number" ? `De la ${formatPrice(data.priceFrom)} RON` : "Pret la cerere";
-const selectedSizePrice = hasSizeOptions ? sizeOptions[0].price : data.priceFrom;
-const selectedSizePriceLabel =
-  typeof selectedSizePrice === "number" ? `${formatPrice(selectedSizePrice)} RON` : "Pret la cerere";
-const contactBaseHref = `/contact?produs=${encodeURIComponent(data.title)}`;
-const contactHref = hasSizeOptions
-  ? `${contactBaseHref}&dimensiune=${encodeURIComponent(sizeOptions[0].size)}`
-  : contactBaseHref;
 
 const productSchema = {
   "@context": "https://schema.org",
   "@type": "Product",
   name: data.title,
   description: data.longDesc,
-  image: [new URL(seoImage, site.domain).toString()],
+  image: [new URL(initialImage, site.domain).toString()],
   category: data.category,
   brand: {
     "@type": "Brand",
@@ -67,7 +45,7 @@ const productSchema = {
   offers: {
     "@type": "Offer",
     priceCurrency: "RON",
-    ...(typeof selectedSizePrice === "number" ? { price: selectedSizePrice } : {}),
+    ...(typeof data.priceFrom === "number" ? { price: data.priceFrom } : {}),
     availability: "https://schema.org/InStock",
     url: new URL(canonicalPath, site.domain).toString(),
   },
@@ -104,7 +82,7 @@ const productSchema = {
               data-index={index}
               aria-label={`Alege imaginea ${index + 1}`}
             >
-              <img src={optimizedThumbImages[index]} alt={`${data.title} ${index + 1}`} loading="lazy" decoding="async" />
+              <img src={image} alt={`${data.title} ${index + 1}`} loading="lazy" />
             </button>
           ))}
         </div>
@@ -128,7 +106,7 @@ const productSchema = {
         </div>
       </div>
 
-      <script id="galleryImagesData" type="application/json" set:html={JSON.stringify(optimizedGalleryImages)} />
+      <script id="galleryImagesData" type="application/json" set:html={JSON.stringify(normalizedGallery)} />
     </section>
 
     <section class="card info">
@@ -137,24 +115,17 @@ const productSchema = {
         <h1>{data.title}</h1>
         {shortDesc && <p>{shortDesc}</p>}
         <p>{data.longDesc}</p>
-        {hasSizeOptions && (
-          <section class="variant-block">
-            <label for="sizeSelect">Dimensiune pat</label>
-            <select id="sizeSelect" name="size">
-              {sizeOptions.map((option) => (
-                <option value={option.size} data-price={option.price}>{option.size}</option>
-              ))}
-            </select>
-          </section>
-        )}
 
         <div class="meta-grid">
           <div>
             <h2>Pret orientativ</h2>
             <p>
-              <strong id="displayPrice">{hasSizeOptions ? selectedSizePriceLabel : basePriceLabel}</strong>
+              <strong>
+                {typeof data.priceFrom === "number"
+                  ? `De la ${new Intl.NumberFormat("ro-RO").format(data.priceFrom)} RON`
+                  : "Pret la cerere"}
+              </strong>
             </p>
-            {hasSizeOptions && <p class="price-note">Pretul se actualizeaza automat in functie de marimea selectata.</p>}
           </div>
           <div>
             <h2>Timp executie</h2>
@@ -242,7 +213,7 @@ const productSchema = {
           </details>
         </section>
 
-        <a class="cta-btn" id="productContactCta" data-base-href={contactBaseHref} href={contactHref}>Cere oferta</a>
+        <a class="cta-btn" href={`/contact?produs=${encodeURIComponent(data.title)}`}>Cere oferta</a>
       </div>
     </section>
   </article>
@@ -492,34 +463,6 @@ const productSchema = {
       });
     }
   }
-
-  const sizeSelect = document.getElementById("sizeSelect");
-  const displayPrice = document.getElementById("displayPrice");
-  const productContactCta = document.getElementById("productContactCta");
-
-  const formatCurrency = (value) => `${new Intl.NumberFormat("ro-RO").format(value)} RON`;
-
-  const updateVariantState = () => {
-    if (!(sizeSelect instanceof HTMLSelectElement)) return;
-    const selectedOption = sizeSelect.selectedOptions[0];
-    if (!selectedOption) return;
-
-    const price = Number(selectedOption.dataset.price);
-    if (displayPrice instanceof HTMLElement && Number.isFinite(price)) {
-      displayPrice.textContent = formatCurrency(price);
-    }
-
-    if (productContactCta instanceof HTMLAnchorElement) {
-      const baseHref = productContactCta.dataset.baseHref || productContactCta.getAttribute("href") || "";
-      const separator = baseHref.includes("?") ? "&" : "?";
-      productContactCta.href = `${baseHref}${separator}dimensiune=${encodeURIComponent(selectedOption.value)}`;
-    }
-  };
-
-  if (sizeSelect instanceof HTMLSelectElement) {
-    sizeSelect.addEventListener("change", updateVariantState);
-    updateVariantState();
-  }
 </script>
 
 <style>
@@ -699,27 +642,6 @@ const productSchema = {
     font-size: clamp(1.8rem, 2.8vw, 2.5rem);
   }
 
-  .variant-block {
-    display: grid;
-    gap: 0.35rem;
-  }
-
-  .variant-block label {
-    font-size: 0.95rem;
-    font-weight: 700;
-    color: #4f463c;
-  }
-
-  .variant-block select {
-    width: min(320px, 100%);
-    border: 1px solid var(--line);
-    border-radius: 12px;
-    padding: 0.65rem 0.75rem;
-    font: inherit;
-    background: #fff;
-    color: var(--text);
-  }
-
   .meta-grid {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -729,12 +651,6 @@ const productSchema = {
   .meta-grid h2 {
     font-size: 1rem;
     margin-bottom: 0.35rem;
-  }
-
-  .price-note {
-    margin-top: 0.35rem;
-    font-size: 0.9rem;
-    color: var(--muted);
   }
 
   .content-block {

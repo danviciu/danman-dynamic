@@ -4,7 +4,6 @@ import { getCollection } from "astro:content";
 import {
   getCategoryCoverImage,
   getExistingImages,
-  getOptimizedImageUrl,
   pickBestImage,
   PLACEHOLDER_IMAGE,
   removeProductCodeLine,
@@ -79,13 +78,7 @@ const projectsForHome = (featuredRealProjects.length > 0 ? featuredRealProjects 
         <a class="secondary-btn" href="/produse">Vezi produsele</a>
       </div>
     </div>
-    <img
-      src={getOptimizedImageUrl(heroImage, { width: 1440, quality: 76, fit: "cover" })}
-      alt="Lucrari DanMan"
-      loading="eager"
-      decoding="async"
-      fetchpriority="high"
-    />
+    <img src={heroImage} alt="Lucrari DanMan" loading="eager" />
   </section>
 
   <section class="section-block">
@@ -116,12 +109,7 @@ const projectsForHome = (featuredRealProjects.length > 0 ? featuredRealProjects 
     <div class="card-grid">
       {productsForHome.map((product) => (
         <article class="card">
-          <img
-            src={getOptimizedImageUrl(product.coverImage, { width: 720, height: 540, quality: 72, fit: "cover" })}
-            alt={product.title}
-            loading="lazy"
-            decoding="async"
-          />
+          <img src={product.coverImage} alt={product.title} loading="lazy" />
           <div class="card-content">
             <span class="chip">{product.category}</span>
             <h3>{product.title}</h3>
@@ -145,12 +133,7 @@ const projectsForHome = (featuredRealProjects.length > 0 ? featuredRealProjects 
       <div class="card-grid">
         {projectsForHome.map((project) => (
           <article class="card">
-            <img
-              src={getOptimizedImageUrl(project.images[0], { width: 720, height: 540, quality: 72, fit: "cover" })}
-              alt={project.title}
-              loading="lazy"
-              decoding="async"
-            />
+            <img src={project.images[0]} alt={project.title} loading="lazy" />
             <div class="card-content">
               <span class="chip">{project.location}</span>
               <h3>{project.title}</h3>

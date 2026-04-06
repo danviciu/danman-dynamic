@@ -7,15 +7,6 @@ const productsCollection = defineCollection({
     category: z.string(),
     featured: z.boolean().optional().default(false),
     priceFrom: z.number().optional(),
-    sizeOptions: z
-      .array(
-        z.object({
-          size: z.string(),
-          price: z.number(),
-        })
-      )
-      .optional()
-      .default([]),
     leadTimeDays: z.number().optional(),
     materials: z.array(z.string()).optional(),
     finishes: z.array(z.string()).optional(),

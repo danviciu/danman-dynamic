@@ -2,7 +2,6 @@
 import { readdirSync } from "node:fs";
 import { resolve } from "node:path";
 import site from "../data/site.json";
-import { getOptimizedImageUrl } from "../utils/catalog";
 
 interface Props {
   title?: string;
@@ -71,17 +70,6 @@ const localBusinessSchema = {
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <!-- Google tag (gtag.js) -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=AW-18056926674" is:inline></script>
-    <script is:inline>
-      window.dataLayer = window.dataLayer || [];
-      function gtag() {
-        dataLayer.push(arguments);
-      }
-      gtag("js", new Date());
-
-      gtag("config", "AW-18056926674");
-    </script>
     <meta name="description" content={description} />
     {noIndex && <meta name="robots" content="noindex,nofollow" />}
 
@@ -126,11 +114,7 @@ const localBusinessSchema = {
     <header class="site-header">
       <div class="container nav-row">
         <a class="brand" href="/">
-          <img
-            src={getOptimizedImageUrl(logoPath, { width: 80, height: 80, quality: 72, fit: "cover" })}
-            alt={`${site.brandName} logo`}
-            decoding="async"
-          />
+          <img src={logoPath} alt={`${site.brandName} logo`} />
           <span>{site.brandName}</span>
         </a>
         <nav class="nav" aria-label="Navigatie principala">
@@ -419,3 +403,4 @@ const localBusinessSchema = {
     }
   }
 </style>
+
