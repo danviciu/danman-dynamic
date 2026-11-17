@@ -1,0 +1,25 @@
+/* Ajustari pentru folosirea panoului Decap CMS pe telefon si tableta. */
+@media (max-width: 800px) {
+  html,
+  body {
+    -webkit-text-size-adjust: 100%;
+  }
+
+  /* campurile si butoanele mai usor de atins cu degetul */
+  input,
+  textarea,
+  select,
+  button {
+    font-size: 16px !important; /* previne zoom-ul automat pe iOS */
+  }
+
+  button {
+    min-height: 40px;
+  }
+
+  /* listele de imagini: miniaturi mai mici, sa incapa pe ecran */
+  img {
+    max-width: 100%;
+    height: auto;
+  }
+}

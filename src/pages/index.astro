@@ -1,207 +1,297 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
-import { getCollection } from "astro:content";
-import {
-  getCategoryCoverImage,
-  getExistingImages,
-  pickBestImage,
-  PLACEHOLDER_IMAGE,
-  removeProductCodeLine,
-} from "../utils/catalog";
+import Img from "../components/Img.astro";
+import ProductCard from "../components/ProductCard.astro";
+import ProjectCard from "../components/ProjectCard.astro";
+import CtaBanner from "../components/CtaBanner.astro";
+import home from "../data/home.json";
+import { getActiveCategories, getProducts, getProjects } from "../utils/catalog";
 
-const products = (await getCollection("products")).map((entry) => {
-  const images = getExistingImages((entry.data.images ?? []).map((item) => item.image));
-  const categoryCover = getCategoryCoverImage(entry.data.category);
-  const coverImage = pickBestImage([...images, categoryCover], PLACEHOLDER_IMAGE);
-  const shortDesc = removeProductCodeLine(entry.data.shortDesc) || "Produs personalizat la comanda.";
+const [products, categories, projects] = await Promise.all([getProducts(), getActiveCategories(), getProjects()]);
 
-  return {
-    slug: entry.slug,
-    title: entry.data.title,
-    category: entry.data.category,
-    featured: entry.data.featured ?? false,
-    shortDesc,
-    priceFrom: entry.data.priceFrom,
-    coverImage,
-    images: images.length > 0 ? images : [coverImage],
-  };
-});
+const featuredProducts = products.filter((p) => p.featured).slice(0, 4);
+const homeProjects = projects.slice(0, 3);
 
-const projects = (await getCollection("projects")).map((entry) => {
-  const images = getExistingImages((entry.data.images ?? []).map((item) => item.image));
-  const coverImage = pickBestImage(images, PLACEHOLDER_IMAGE);
-
-  return {
-    title: entry.data.title,
-    location: entry.data.location || "Proiect personalizat",
-    story: entry.data.story || entry.data.shortDesc || "Proiect realizat la comanda.",
-    featured: entry.data.featured ?? false,
-    images: images.length > 0 ? images : [coverImage],
-  };
-});
-
-const featuredProducts = products.filter((product) => product.featured).slice(0, 4);
-const productsForHome = (featuredProducts.length > 0 ? featuredProducts : products).slice(0, 4);
-const heroImage = productsForHome[0]?.coverImage ?? PLACEHOLDER_IMAGE;
-
-const placeholderProjectImages = new Set([
-  PLACEHOLDER_IMAGE,
-  "/img/project-atelier-1.svg",
-  "/img/project-atelier-2.svg",
-  "/img/product-wood-1.svg",
-  "/img/product-wood-2.svg",
-]);
-
-const realProjects = projects.filter((project) =>
-  project.images.some((image) => !placeholderProjectImages.has(image)),
-);
-const featuredRealProjects = realProjects.filter((project) => project.featured);
-const projectsForHome = (featuredRealProjects.length > 0 ? featuredRealProjects : realProjects).slice(0, 3);
+// Valori dinamice disponibile in textele din CMS: {categorii}, {produse}, {proiecte}
+const fill = (value: string) =>
+  value
+    .replace("{categorii}", String(categories.length))
+    .replace("{produse}", String(products.length))
+    .replace("{proiecte}", String(projects.length));
 ---
 
-<BaseLayout
-  title="DanMan | Mobilier la comanda si tamplarie premium"
-  description="DanMan proiecteaza si executa mobilier premium la comanda pentru locuinte si spatii comerciale."
-  canonicalPath="/"
-  ogImage={heroImage}
->
-  <section class="hero card">
+<BaseLayout title={home.seoTitle} description={home.seoDesc} canonicalPath="/" ogImage={home.hero.image}>
+  <section class="hero">
     <div class="hero-content">
-      <p class="hero-kicker">Atelier premium de tamplarie</p>
-      <h1>Mobilier la comanda care transforma spatiul intr-o experienta.</h1>
-      <p>
-        De la bucatarie la proiecte comerciale, realizam piese durabile cu detalii curate, materiale atent
-        selectate si montaj profesionist.
-      </p>
+      <p class="eyebrow"><span class="dot" aria-hidden="true"></span>{home.hero.eyebrow}</p>
+      <h1>{home.hero.title}</h1>
+      <p class="hero-lead">{home.hero.lead}</p>
       <div class="hero-actions">
-        <a class="cta-btn" href="/contact">Cere oferta</a>
-        <a class="secondary-btn" href="/produse">Vezi produsele</a>
+        <a class="cta-btn" href={home.hero.primaryHref}>{home.hero.primaryLabel}</a>
+        <a class="secondary-btn" href={home.hero.secondaryHref}>{home.hero.secondaryLabel}</a>
       </div>
-    </div>
-    <img src={heroImage} alt="Lucrari DanMan" loading="eager" />
-  </section>
-
-  <section class="section-block">
-    <h2 class="section-title">De ce DanMan</h2>
-    <p class="section-lead">
-      Combinam designul tehnic cu executia de atelier pentru rezultate premium, repetabile si clare ca buget
-      si termen.
-    </p>
-    <div class="benefit-grid">
-      <article class="benefit-card">
-        <h3>Masuratori exacte</h3>
-        <p>Fiecare proiect incepe cu relevare la fata locului si validare functionala.</p>
-      </article>
-      <article class="benefit-card">
-        <h3>Materiale premium</h3>
-        <p>Folosim lemn, furnir si feronerie de calitate pentru rezistenta pe termen lung.</p>
-      </article>
-      <article class="benefit-card">
-        <h3>Montaj curat</h3>
-        <p>Echipa proprie de montaj, cu atentie la detalii si protectia finisajelor existente.</p>
-      </article>
-    </div>
-  </section>
-
-  <section class="section-block">
-    <h2 class="section-title">Produse recomandate</h2>
-    <p class="section-lead">Cele mai solicitate configuratii pentru proiecte rezidentiale si comerciale.</p>
-    <div class="card-grid">
-      {productsForHome.map((product) => (
-        <article class="card">
-          <img src={product.coverImage} alt={product.title} loading="lazy" />
-          <div class="card-content">
-            <span class="chip">{product.category}</span>
-            <h3>{product.title}</h3>
-            <p>{product.shortDesc}</p>
-            {typeof product.priceFrom === "number" ? (
-              <p><strong>De la {new Intl.NumberFormat("ro-RO").format(product.priceFrom)} RON</strong></p>
-            ) : (
-              <p><strong>Pret la cerere</strong></p>
-            )}
-            <a class="link-arrow" href={`/produs/${product.slug}`}>Vezi produsul</a>
+      <dl class="trust-strip">
+        {home.trust.map((item) => (
+          <div class="trust-item">
+            <dt>{fill(item.value)}</dt>
+            <dd>{item.label}</dd>
           </div>
+        ))}
+      </dl>
+    </div>
+    <div class="hero-media">
+      <Img src={home.hero.image} alt={home.hero.imageAlt} priority sizes="(max-width: 900px) 100vw, 540px" />
+    </div>
+  </section>
+
+  <section class="section-block reveal" aria-labelledby="h-categorii">
+    <div class="section-heading">
+      <h2 class="section-title" id="h-categorii">{home.categories.title}</h2>
+      <p class="section-lead">{home.categories.lead}</p>
+    </div>
+    <div class="bento-grid">
+      {categories.map((category, index) => (
+        <a class={`bento-card${index === 0 ? " is-large" : ""}`} href={category.url}>
+          <Img src={category.cover} alt={`${category.name} din lemn masiv`} sizes={index === 0 ? "(max-width: 900px) 100vw, 560px" : "(max-width: 560px) 100vw, 280px"} />
+          <div class="bento-overlay">
+            <span class="bento-chip">{category.products.length} {category.products.length === 1 ? "produs" : "produse"}</span>
+            <h3>{category.name}</h3>
+          </div>
+        </a>
+      ))}
+    </div>
+  </section>
+
+  <section class="section-block reveal" aria-labelledby="h-beneficii">
+    <div class="section-heading">
+      <h2 class="section-title" id="h-beneficii">{home.benefits.title}</h2>
+      <p class="section-lead">{home.benefits.lead}</p>
+    </div>
+    <div class="benefit-grid">
+      {home.benefits.items.map((item, index) => (
+        <article class="benefit-card">
+          <span class="benefit-index">{String(index + 1).padStart(2, "0")}</span>
+          <h3>{item.title}</h3>
+          <p>{item.text}</p>
         </article>
       ))}
     </div>
   </section>
 
-  {projectsForHome.length > 0 && (
-    <section class="section-block">
-      <h2 class="section-title">Proiecte recente</h2>
-      <p class="section-lead">Selectie de lucrari livrate cu accent pe ergonomie, finisaj si durabilitate.</p>
+  <section class="section-block reveal" aria-labelledby="h-proces">
+    <div class="section-heading">
+      <h2 class="section-title" id="h-proces">{home.process.title}</h2>
+    </div>
+    <ol class="process-list">
+      {home.process.steps.map((step, index) => (
+        <li>
+          <span class="process-num" aria-hidden="true">{index + 1}</span>
+          <div>
+            <h3>{step.title}</h3>
+            <p>{step.text}</p>
+          </div>
+        </li>
+      ))}
+    </ol>
+  </section>
+
+  {featuredProducts.length > 0 && (
+    <section class="section-block reveal" aria-labelledby="h-recomandate">
+      <div class="section-heading">
+        <h2 class="section-title" id="h-recomandate">{home.featured.title}</h2>
+        <p class="section-lead">{home.featured.lead}</p>
+      </div>
       <div class="card-grid">
-        {projectsForHome.map((project) => (
-          <article class="card">
-            <img src={project.images[0]} alt={project.title} loading="lazy" />
-            <div class="card-content">
-              <span class="chip">{project.location}</span>
-              <h3>{project.title}</h3>
-              <p>{project.story}</p>
-              <a class="link-arrow" href="/proiecte">Vezi toate proiectele</a>
-            </div>
-          </article>
-        ))}
+        {featuredProducts.map((product) => <ProductCard product={product} headingLevel="h3" />)}
       </div>
     </section>
   )}
 
-  <section class="cta-banner">
-    <h2>Ai un proiect in lucru?</h2>
-    <p>Trimite schita, dimensiunile si ideea ta. Revenim rapid cu recomandari si estimare.</p>
-    <a class="cta-btn" href="/contact">Cere oferta</a>
-  </section>
+  {homeProjects.length > 0 && (
+    <section class="section-block reveal" aria-labelledby="h-proiecte">
+      <div class="section-heading">
+        <h2 class="section-title" id="h-proiecte">{home.projects.title}</h2>
+        <p class="section-lead">{home.projects.lead}</p>
+      </div>
+      <div class="card-grid">
+        {homeProjects.map((project) => <ProjectCard project={project} headingLevel="h3" />)}
+      </div>
+      <p class="more-link"><a class="link-arrow" href="/proiecte/">Toate proiectele →</a></p>
+    </section>
+  )}
+
+  <CtaBanner title={home.cta.title} text={home.cta.text} label={home.cta.label} href={home.cta.href} />
 </BaseLayout>
 
+<script>
+  const revealables = document.querySelectorAll(".reveal");
+  if ("IntersectionObserver" in window && !matchMedia("(prefers-reduced-motion: reduce)").matches) {
+    document.documentElement.classList.add("js-reveal");
+    const io = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add("in-view");
+            io.unobserve(entry.target);
+          }
+        });
+      },
+      { threshold: 0.12 },
+    );
+    revealables.forEach((el) => io.observe(el));
+  }
+</script>
+
 <style>
-  .hero {
-    display: grid;
-    grid-template-columns: 1.2fr 1fr;
-    gap: 1.2rem;
-    padding: 1.2rem;
-    margin-bottom: 2.4rem;
+  /* animatia se activeaza doar cand JS ruleaza, deci continutul ramane vizibil pentru crawlere */
+  :global(.js-reveal) .reveal {
+    opacity: 0;
+    transform: translateY(18px);
+    transition: opacity 0.6s ease, transform 0.6s ease;
   }
 
-  .hero-content {
+  :global(.js-reveal) .reveal.in-view {
+    opacity: 1;
+    transform: none;
+  }
+
+  .hero {
     display: grid;
-    gap: 0.95rem;
-    align-content: center;
+    grid-template-columns: 1.05fr 0.95fr;
+    gap: 2.2rem;
+    align-items: center;
+    padding: 1.4rem 0 3rem;
+  }
+
+  .eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.82rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 1rem;
+  }
+
+  .eyebrow .dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #4f8a5b;
   }
 
   .hero-content h1 {
-    font-size: clamp(1.9rem, 4.2vw, 3rem);
+    font-size: clamp(2.2rem, 4.6vw, 3.4rem);
+    letter-spacing: -0.01em;
   }
 
-  .hero img {
-    width: 100%;
-    min-height: 320px;
-    object-fit: cover;
-  }
-
-  .hero-kicker {
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    font-size: 0.82rem;
-    font-weight: 700;
-    color: #6e512f;
+  .hero-lead {
+    max-width: 520px;
+    margin-top: 1rem;
+    font-size: 1.08rem;
   }
 
   .hero-actions {
     display: flex;
     gap: 0.8rem;
     flex-wrap: wrap;
+    margin-top: 1.6rem;
   }
 
-  .secondary-btn {
-    border: 1px solid var(--line);
-    border-radius: 999px;
-    padding: 0.62rem 1rem;
+  .trust-strip {
+    display: flex;
+    gap: 1.8rem;
+    margin: 2.4rem 0 0;
+    flex-wrap: wrap;
+  }
+
+  .trust-item dt {
+    font-family: "Playfair Display", Georgia, serif;
+    font-size: 1.5rem;
     font-weight: 700;
-    background: #efe7da;
+    color: var(--text);
   }
 
-  .section-block {
-    margin-bottom: 2.4rem;
+  .trust-item dd {
+    margin: 0;
+    font-size: 0.82rem;
+    color: var(--muted);
+  }
+
+  .hero-media :global(img) {
+    width: 100%;
+    height: 480px;
+    object-fit: contain;
+    background: var(--bg);
+    border-radius: calc(var(--radius) + 4px);
+    border: 1px solid var(--line);
+    box-shadow: var(--shadow);
+  }
+
+  .bento-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    grid-auto-rows: 190px;
+    gap: 0.9rem;
+  }
+
+  .bento-card {
+    position: relative;
+    display: block;
+    border-radius: var(--radius);
+    overflow: hidden;
+    border: 1px solid var(--line);
+    box-shadow: var(--shadow);
+    background: #1f1c17;
+  }
+
+  .bento-card.is-large {
+    grid-column: span 2;
+    grid-row: span 2;
+  }
+
+  .bento-card :global(img) {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    transition: transform 0.4s ease;
+  }
+
+  .bento-card:hover :global(img) {
+    transform: scale(1.05);
+  }
+
+  .bento-overlay {
+    position: absolute;
+    inset: auto 0 0 0;
+    padding: 0.9rem 1rem;
+    background: linear-gradient(180deg, transparent, rgba(20, 14, 8, 0.85) 70%);
+    display: grid;
+    gap: 0.3rem;
+  }
+
+  .bento-overlay h3 {
+    color: #fff;
+    font-size: 1.05rem;
+  }
+
+  .bento-card.is-large .bento-overlay h3 {
+    font-size: 1.4rem;
+  }
+
+  .bento-chip {
+    width: fit-content;
+    background: rgba(255, 255, 255, 0.16);
+    color: #fff;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 999px;
+    padding: 0.15rem 0.55rem;
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
   }
 
   .benefit-grid {
@@ -214,36 +304,89 @@ const projectsForHome = (featuredRealProjects.length > 0 ? featuredRealProjects 
     background: var(--surface);
     border: 1px solid var(--line);
     border-radius: var(--radius);
-    padding: 1rem;
+    padding: 1.2rem;
     box-shadow: var(--shadow);
   }
 
+  .benefit-index {
+    font-family: "Playfair Display", Georgia, serif;
+    font-size: 0.85rem;
+    color: var(--accent);
+    font-weight: 700;
+  }
+
   .benefit-card h3 {
-    margin-bottom: 0.5rem;
+    margin: 0.5rem 0 0.4rem;
   }
 
-  .cta-banner {
-    background: linear-gradient(145deg, #1f1c17 0%, #3f2b1d 100%);
-    color: #fff;
-    border-radius: calc(var(--radius) + 2px);
-    padding: 1.5rem;
+  .process-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
     display: grid;
-    gap: 0.8rem;
-    margin-top: 2rem;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.2rem;
   }
 
-  .cta-banner p {
-    color: #f3e6d8;
-    max-width: 720px;
+  .process-list li {
+    display: flex;
+    gap: 0.9rem;
+    align-items: flex-start;
   }
 
-  .cta-banner .cta-btn {
-    width: fit-content;
+  .process-num {
+    flex-shrink: 0;
+    width: 2.4rem;
+    height: 2.4rem;
+    border-radius: 50%;
+    background: var(--accent);
+    color: #fff;
+    display: grid;
+    place-items: center;
+    font-family: "Playfair Display", Georgia, serif;
+    font-weight: 700;
   }
 
-  @media (max-width: 860px) {
+  .process-list h3 {
+    font-size: 1.05rem;
+    margin-bottom: 0.3rem;
+  }
+
+  .more-link {
+    margin-top: 1rem;
+  }
+
+  @media (max-width: 900px) {
     .hero {
       grid-template-columns: 1fr;
+    }
+
+    .hero-media :global(img) {
+      height: 320px;
+    }
+
+    .bento-grid {
+      grid-template-columns: repeat(2, 1fr);
+      grid-auto-rows: 160px;
+    }
+
+    .bento-card.is-large {
+      grid-row: span 1;
+      height: 220px;
+    }
+
+    .process-list {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  @media (max-width: 560px) {
+    .bento-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .bento-card.is-large {
+      grid-column: span 1;
     }
   }
 </style>

@@ -1,0 +1,54 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import PageIntro from "../../components/PageIntro.astro";
+import Breadcrumbs from "../../components/Breadcrumbs.astro";
+import Img from "../../components/Img.astro";
+import pages from "../../data/pages.json";
+import { formatDate, getPosts } from "../../utils/catalog";
+
+const page = pages.blog;
+// Blogul gol nu se indexeaza (pagina subtire); devine indexabil automat la primul articol.
+const posts = await getPosts();
+---
+
+<BaseLayout title={page.seoTitle} description={page.seoDesc} canonicalPath="/blog/" noIndex={posts.length === 0} ogImage={posts[0]?.cover}>
+  <Breadcrumbs items={[{ label: "Blog", href: "/blog/" }]} />
+  <PageIntro title={page.title} lead={page.lead} />
+
+  {posts.length === 0 ? (
+    <section class="card empty-state">
+      <p>{page.emptyText}</p>
+    </section>
+  ) : (
+    <section class="card-grid">
+      {posts.map((post) => (
+        <article class="card post-card">
+          {post.cover && <a href={post.url} tabindex="-1" aria-hidden="true"><Img src={post.cover} alt={post.title} /></a>}
+          <div class="card-content">
+            <time class="chip" datetime={post.date.toISOString()}>{formatDate(post.date)}</time>
+            <h2><a href={post.url}>{post.title}</a></h2>
+            <p>{post.excerpt}</p>
+            <a class="link-arrow" href={post.url}>Citește articolul</a>
+          </div>
+        </article>
+      ))}
+    </section>
+  )}
+</BaseLayout>
+
+<style>
+  .empty-state {
+    padding: 1.4rem;
+  }
+
+  .post-card :global(img) {
+    width: 100%;
+    height: 220px;
+    object-fit: cover;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .post-card h2 {
+    font-size: 1.2rem;
+  }
+</style>

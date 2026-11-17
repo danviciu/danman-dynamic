@@ -1,0 +1,37 @@
+---
+interface Props {
+  title: string;
+  text?: string;
+  label: string;
+  href: string;
+}
+
+const { title, text, label, href } = Astro.props;
+---
+
+<section class="cta-banner">
+  <h2>{title}</h2>
+  {text && <p>{text}</p>}
+  <a class="cta-btn" href={href}>{label}</a>
+</section>
+
+<style>
+  .cta-banner {
+    background: linear-gradient(145deg, #1f1c17 0%, #3f2b1d 100%);
+    color: #fff;
+    border-radius: calc(var(--radius) + 2px);
+    padding: 2rem;
+    display: grid;
+    gap: 0.8rem;
+    margin-top: 2.4rem;
+  }
+
+  .cta-banner p {
+    color: #f3e6d8;
+    max-width: 720px;
+  }
+
+  .cta-banner .cta-btn {
+    width: fit-content;
+  }
+</style>

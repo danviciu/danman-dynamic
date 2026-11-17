@@ -1,0 +1,234 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import PageIntro from "../../components/PageIntro.astro";
+import ProductCard from "../../components/ProductCard.astro";
+import Breadcrumbs from "../../components/Breadcrumbs.astro";
+import pages from "../../data/pages.json";
+import site from "../../data/site.json";
+import { getActiveCategories, getProducts } from "../../utils/catalog";
+
+const page = pages.products;
+const [products, categories] = await Promise.all([getProducts(), getActiveCategories()]);
+---
+
+<BaseLayout title={page.seoTitle} description={page.seoDesc} canonicalPath="/produse/" ogImage={categories[0]?.cover}>
+  <Breadcrumbs items={[{ label: "Produse", href: "/produse/" }]} />
+  <PageIntro title={page.title} lead={page.lead} />
+
+  <div class="produse-layout">
+    <aside class="sidebar">
+      <h2 class="sidebar-title">Categorii</h2>
+      <nav class="category-nav" id="categoryFilters" aria-label="Categorii de produse">
+        <a href="/produse/" class="active" data-category="toate">
+          <span class="material-icons-outlined" aria-hidden="true">grid_view</span>
+          <span>Toate</span>
+          <span class="count">{products.length}</span>
+        </a>
+        {categories.map((category) => (
+          <a href={category.url} data-category={category.slug}>
+            <span class="material-icons-outlined" aria-hidden="true">{category.icon || "category"}</span>
+            <span>{category.name}</span>
+            <span class="count">{category.products.length}</span>
+          </a>
+        ))}
+      </nav>
+
+      <div class="sidebar-cta">
+        <p class="sidebar-cta-title">{page.sidebarTitle}</p>
+        <p class="sidebar-cta-text">{page.sidebarText}</p>
+        <a class="cta-btn" href={site.ctaHref}>{page.sidebarLabel}</a>
+      </div>
+    </aside>
+
+    <div class="main-col">
+      <div class="search-row">
+        <label for="searchInput">Caută produse</label>
+        <input id="searchInput" type="search" placeholder={page.searchPlaceholder} autocomplete="off" />
+      </div>
+      <p class="result-line" aria-live="polite">Rezultate: <strong id="resultCount">{products.length}</strong></p>
+
+      <section class="card-grid" id="productsGrid" aria-label="Lista de produse">
+        {products.map((product) => <ProductCard product={product} filterable />)}
+      </section>
+      <p class="empty-note" id="emptyNote" hidden>Niciun produs nu corespunde căutării. <a href={site.ctaHref}>Cere o ofertă personalizată.</a></p>
+    </div>
+  </div>
+</BaseLayout>
+
+<script>
+  // Filtrare rapida pe client. Linkurile de categorie duc la pagini statice indexabile,
+  // dar cand JS e disponibil filtram instant, fara reincarcare.
+  const searchInput = document.getElementById("searchInput") as HTMLInputElement | null;
+  const filters = document.getElementById("categoryFilters");
+  const grid = document.getElementById("productsGrid");
+  const resultCount = document.getElementById("resultCount");
+  const emptyNote = document.getElementById("emptyNote");
+  let activeCategory = "toate";
+
+  const normalize = (value: string) =>
+    value.toLocaleLowerCase("ro").normalize("NFD").replace(/[̀-ͯ]/g, "");
+
+  const applyFilters = () => {
+    if (!grid) return;
+    const query = normalize(searchInput?.value.trim() ?? "");
+    let visible = 0;
+    grid.querySelectorAll<HTMLElement>(".product-card").forEach((card) => {
+      const show =
+        (activeCategory === "toate" || card.dataset.category === activeCategory) &&
+        normalize(card.dataset.search ?? "").includes(query);
+      card.hidden = !show;
+      if (show) visible += 1;
+    });
+    if (resultCount) resultCount.textContent = String(visible);
+    if (emptyNote) emptyNote.hidden = visible > 0;
+  };
+
+  searchInput?.addEventListener("input", applyFilters);
+  filters?.addEventListener("click", (event) => {
+    const link = (event.target as Element).closest<HTMLAnchorElement>("a[data-category]");
+    if (!link || event.metaKey || event.ctrlKey) return;
+    event.preventDefault();
+    activeCategory = link.dataset.category ?? "toate";
+    filters.querySelectorAll("a").forEach((a) => a.classList.toggle("active", a === link));
+    applyFilters();
+  });
+</script>
+
+<style>
+  .produse-layout {
+    display: grid;
+    grid-template-columns: 250px 1fr;
+    gap: 2rem;
+    align-items: start;
+  }
+
+  .sidebar {
+    position: sticky;
+    top: 96px;
+    display: flex;
+    flex-direction: column;
+    gap: 1.6rem;
+  }
+
+  .sidebar-title {
+    font-size: 1rem;
+    border-bottom: 1px solid var(--line);
+    padding-bottom: 0.6rem;
+    margin-bottom: 0.9rem;
+  }
+
+  .category-nav {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+  }
+
+  .category-nav a {
+    display: flex;
+    align-items: center;
+    gap: 0.7rem;
+    padding: 0.5rem 0.7rem;
+    border-radius: var(--radius);
+    border: 1px solid transparent;
+    color: var(--muted);
+    font-size: 0.86rem;
+    font-weight: 600;
+    transition: background-color 140ms ease, color 140ms ease, border-color 140ms ease;
+  }
+
+  .category-nav .count {
+    margin-left: auto;
+    font-size: 0.75rem;
+    opacity: 0.75;
+  }
+
+  .category-nav .material-icons-outlined {
+    font-size: 1.2rem;
+  }
+
+  .category-nav a:hover {
+    border-color: var(--line);
+    color: var(--text);
+  }
+
+  .category-nav a.active {
+    background: var(--accent);
+    color: #fff;
+  }
+
+  .sidebar-cta {
+    background: var(--accent-soft);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    padding: 1.1rem;
+  }
+
+  .sidebar-cta-title {
+    font-weight: 700;
+    color: var(--text);
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 0.3rem;
+  }
+
+  .sidebar-cta-text {
+    font-size: 0.85rem;
+    margin-bottom: 0.9rem;
+  }
+
+  .sidebar-cta .cta-btn {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .search-row label {
+    display: block;
+    margin-bottom: 0.3rem;
+    font-weight: 700;
+    color: var(--text);
+  }
+
+  .search-row input {
+    width: min(420px, 100%);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    padding: 0.72rem 0.88rem;
+    font: inherit;
+    background: var(--surface);
+    color: var(--text);
+  }
+
+  .result-line {
+    font-size: 0.9rem;
+    margin: 0.8rem 0 1.2rem;
+  }
+
+  .empty-note {
+    margin-top: 1rem;
+  }
+
+  .empty-note a {
+    color: var(--accent);
+    font-weight: 700;
+  }
+
+  @media (max-width: 900px) {
+    .produse-layout {
+      grid-template-columns: 1fr;
+    }
+
+    .sidebar {
+      position: static;
+    }
+
+    .category-nav {
+      flex-direction: row;
+      flex-wrap: wrap;
+    }
+
+    .category-nav .count {
+      margin-left: 0.2rem;
+    }
+  }
+</style>

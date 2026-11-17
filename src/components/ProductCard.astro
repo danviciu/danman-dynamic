@@ -1,0 +1,85 @@
+---
+import Img from "./Img.astro";
+import type { ProductView } from "../utils/catalog";
+
+interface Props {
+  product: ProductView;
+  /** atribute pentru filtrarea client-side din /produse */
+  filterable?: boolean;
+  headingLevel?: "h2" | "h3";
+}
+
+const { product, filterable = false, headingLevel = "h2" } = Astro.props;
+const Heading = headingLevel;
+---
+
+<article
+  class="card product-card"
+  data-category={filterable ? product.category.slug : undefined}
+  data-search={filterable
+    ? `${product.title} ${product.category.name} ${product.shortDesc}`.toLocaleLowerCase("ro")
+    : undefined}
+>
+  <a class="product-card-media" href={product.url} tabindex="-1" aria-hidden="true">
+    <Img src={product.cover} alt={`${product.title} – ${product.category.name.toLowerCase()} din lemn`} sizes="(max-width: 700px) 100vw, (max-width: 1100px) 50vw, 300px" />
+  </a>
+  <div class="card-content">
+    <div class="product-card-top">
+      <div>
+        <a class="chip" href={`/produse/${product.category.slug}/`}>{product.category.name}</a>
+        <Heading class="product-card-title"><a href={product.url}>{product.title}</a></Heading>
+      </div>
+      <span class="price-tag">{product.priceLabel}</span>
+    </div>
+    <p>{product.shortDesc}</p>
+    <a class="link-arrow" href={product.url}>Vezi produsul</a>
+  </div>
+</article>
+
+<style>
+  .product-card {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .product-card[hidden] {
+    display: none;
+  }
+
+  .product-card-media {
+    display: block;
+    aspect-ratio: 4 / 5;
+    background: var(--bg);
+    border-bottom: 1px solid var(--line);
+  }
+
+  .product-card-media :global(img) {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+  }
+
+  .product-card-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 0.6rem;
+  }
+
+  .product-card-title {
+    font-size: 1.1rem;
+    margin-top: 0.35rem;
+  }
+
+  .product-card-title a:hover {
+    color: var(--accent);
+  }
+
+  .price-tag {
+    font-weight: 700;
+    color: var(--accent);
+    white-space: nowrap;
+    flex-shrink: 0;
+    font-size: 0.92rem;
+  }
+</style>

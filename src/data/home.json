@@ -1,0 +1,55 @@
+{
+  "seoTitle": "DanMan | Tâmplărie și mobilier din lemn masiv la comandă, Brașov",
+  "seoDesc": "Atelier de tâmplărie din Săcele, Brașov: paturi, mese, scări, uși, bucătării și structuri din lemn masiv, lucrate manual, la comandă.",
+  "hero": {
+    "eyebrow": "Atelier de tâmplărie · Săcele, Brașov",
+    "title": "Mobilier din lemn masiv, lucrat manual, pentru casa ta.",
+    "lead": "Proiectăm și executăm mobilier și amenajări la comandă: paturi, scări, uși, bucătării și structuri din lemn masiv, adaptate exact spațiului și nevoilor tale.",
+    "image": "/img/scari/20251125_1230_Scar%C4%83%20Interioar%C4%83%20Elegant%C4%83_remix_01kax8wdwvemx8szvm5e37z4ds.webp",
+    "imageAlt": "Scară interioară din lemn masiv, executată de DanMan",
+    "primaryLabel": "Cere ofertă",
+    "primaryHref": "/contact",
+    "secondaryLabel": "Vezi toate categoriile",
+    "secondaryHref": "/produse"
+  },
+  "trust": [
+    { "value": "{categorii}", "label": "categorii de produse" },
+    { "value": "{proiecte}", "label": "proiecte prezentate" },
+    { "value": "Săcele", "label": "atelier propriu, Brașov" }
+  ],
+  "categories": {
+    "title": "Ce lucrăm",
+    "lead": "Fiecare categorie include piese pe care le executăm la comandă în atelierul nostru. Alege ce te interesează și cere o ofertă orientativă."
+  },
+  "benefits": {
+    "title": "De ce DanMan",
+    "lead": "Combinăm măsurători exacte, materiale de calitate și montaj propriu pentru rezultate durabile, clare ca buget și termen.",
+    "items": [
+      { "title": "Măsurători exacte", "text": "Fiecare proiect începe cu măsurători la fața locului și validarea funcțională a soluției." },
+      { "title": "Lemn masiv de calitate", "text": "Folosim lemn masiv uscat controlat și feronerie de calitate, pentru rezistență pe termen lung." },
+      { "title": "Montaj curat", "text": "Montăm noi ce construim, cu atenție la detalii și la protecția spațiului existent." }
+    ]
+  },
+  "process": {
+    "title": "Cum lucrăm",
+    "steps": [
+      { "title": "Consultare și măsurători", "text": "Discutăm proiectul, venim la fața locului și măsurăm exact spațiul disponibil." },
+      { "title": "Ofertă și confirmare", "text": "Primești o ofertă cu materiale, finisaje și termen de execuție." },
+      { "title": "Execuție și montaj", "text": "Piesa se lucrează în atelier, apoi o livrăm și o montăm." }
+    ]
+  },
+  "featured": {
+    "title": "Produse recomandate",
+    "lead": "Câteva dintre piesele cele mai cerute."
+  },
+  "projects": {
+    "title": "Proiecte recente",
+    "lead": "Lucrări livrate clienților noștri, cu accent pe ergonomie, finisaj și durabilitate."
+  },
+  "cta": {
+    "title": "Ai un proiect în minte?",
+    "text": "Trimite-ne o schiță, dimensiunile și ideea ta. Revenim cu recomandări și o estimare.",
+    "label": "Cere ofertă",
+    "href": "/contact"
+  }
+}

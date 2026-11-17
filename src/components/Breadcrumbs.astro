@@ -1,0 +1,49 @@
+---
+import JsonLd from "./JsonLd.astro";
+import { breadcrumbSchema, type Crumb } from "../utils/seo";
+
+interface Props {
+  items: Crumb[];
+}
+
+const crumbs: Crumb[] = [{ label: "Acasă", href: "/" }, ...Astro.props.items];
+---
+
+<nav class="breadcrumbs" aria-label="Breadcrumb">
+  <ol>
+    {crumbs.map((crumb, index) => (
+      <li>
+        {index < crumbs.length - 1 ? <a href={crumb.href}>{crumb.label}</a> : <span aria-current="page">{crumb.label}</span>}
+      </li>
+    ))}
+  </ol>
+</nav>
+<JsonLd data={breadcrumbSchema(crumbs)} />
+
+<style>
+  .breadcrumbs ol {
+    list-style: none;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.35rem;
+    margin: 0 0 1.2rem;
+    padding: 0;
+    font-size: 0.85rem;
+    color: var(--muted);
+  }
+
+  .breadcrumbs li + li::before {
+    content: "/";
+    margin-right: 0.35rem;
+    opacity: 0.6;
+  }
+
+  .breadcrumbs a:hover {
+    color: var(--accent);
+  }
+
+  .breadcrumbs [aria-current] {
+    color: var(--text);
+    font-weight: 600;
+  }
+</style>

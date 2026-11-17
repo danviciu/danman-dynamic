@@ -16,14 +16,6 @@
   to = "/admin/index.html"
   status = 200
 
-[[redirects]]
-  from = "/.netlify/identity/confirm"
-  to = "/admin/"
-  status = 302
-  force = true
-
-[[redirects]]
-  from = "/.netlify/identity/*"
-  to = "/admin/"
-  status = 302
-  force = true
+# Nota: /.netlify/identity/* este rezervat de Netlify (rejectat de parser daca il
+# redefinim aici). Token-urile de confirmare/invitatie sunt deja redirectionate spre
+# /admin/ prin scriptul inline din BaseLayout.astro, pe baza hash-ului din URL.

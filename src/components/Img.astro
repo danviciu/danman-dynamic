@@ -1,0 +1,30 @@
+---
+import { responsiveImage } from "../utils/images";
+
+interface Props {
+  src: string | undefined;
+  alt: string;
+  sizes?: string;
+  class?: string;
+  /** "eager" + priority pentru imaginea principala a paginii (LCP). */
+  priority?: boolean;
+  id?: string;
+}
+
+const { src, alt, sizes = "(max-width: 700px) 100vw, 33vw", class: className, priority = false, id } = Astro.props;
+const image = responsiveImage(src);
+---
+
+<img
+  id={id}
+  class={className}
+  src={image.src}
+  srcset={image.srcset}
+  sizes={image.srcset ? sizes : undefined}
+  width={image.width}
+  height={image.height}
+  alt={alt}
+  loading={priority ? "eager" : "lazy"}
+  fetchpriority={priority ? "high" : undefined}
+  decoding="async"
+/>

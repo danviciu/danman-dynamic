@@ -1,135 +1,111 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
+import PageIntro from "../components/PageIntro.astro";
+import Breadcrumbs from "../components/Breadcrumbs.astro";
+import Img from "../components/Img.astro";
+import pages from "../data/pages.json";
 import site from "../data/site.json";
+import { addressText } from "../utils/seo";
 
-const phoneHref = `tel:${site.phone.replace(/\s+/g, "")}`;
-const whatsappHref = `https://wa.me/${site.phone.replace(/[^\d]/g, "")}`;
-const mapAddress = encodeURIComponent(site.address);
-const contactImages = [
-  {
-    src: "/img/marchize/20251125_1245_Intrare%20Cu%20Element%20Rustice_remix_01kax9pw5fe0yvgfmt9bam4z7q.webp",
-    alt: "Marchiza din lemn realizata la comanda",
-  },
-  {
-    src: "/img/scari/20251125_1230_Scar%C4%83%20Interioar%C4%83%20Elegant%C4%83_remix_01kax8wdwvemx8szvm5e37z4ds.webp",
-    alt: "Scara interioara din lemn",
-  },
-  {
-    src: "/img/paturi/20251124_0812_Pat%20din%20Lemn_remix_01kat7qvzmfqxvt38b39mq7rj9.webp",
-    alt: "Pat din lemn masiv",
-  },
-];
+const page = pages.contact;
+const phoneHref = `tel:${site.phone.replace(/[^\d+]/g, "")}`;
+const whatsappHref = `https://wa.me/${(site.whatsapp || site.phone).replace(/[^\d]/g, "")}`;
+const address = addressText();
+const mapSrc = `https://www.google.com/maps?q=${encodeURIComponent(address)}&output=embed`;
+const [firstImage, ...otherImages] = page.images;
 ---
 
-<BaseLayout
-  title="Contact | DanMan"
-  description="Cere oferta pentru mobilier la comanda. Contact direct DanMan pe WhatsApp, email sau telefon."
-  canonicalPath="/contact"
-  ogImage={contactImages[0].src}
->
-  <section class="contact-head">
-    <h1 class="section-title">Contact</h1>
-    <p class="section-lead">
-      Spune-ne pe scurt ce ai nevoie si iti raspundem cu o estimare orientativa, timp de executie si
-      recomandari de materiale.
-    </p>
-  </section>
+<BaseLayout title={page.seoTitle} description={page.seoDesc} canonicalPath="/contact/" ogImage={firstImage?.image}>
+  <Breadcrumbs items={[{ label: "Contact", href: "/contact/" }]} />
+  <PageIntro title={page.title} lead={page.lead} />
 
   <section class="contact-grid">
-    <article class="card contact-card">
+    <article class="card">
       <div class="card-content">
-        <h2>Trimite detalii proiect</h2>
-        <form
-          id="contactForm"
-          name="contact"
-          method="POST"
-          action="/contact?trimis=1"
-          data-netlify="true"
-          netlify-honeypot="bot-field"
-        >
+        <h2>{page.formTitle}</h2>
+        <form id="contactForm" name="contact" method="POST" action="/contact/?trimis=1" data-netlify="true" netlify-honeypot="bot-field">
           <input type="hidden" name="form-name" value="contact" />
-          <p class="honeypot-field">
-            <label for="bot-field">Nu completa acest camp.</label>
-            <input id="bot-field" name="bot-field" type="text" tabindex="-1" autocomplete="off" />
+          <input type="hidden" name="subiect" id="subject" value="" />
+          <p class="honeypot-field" aria-hidden="true">
+            <label>Nu completa acest câmp: <input name="bot-field" tabindex="-1" autocomplete="off" /></label>
           </p>
 
           <label for="name">Nume</label>
-          <input id="name" name="name" type="text" required />
+          <input id="name" name="name" type="text" autocomplete="name" maxlength="120" required />
 
           <label for="email">Email</label>
-          <input id="email" name="email" type="email" required />
+          <input id="email" name="email" type="email" autocomplete="email" maxlength="160" required />
 
           <label for="phone">Telefon</label>
-          <input id="phone" name="phone" type="tel" />
+          <input id="phone" name="phone" type="tel" autocomplete="tel" maxlength="30" />
 
           <label for="message">Mesaj</label>
-          <textarea
-            id="message"
-            name="message"
-            rows="5"
-            placeholder="Dimensiuni, material preferat, termen..."
-            required
-          ></textarea>
+          <textarea id="message" name="message" rows="6" maxlength="4000" placeholder={page.messagePlaceholder} required></textarea>
 
-          <button class="cta-btn" type="submit">Trimite solicitarea</button>
-          <p id="formStatus" class="form-status" aria-live="polite"></p>
+          <p class="privacy-note">{page.privacyNote}</p>
+          <button class="cta-btn" type="submit">{page.submitLabel}</button>
+          <p id="formStatus" class="form-status" role="status" aria-live="polite" data-success={page.successMessage}></p>
         </form>
       </div>
     </article>
 
-    <article class="card contact-card">
+    <article class="card">
       <div class="card-content">
-        <img class="contact-photo" src={contactImages[0].src} alt={contactImages[0].alt} loading="lazy" />
-        <h2>Canale rapide</h2>
-        <a class="quick-link" href={whatsappHref} target="_blank" rel="noopener noreferrer">WhatsApp</a>
-        <a class="quick-link" href={`mailto:${site.email}`}>Email: {site.email}</a>
+        {firstImage && <Img class="contact-photo" src={firstImage.image} alt={firstImage.alt} sizes="(max-width: 860px) 100vw, 420px" />}
+        <h2>{page.quickTitle}</h2>
+        <a class="quick-link" href={whatsappHref} target="_blank" rel="noopener noreferrer">WhatsApp: {site.phone}</a>
         <a class="quick-link" href={phoneHref}>Telefon: {site.phone}</a>
-        <p>Adresa atelier: {site.address}</p>
-        <p><strong>Program:</strong> Luni - Vineri, 09:00 - 18:00</p>
-        <p><strong>Timp de raspuns:</strong> in medie 2-6 ore in zilele lucratoare.</p>
+        <a class="quick-link" href={`mailto:${site.email}`}>Email: {site.email}</a>
+        <p><strong>Atelier:</strong> {address}</p>
+        <p><strong>Program:</strong> {site.openingHoursText}</p>
+        <p><strong>Timp de răspuns:</strong> {site.responseTime}</p>
       </div>
     </article>
   </section>
 
-  <section class="contact-gallery">
-    {contactImages.map((item) => (
-      <article class="card gallery-card">
-        <img src={item.src} alt={item.alt} loading="lazy" />
-      </article>
-    ))}
-  </section>
+  {otherImages.length > 0 && (
+    <section class="contact-gallery" aria-label="Lucrări realizate">
+      {otherImages.map((item) => (
+        <figure class="card gallery-card">
+          <Img src={item.image} alt={item.alt} sizes="(max-width: 700px) 100vw, 400px" />
+        </figure>
+      ))}
+    </section>
+  )}
 
   <section class="map-wrap">
-    <iframe
-      title="Harta locatie DanMan"
-      src={`https://www.google.com/maps?q=${mapAddress}&output=embed`}
-      loading="lazy"
-      referrerpolicy="no-referrer-when-downgrade"
-    ></iframe>
+    <iframe title={`Hartă: ${address}`} src={mapSrc} loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
   </section>
 </BaseLayout>
 
 <script>
-  const formStatus = document.getElementById("formStatus");
+  const params = new URLSearchParams(window.location.search);
+  const status = document.getElementById("formStatus");
+  const message = document.getElementById("message") as HTMLTextAreaElement | null;
+  const subject = document.getElementById("subject") as HTMLInputElement | null;
 
-  if (formStatus) {
-    const params = new URLSearchParams(window.location.search);
-    if (params.get("trimis") === "1") {
-      formStatus.textContent = "Multumim! Mesajul a fost trimis. Revenim in cel mai scurt timp.";
-      formStatus.classList.add("is-success");
+  // Mesaj de confirmare dupa trimiterea formularului (Netlify Forms)
+  if (status && params.get("trimis") === "1") {
+    status.textContent = status.dataset.success ?? "";
+    status.classList.add("is-success");
+    params.delete("trimis");
+  }
 
-      const cleanUrl = new URL(window.location.href);
-      cleanUrl.searchParams.delete("trimis");
-      window.history.replaceState({}, "", `${cleanUrl.pathname}${cleanUrl.search}${cleanUrl.hash}`);
-    }
+  // Precompletare din linkurile "Cere ofertă" de pe produse/categorii/proiecte
+  const topic = params.get("produs") || params.get("categorie") || params.get("proiect");
+  if (topic) {
+    const clean = topic.slice(0, 120);
+    if (subject) subject.value = clean;
+    if (message && !message.value) message.value = `Bună ziua, aș dori o ofertă pentru: ${clean}.\n\n`;
+  }
+
+  if (window.location.search && params.toString() !== window.location.search.slice(1)) {
+    const query = params.toString();
+    window.history.replaceState({}, "", `${window.location.pathname}${query ? `?${query}` : ""}`);
   }
 </script>
 
 <style>
-  .contact-head {
-    margin-bottom: 1.2rem;
-  }
-
   .contact-grid {
     display: grid;
     grid-template-columns: 1.3fr 1fr;
@@ -137,14 +113,11 @@ const contactImages = [
     margin-bottom: 1rem;
   }
 
-  .contact-card {
-    overflow: hidden;
-  }
-
-  .contact-photo {
+  .contact-grid :global(.contact-photo) {
     width: 100%;
     height: 190px;
-    object-fit: cover;
+    object-fit: contain;
+    background: var(--bg);
     border-radius: 12px;
     border: 1px solid var(--line);
     margin-bottom: 0.6rem;
@@ -157,7 +130,7 @@ const contactImages = [
 
   label {
     font-weight: 700;
-    color: #5e4a33;
+    color: var(--text);
   }
 
   input,
@@ -166,7 +139,7 @@ const contactImages = [
     border-radius: 12px;
     padding: 0.7rem 0.8rem;
     font: inherit;
-    background: #fff;
+    background: var(--surface);
     color: var(--text);
   }
 
@@ -174,14 +147,18 @@ const contactImages = [
     resize: vertical;
   }
 
+  .privacy-note {
+    font-size: 0.82rem;
+  }
+
   .form-status {
     min-height: 1.6rem;
     font-size: 0.94rem;
-    color: #4f483f;
   }
 
   .form-status.is-success {
     color: #2f6b32;
+    font-weight: 700;
   }
 
   .honeypot-field {
@@ -195,9 +172,26 @@ const contactImages = [
   .quick-link {
     display: inline-flex;
     width: fit-content;
-    margin-bottom: 0.4rem;
-    color: var(--accent-dark);
+    color: var(--accent);
     font-weight: 700;
+  }
+
+  .contact-gallery {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 0.8rem;
+    margin: 0 0 1rem;
+  }
+
+  .gallery-card {
+    margin: 0;
+  }
+
+  .gallery-card :global(img) {
+    width: 100%;
+    height: 190px;
+    object-fit: contain;
+    background: var(--bg);
   }
 
   .map-wrap iframe {
@@ -205,24 +199,6 @@ const contactImages = [
     min-height: 310px;
     border: 1px solid var(--line);
     border-radius: var(--radius);
-  }
-
-  .contact-gallery {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-    gap: 0.8rem;
-    margin-bottom: 1rem;
-  }
-
-  .gallery-card {
-    overflow: hidden;
-  }
-
-  .gallery-card img {
-    width: 100%;
-    height: 190px;
-    object-fit: cover;
-    display: block;
   }
 
   @media (max-width: 860px) {

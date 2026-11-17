@@ -1,68 +1,52 @@
 ---
-import { readdirSync } from "node:fs";
-import { resolve } from "node:path";
+import "../styles/global.css";
+import JsonLd from "../components/JsonLd.astro";
 import site from "../data/site.json";
+import { absoluteImageUrl, toUrlPath } from "../utils/images";
+import { addressText, businessSchema } from "../utils/seo";
 
 interface Props {
   title?: string;
   description?: string;
   canonicalPath?: string;
   ogImage?: string;
+  ogType?: "website" | "article" | "product";
   noIndex?: boolean;
 }
 
 const {
-  title = `${site.brandName} | Mobilier la comanda`,
-  description = "Mobilier si proiecte din lemn masiv, realizate la comanda de DanMan.",
+  title = site.seo.defaultTitle,
+  description = site.seo.defaultDescription,
   canonicalPath = Astro.url.pathname,
-  ogImage = "/img/IMG_20250914_202642.webp",
+  ogImage = site.seo.ogImage,
+  ogType = "website",
   noIndex = false,
 } = Astro.props;
 
-const canonical = new URL(canonicalPath, site.domain).toString();
+// Toate URL-urile canonice au slash final (la fel ca sitemap-ul si Netlify).
+const normalizedPath = canonicalPath.endsWith("/") ? canonicalPath : `${canonicalPath}/`;
+const canonical = new URL(normalizedPath, site.domain).toString();
 const pathname = Astro.url.pathname;
-const socialEntries = Object.entries(site.social ?? {}).filter(([, url]) => Boolean(url));
-const phoneHref = `tel:${site.phone.replace(/\s+/g, "")}`;
+const ogImageUrl = absoluteImageUrl(ogImage, site.domain);
+const logoUrl = toUrlPath(site.logo);
+const phoneHref = `tel:${site.phone.replace(/[^\d+]/g, "")}`;
+const isActive = (href: string) =>
+  href === "/" ? pathname === "/" : pathname.startsWith(href.replace(/\/$/, ""));
 
-let logoPath = "/favicon.svg";
-
-try {
-  const imgDir = resolve(process.cwd(), "public", "img");
-  const allFiles = readdirSync(imgDir, { withFileTypes: true }).filter((entry) => entry.isFile());
-  const logoFiles = allFiles
-    .map((entry) => entry.name)
-    .filter((fileName) => /^logo-/i.test(fileName) && /\.(png|jpe?g|webp|avif|svg)$/i.test(fileName))
-    .sort((a, b) => a.localeCompare(b, "ro", { sensitivity: "base" }));
-
-  if (logoFiles.length > 0) {
-    logoPath = `/img/${encodeURIComponent(logoFiles[0])}`;
-  } else if (allFiles.some((entry) => entry.name.toLowerCase() === "placeholder.png")) {
-    logoPath = "/img/placeholder.png";
-  }
-} catch {
-  logoPath = "/favicon.svg";
-}
-
-const ogImagePath = ogImage.startsWith("/") ? ogImage : logoPath;
-const ogImageUrl = new URL(ogImagePath, site.domain).toString();
-const isActive = (href: string) => (href === "/" ? pathname === "/" : pathname.startsWith(href));
-
-const localBusinessSchema = {
-  "@context": "https://schema.org",
-  "@type": "LocalBusiness",
-  name: site.brandName,
-  url: site.domain,
-  telephone: site.phone,
-  email: site.email,
-  address: {
-    "@type": "PostalAddress",
-    streetAddress: "Oituz 29",
-    addressLocality: "Sacele",
-    addressRegion: "Brasov",
-    addressCountry: "RO",
-  },
-  sameAs: socialEntries.map(([, url]) => url),
-};
+// CSP pentru site-ul public (adminul are politica lui, vezi public/_headers).
+const csp = [
+  "default-src 'self'",
+  "script-src 'self' 'unsafe-inline'",
+  "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
+  "font-src 'self' https://fonts.gstatic.com",
+  "img-src 'self' data: https:",
+  "frame-src https://www.google.com https://maps.google.com",
+  "connect-src 'self'",
+  "object-src 'none'",
+  "base-uri 'self'",
+  "form-action 'self'",
+  "upgrade-insecure-requests",
+].join("; ");
 ---
 
 <!doctype html>
@@ -70,337 +54,168 @@ const localBusinessSchema = {
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="description" content={description} />
-    {noIndex && <meta name="robots" content="noindex,nofollow" />}
-
+    <meta http-equiv="Content-Security-Policy" content={csp} />
     <title>{title}</title>
+    <meta name="description" content={description} />
+    <meta name="robots" content={noIndex ? "noindex,nofollow" : "index,follow,max-image-preview:large"} />
     <link rel="canonical" href={canonical} />
-    <link rel="icon" href={logoPath} />
-    <link rel="apple-touch-icon" href={logoPath} />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="icon" href="/favicon.ico" sizes="any" />
+    <link rel="apple-touch-icon" href={logoUrl} />
+    <link rel="sitemap" href="/sitemap-index.xml" />
+    <meta name="theme-color" content="#8b5e3c" />
 
-    <meta property="og:type" content="website" />
+    <meta property="og:type" content={ogType} />
+    <meta property="og:locale" content="ro_RO" />
     <meta property="og:site_name" content={site.brandName} />
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
     <meta property="og:url" content={canonical} />
     <meta property="og:image" content={ogImageUrl} />
-
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content={title} />
     <meta name="twitter:description" content={description} />
     <meta name="twitter:image" content={ogImageUrl} />
 
-    <script is:inline src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
-    <script type="application/ld+json" set:html={JSON.stringify(localBusinessSchema)} />
-    <script is:inline>
-      (function () {
-        const h = window.location.hash || "";
-        const hasIdentityToken =
-          h.includes("invite_token=") ||
-          h.includes("confirmation_token=") ||
-          h.includes("recovery_token=") ||
-          h.includes("email_change_token=");
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400..800&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Material+Icons+Outlined&display=swap"
+    />
 
-        // Daca tokenul ajunge pe alta pagina, il redirectionam spre /admin/.
-        if (hasIdentityToken && !window.location.pathname.startsWith("/admin")) {
+    <JsonLd data={businessSchema()} />
+
+    <script is:inline>
+      // Token-urile Netlify Identity (invitatie/confirmare/resetare parola) ajung uneori
+      // pe alte pagini; le trimitem catre /admin/ unde sunt procesate.
+      (function () {
+        var h = window.location.hash || "";
+        if (/(invite|confirmation|recovery|email_change)_token=/.test(h) && window.location.pathname.indexOf("/admin") !== 0) {
           window.location.replace("/admin/" + h);
         }
+        try {
+          var stored = localStorage.getItem("danman-theme");
+          var dark = stored ? stored === "dark" : window.matchMedia("(prefers-color-scheme: dark)").matches;
+          document.documentElement.classList.toggle("dark", dark);
+        } catch (e) {}
       })();
     </script>
     <slot name="head" />
   </head>
 
   <body>
+    <a class="skip-link" href="#continut">Sari la conținut</a>
     <header class="site-header">
       <div class="container nav-row">
-        <a class="brand" href="/">
-          <img src={logoPath} alt={`${site.brandName} logo`} />
-          <span>{site.brandName}</span>
+        <a class="brand" href="/" aria-label={`${site.brandName} – pagina principală`}>
+          <span class="brand-mark" aria-hidden="true">{site.brandShort.charAt(0)}</span>
+          <span class="brand-text">
+            <span class="brand-name">{site.brandShort}</span>
+            <span class="brand-sub">{site.brandTagline}</span>
+          </span>
         </a>
-        <nav class="nav" aria-label="Navigatie principala">
-          <a class={isActive("/") ? "active" : ""} href="/">Acasa</a>
-          <a class={isActive("/produse") ? "active" : ""} href="/produse">Produse</a>
-          <a class={isActive("/proiecte") ? "active" : ""} href="/proiecte">Proiecte</a>
-          <a class={isActive("/contact") ? "active" : ""} href="/contact">Contact</a>
+
+        <button class="menu-toggle" id="menuToggle" type="button" aria-label="Deschide meniul" aria-expanded="false" aria-controls="mainNav">
+          <span class="material-icons-outlined" aria-hidden="true">menu</span>
+        </button>
+
+        <nav class="nav" id="mainNav" aria-label="Navigație principală">
+          {site.nav.map((item) => (
+            <a class={isActive(item.href) ? "active" : undefined} href={item.href} aria-current={isActive(item.href) ? "page" : undefined}>
+              {item.label}
+            </a>
+          ))}
         </nav>
-        <a id="admin-link" class="nav-admin" href="/admin/">Admin</a>
-        <a class="cta-btn" href="/contact">Cere oferta</a>
+
+        <div class="header-actions">
+          <button class="theme-toggle" id="themeToggle" type="button" aria-label="Comută tema luminoasă/întunecată">
+            <span class="material-icons-outlined icon-dark" aria-hidden="true">dark_mode</span>
+            <span class="material-icons-outlined icon-light" aria-hidden="true">light_mode</span>
+          </button>
+          <a class="cta-btn" href={site.ctaHref}>{site.ctaLabel}</a>
+        </div>
       </div>
     </header>
 
-    <main class="container main-content">
+    <main class="container main-content" id="continut">
       <slot />
     </main>
 
     <footer class="site-footer">
       <div class="container footer-grid">
         <div>
-          <h3>{site.brandName}</h3>
-          <p>{site.address}</p>
+          <a class="brand" href="/">
+            <span class="brand-mark" aria-hidden="true">{site.brandShort.charAt(0)}</span>
+            <span class="brand-text">
+              <span class="brand-name">{site.brandShort}</span>
+              <span class="brand-sub">{site.brandTagline}</span>
+            </span>
+          </a>
+          <p class="footer-about">{site.footerText}</p>
+          <address class="footer-about">{addressText()}</address>
         </div>
         <div>
-          <h4>Contact</h4>
+          <h2 class="footer-heading">Contact</h2>
           <a href={phoneHref}>{site.phone}</a>
           <a href={`mailto:${site.email}`}>{site.email}</a>
+          <span class="footer-muted">{site.openingHoursText}</span>
         </div>
         <div>
-          <h4>Social</h4>
-          {socialEntries.map(([name, url]) => (
-            <a href={url} target="_blank" rel="noopener noreferrer">{name}</a>
+          <h2 class="footer-heading">Social</h2>
+          {site.social.map((item) => (
+            <a href={item.url} target="_blank" rel="noopener noreferrer">{item.name}</a>
           ))}
         </div>
       </div>
+      <p class="container footer-copy">© {new Date().getFullYear()} {site.brandName}</p>
     </footer>
 
-    <script is:inline>
-      (function () {
-        if (typeof window === "undefined") return;
-        function initIdentity() {
-          var identity = window.netlifyIdentity;
-          if (!identity || typeof identity.on !== "function") return;
-          if (typeof identity.init === "function") identity.init();
-          identity.on("init", function (user) {
-            if (!user) {
-              identity.on("login", function () {
-                window.location.href = "/admin/";
-              });
-            }
-          });
+    <script>
+      const themeToggle = document.getElementById("themeToggle");
+      themeToggle?.addEventListener("click", () => {
+        const isDark = document.documentElement.classList.toggle("dark");
+        try {
+          localStorage.setItem("danman-theme", isDark ? "dark" : "light");
+        } catch {
+          /* stocare indisponibila (mod privat) */
         }
-        initIdentity();
-      })();
-    </script>
+      });
 
-    <script is:inline>
-      (function () {
-        if (typeof window === "undefined") return;
-        var adminLink = document.getElementById("admin-link");
-        if (!adminLink) return;
-        adminLink.addEventListener("click", function (e) {
-          var identity = window.netlifyIdentity;
-          if (identity && typeof identity.open === "function") {
-            e.preventDefault();
-            identity.open();
-          }
-        });
-      })();
+      const menuToggle = document.getElementById("menuToggle");
+      const mainNav = document.getElementById("mainNav");
+      menuToggle?.addEventListener("click", () => {
+        const isOpen = mainNav?.classList.toggle("open") ?? false;
+        menuToggle.setAttribute("aria-expanded", String(isOpen));
+      });
     </script>
   </body>
 </html>
 
-<style is:global>
-  @import url("https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,700&family=Manrope:wght@400;500;600;700&display=swap");
-
-  :root {
-    --bg: #f2eee6;
-    --surface: #fffdf9;
-    --text: #1f1b16;
-    --muted: #5e544a;
-    --line: #dbcbb5;
-    --accent: #7e5432;
-    --accent-2: #57381f;
-    --radius: 16px;
-    --shadow: 0 16px 34px rgba(34, 25, 16, 0.1);
-  }
-
-  * {
-    box-sizing: border-box;
-  }
-
-  html,
-  body {
-    margin: 0;
-    padding: 0;
-  }
-
-  body {
-    font-family: "Manrope", "Segoe UI", sans-serif;
-    background: radial-gradient(circle at top, #faf6ee 0%, var(--bg) 44%, #ece4d7 100%);
-    color: var(--text);
-    line-height: 1.6;
-  }
-
-  h1,
-  h2,
-  h3,
-  h4 {
-    margin: 0;
-    font-family: "Fraunces", Georgia, serif;
-    line-height: 1.2;
-  }
-
-  p {
-    margin: 0;
-    color: var(--muted);
-  }
-
-  a {
-    color: inherit;
-    text-decoration: none;
-  }
-
-  img {
-    display: block;
-    max-width: 100%;
-  }
-
-  .container {
-    width: min(1150px, 92vw);
-    margin: 0 auto;
-  }
-
-  .site-header {
-    position: sticky;
-    top: 0;
-    z-index: 20;
-    background: color-mix(in srgb, var(--surface) 88%, transparent);
-    backdrop-filter: blur(10px);
-    border-bottom: 1px solid var(--line);
-  }
-
-  .nav-row {
-    min-height: 72px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 1rem;
-  }
-
-  .brand {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.7rem;
-    font-weight: 700;
-    font-size: 1.05rem;
-  }
-
-  .brand img {
-    width: 40px;
-    height: 40px;
-    border-radius: 10px;
-    object-fit: cover;
-    border: 1px solid var(--line);
-    background: #fff;
-  }
-
-  .nav {
-    display: flex;
-    gap: 0.9rem;
-    flex-wrap: wrap;
-    justify-content: center;
-  }
-
-  .nav a {
-    color: var(--muted);
-    font-weight: 600;
-    padding: 0.3rem 0.45rem;
-    border-bottom: 2px solid transparent;
-  }
-
-  .nav a.active,
-  .nav a:hover {
-    color: var(--text);
-    border-bottom-color: var(--accent);
-  }
-
-  .cta-btn {
-    display: inline-flex;
-    background: var(--accent);
-    color: #fff;
-    border-radius: 999px;
-    padding: 0.62rem 0.95rem;
-    font-weight: 700;
-    transition: background-color 160ms ease;
-  }
-
-  .cta-btn:hover {
-    background: var(--accent-2);
-  }
-
-  .main-content {
-    padding: 2.4rem 0 4rem;
-  }
-
-  .site-footer {
-    border-top: 1px solid var(--line);
-    background: color-mix(in srgb, var(--surface) 92%, transparent);
-    padding: 2rem 0;
-  }
-
-  .footer-grid {
-    display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 1rem;
-  }
-
-  .footer-grid h3,
-  .footer-grid h4 {
-    margin-bottom: 0.45rem;
-  }
-
-  .footer-grid a {
-    display: block;
-    color: var(--muted);
-  }
-
-  .section-title {
-    font-size: clamp(1.7rem, 3vw, 2.35rem);
+<style>
+  .footer-heading {
     margin-bottom: 0.6rem;
+    font-family: "Plus Jakarta Sans", sans-serif;
+    text-transform: uppercase;
+    font-size: 0.75rem;
+    letter-spacing: 0.1em;
+    color: var(--text);
   }
 
-  .section-lead {
-    max-width: 760px;
-    margin-bottom: 1.2rem;
+  address {
+    font-style: normal;
+    margin-top: 0.5rem;
   }
 
-  .card-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-    gap: 1rem;
+  .footer-muted {
+    display: block;
+    color: var(--muted);
+    padding: 0.15rem 0;
   }
 
-  .card {
-    background: var(--surface);
-    border: 1px solid var(--line);
-    border-radius: var(--radius);
-    box-shadow: var(--shadow);
-    overflow: hidden;
-  }
-
-  .card-content {
-    padding: 1rem;
-    display: grid;
-    gap: 0.55rem;
-  }
-
-  .chip {
-    display: inline-block;
-    width: fit-content;
-    border: 1px solid var(--line);
-    border-radius: 999px;
-    padding: 0.2rem 0.58rem;
-    font-size: 0.78rem;
-    font-weight: 700;
-    color: var(--accent-2);
-    background: #f9f2e8;
-  }
-
-  .link-arrow {
-    color: var(--accent-2);
-    font-weight: 700;
-  }
-
-  @media (max-width: 920px) {
-    .nav-row {
-      padding: 0.55rem 0;
-      min-height: auto;
-      flex-wrap: wrap;
-      justify-content: center;
-    }
-
-    .footer-grid {
-      grid-template-columns: 1fr;
-    }
+  .footer-copy {
+    margin-top: 1.6rem;
+    font-size: 0.8rem;
+    color: var(--muted);
   }
 </style>
-

@@ -10,6 +10,7 @@ dist/
 
 # logs
 *.log
+*.pid
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
@@ -29,3 +30,6 @@ pnpm-debug.log*
 # OS files
 .DS_Store
 Thumbs.db
+
+# imagini optimizate generate la build (scripts/optimize-images.mjs)
+public/img-opt/

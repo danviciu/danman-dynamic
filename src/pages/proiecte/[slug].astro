@@ -1,0 +1,103 @@
+---
+import type { GetStaticPaths } from "astro";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import Gallery from "../../components/Gallery.astro";
+import Breadcrumbs from "../../components/Breadcrumbs.astro";
+import ProductCard from "../../components/ProductCard.astro";
+import CtaBanner from "../../components/CtaBanner.astro";
+import JsonLd from "../../components/JsonLd.astro";
+import pages from "../../data/pages.json";
+import site from "../../data/site.json";
+import { getProducts, getProjects, paragraphs } from "../../utils/catalog";
+import { absoluteImageUrl } from "../../utils/images";
+import { absoluteUrl } from "../../utils/seo";
+
+export const getStaticPaths = (async () => {
+  const projects = await getProjects();
+  return projects.map((project) => ({ params: { slug: project.slug }, props: { project } }));
+}) satisfies GetStaticPaths;
+
+const { project } = Astro.props;
+const data = project.entry.data;
+const products = (await getProducts()).filter(
+  (p) => project.productSlugs.includes(p.slug) || (project.productSlugs.length === 0 && p.category.slug === project.category?.slug),
+).slice(0, 3);
+
+const title = data.seoTitle || `${project.title}${site.seo.titleSuffix}`;
+const description = (data.seoDesc || project.summary).slice(0, 160);
+const meta = [project.category?.name, project.location, project.year].filter(Boolean).join(" · ");
+
+const schema = {
+  "@context": "https://schema.org",
+  "@type": "CreativeWork",
+  name: project.title,
+  description: project.summary,
+  url: absoluteUrl(project.url),
+  image: project.images.map((image) => absoluteImageUrl(image, site.domain)),
+  creator: { "@id": `${site.domain}/#business` },
+  ...(project.year ? { dateCreated: String(project.year) } : {}),
+  ...(project.location ? { locationCreated: { "@type": "Place", name: project.location } } : {}),
+};
+---
+
+<BaseLayout title={title} description={description} canonicalPath={project.url} ogImage={project.cover} ogType="article">
+  <JsonLd slot="head" data={schema} />
+  <Breadcrumbs items={[{ label: "Proiecte", href: "/proiecte/" }, { label: project.title, href: project.url }]} />
+
+  <article class="project-layout">
+    <Gallery images={project.images} title={project.title} />
+    <section class="card">
+      <div class="card-content">
+        {meta && <p class="chip">{meta}</p>}
+        <h1>{project.title}</h1>
+        <div class="prose">
+          {paragraphs(project.story).map((p) => <p>{p}</p>)}
+        </div>
+        <a class="cta-btn" href={`${site.ctaHref}?proiect=${encodeURIComponent(project.title)}`}>{pages.projects.ctaLabel}</a>
+      </div>
+    </section>
+  </article>
+
+  {products.length > 0 && (
+    <section class="section-block related">
+      <h2 class="section-title">Produse asemănătoare</h2>
+      <div class="card-grid">{products.map((p) => <ProductCard product={p} headingLevel="h3" />)}</div>
+    </section>
+  )}
+
+  <p class="back"><a class="link-arrow" href="/proiecte/">← Toate proiectele</a></p>
+
+  <CtaBanner title={pages.projects.ctaLabel} label={site.ctaLabel} href={site.ctaHref} />
+</BaseLayout>
+
+<style>
+  .project-layout {
+    display: grid;
+    grid-template-columns: 1.2fr 1fr;
+    gap: 1rem;
+    align-items: start;
+  }
+
+  h1 {
+    font-size: clamp(1.7rem, 2.6vw, 2.3rem);
+  }
+
+  .card-content .cta-btn {
+    width: fit-content;
+    margin-top: 0.6rem;
+  }
+
+  .related {
+    margin-top: 3rem;
+  }
+
+  .back {
+    margin-top: 1.6rem;
+  }
+
+  @media (max-width: 920px) {
+    .project-layout {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

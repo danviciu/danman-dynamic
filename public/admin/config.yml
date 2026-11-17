@@ -1,52 +1,373 @@
+# Configurare Decap CMS pentru danman.ro
+# IMPORTANT: campurile trebuie sa ramana sincronizate cu src/content.config.ts si src/data/*.json.
+
 backend:
   name: git-gateway
   branch: main
+  commit_messages:
+    create: "Adăugat {{collection}} „{{slug}}”"
+    update: "Actualizat {{collection}} „{{slug}}”"
+    delete: "Șters {{collection}} „{{slug}}”"
+    uploadMedia: "Încărcat imagine „{{path}}”"
+    deleteMedia: "Șters imagine „{{path}}”"
 
-# Permite editare in localhost prin proxy server (fara login Netlify local).
+# Doar pentru dezvoltare locala (npm run cms:proxy). Decap il foloseste exclusiv pe localhost.
 local_backend: true
 
+locale: "ro"
+site_url: "https://danman.ro"
+display_url: "https://danman.ro"
+logo_url: "/img/logo-danman-woodworks1.webp"
+
+# Pozele urcate din admin. Pe telefon, butonul „Încarcă” deschide camera sau galeria.
+# Pozele sunt comprimate automat in browser (upload-helper.js) si optimizate WebP la build.
 media_folder: "public/img/uploads"
 public_folder: "/img/uploads"
 
+slug:
+  encoding: "ascii"
+  clean_accents: true
+  sanitize_replacement: "-"
+
 collections:
+  # ---------------------------------------------------------------- PRODUSE
   - name: "products"
     label: "Produse"
+    label_singular: "Produs"
+    description: "Produsele din catalog. Pozele le poți încărca direct de pe telefon."
     folder: "src/content/products"
+    media_folder: "/public/img/uploads/produse"
+    public_folder: "/img/uploads/produse"
     create: true
     slug: "{{slug}}"
+    identifier_field: "title"
+    summary: "{{title}} — {{category}}"
+    sortable_fields: ["title", "category", "price"]
+    view_groups:
+      - { label: "Categorie", field: "category" }
+    editor: { preview: false }
     fields:
-      - { label: "Title", name: "title", widget: "string" }
-      - { label: "Slug", name: "slug", widget: "string" }
-      - { label: "Category", name: "category", widget: "string" }
-      - { label: "Featured", name: "featured", widget: "boolean", required: false }
-      - { label: "Price From", name: "priceFrom", widget: "number", required: false }
-      - { label: "Lead Time Days", name: "leadTimeDays", widget: "number", required: false }
-      - { label: "Materials", name: "materials", widget: "list", required: false }
-      - { label: "Finishes", name: "finishes", widget: "list", required: false }
-      - { label: "Short Description", name: "shortDesc", widget: "string" }
-      - { label: "Long Description", name: "longDesc", widget: "text" }
-      - label: "Images"
+      - { label: "Titlu", name: "title", widget: "string" }
+      - { label: "Slug (adresa paginii)", name: "slug", widget: "string", required: false, hint: "Ex: pat-carpatica. Lasă gol ca să fie generat din titlu. Nu-l schimba după publicare (se pierd linkurile din Google)." }
+      - label: "Categorie"
+        name: "category"
+        widget: "relation"
+        collection: "settings"
+        file: "categories"
+        search_fields: ["categories.*.name"]
+        display_fields: ["categories.*.name"]
+        value_field: "categories.*.slug"
+      - { label: "Recomandat pe prima pagină", name: "featured", widget: "boolean", default: false, required: false }
+      - { label: "Ciornă (nu apare pe site)", name: "draft", widget: "boolean", default: false, required: false }
+      - label: "Imagini"
         name: "images"
         widget: "list"
-        field: { label: "Image", name: "image", widget: "image" }
-      - { label: "SEO Title", name: "seoTitle", widget: "string", required: false }
-      - { label: "SEO Description", name: "seoDesc", widget: "text", required: false }
+        hint: "Prima imagine este coperta produsului. Trage de elemente ca să schimbi ordinea."
+        summary: "{{fields.image}}"
+        fields:
+          - { label: "Imagine", name: "image", widget: "image" }
+          - { label: "Descriere imagine (pentru Google și accesibilitate)", name: "alt", widget: "string", required: false }
+      - { label: "Preț fix (RON)", name: "price", widget: "number", value_type: "int", min: 0, required: false }
+      - { label: "Preț de la (RON)", name: "priceFrom", widget: "number", value_type: "int", min: 0, required: false, hint: "Folosit doar dacă nu există preț fix." }
+      - { label: "Termen de execuție (zile)", name: "leadTimeDays", widget: "number", value_type: "int", min: 0, required: false }
+      - { label: "Descriere scurtă", name: "shortDesc", widget: "text", hint: "1-2 propoziții. Apare pe carduri și în Google." }
+      - { label: "Descriere completă", name: "longDesc", widget: "text", hint: "Lasă un rând gol între paragrafe." }
+      - { label: "Materiale (listă)", name: "materials", widget: "list", required: false }
+      - { label: "Finisaje (listă)", name: "finishes", widget: "list", required: false }
+      - { label: "Materiale (text)", name: "materialsText", widget: "text", required: false }
+      - { label: "Dimensiuni", name: "dimensionsText", widget: "text", required: false }
+      - { label: "Întreținere", name: "careText", widget: "text", required: false }
+      - { label: "Livrare și montaj", name: "shippingText", widget: "text", required: false }
+      - { label: "Retur", name: "returnText", widget: "text", required: false }
+      - { label: "Avantaje", name: "benefits", widget: "list", required: false }
+      - label: "Întrebări frecvente"
+        name: "faqs"
+        widget: "list"
+        required: false
+        summary: "{{fields.q}}"
+        fields:
+          - { label: "Întrebare", name: "q", widget: "string" }
+          - { label: "Răspuns", name: "a", widget: "text" }
+      - label: "Opțiuni (ex. dimensiuni)"
+        name: "options"
+        widget: "list"
+        required: false
+        summary: "{{fields.nume}}"
+        fields:
+          - { label: "Nume opțiune", name: "nume", widget: "string" }
+          - { label: "Cod intern", name: "cod", widget: "string", required: false }
+          - label: "Valori"
+            name: "valori"
+            widget: "list"
+            summary: "{{fields.nume}} (+{{fields.cost_add}} RON)"
+            fields:
+              - { label: "Valoare", name: "nume", widget: "string" }
+              - { label: "Cost suplimentar (RON)", name: "cost_add", widget: "number", value_type: "int", default: 0, required: false }
+              - { label: "Cod valoare", name: "data_attr", widget: "string", required: false }
+      - { label: "Titlu SEO", name: "seoTitle", widget: "string", required: false, hint: "Maxim 60 de caractere. Lasă gol pentru generare automată." }
+      - { label: "Descriere SEO", name: "seoDesc", widget: "text", required: false, hint: "120-160 de caractere." }
 
+  # ---------------------------------------------------------------- PROIECTE
   - name: "projects"
     label: "Proiecte"
+    label_singular: "Proiect"
+    description: "Lucrări realizate pentru clienți."
     folder: "src/content/projects"
+    media_folder: "/public/img/uploads/proiecte"
+    public_folder: "/img/uploads/proiecte"
     create: true
     slug: "{{slug}}"
+    identifier_field: "title"
+    editor: { preview: false }
     fields:
-      - { label: "Title", name: "title", widget: "string" }
-      - { label: "Slug", name: "slug", widget: "string" }
-      - { label: "Location", name: "location", widget: "string" }
-      - { label: "Year", name: "year", widget: "number" }
-      - { label: "Featured", name: "featured", widget: "boolean", required: false }
-      - { label: "Story", name: "story", widget: "text" }
-      - label: "Images"
+      - { label: "Titlu", name: "title", widget: "string" }
+      - { label: "Slug (adresa paginii)", name: "slug", widget: "string", required: false }
+      - label: "Categorie"
+        name: "category"
+        widget: "relation"
+        required: false
+        collection: "settings"
+        file: "categories"
+        search_fields: ["categories.*.name"]
+        display_fields: ["categories.*.name"]
+        value_field: "categories.*.slug"
+      - { label: "Localitate", name: "location", widget: "string", required: false }
+      - { label: "An", name: "year", widget: "number", value_type: "int", required: false }
+      - { label: "Recomandat pe prima pagină", name: "featured", widget: "boolean", default: false, required: false }
+      - { label: "Ciornă (nu apare pe site)", name: "draft", widget: "boolean", default: false, required: false }
+      - label: "Imagini"
         name: "images"
         widget: "list"
-        field: { label: "Image", name: "image", widget: "image" }
-      - { label: "SEO Title", name: "seoTitle", widget: "string", required: false }
-      - { label: "SEO Description", name: "seoDesc", widget: "text", required: false }
+        summary: "{{fields.image}}"
+        fields:
+          - { label: "Imagine", name: "image", widget: "image" }
+          - { label: "Descriere imagine", name: "alt", widget: "string", required: false }
+      - { label: "Rezumat", name: "shortDesc", widget: "text", required: false, hint: "O propoziție, apare pe carduri." }
+      - { label: "Povestea proiectului", name: "story", widget: "text", required: false }
+      - label: "Produse legate"
+        name: "products"
+        widget: "relation"
+        required: false
+        multiple: true
+        collection: "products"
+        search_fields: ["title"]
+        display_fields: ["title"]
+        value_field: "{{slug}}"
+      - { label: "Titlu SEO", name: "seoTitle", widget: "string", required: false }
+      - { label: "Descriere SEO", name: "seoDesc", widget: "text", required: false }
+
+  # ---------------------------------------------------------------- BLOG
+  - name: "blog"
+    label: "Blog"
+    label_singular: "Articol"
+    folder: "src/content/blog"
+    media_folder: "/public/img/uploads/blog"
+    public_folder: "/img/uploads/blog"
+    create: true
+    slug: "{{slug}}"
+    editor: { preview: false }
+    fields:
+      - { label: "Titlu", name: "title", widget: "string" }
+      - { label: "Slug (adresa paginii)", name: "slug", widget: "string", required: false }
+      - { label: "Data", name: "date", widget: "datetime", format: "YYYY-MM-DD", date_format: "DD.MM.YYYY", time_format: false }
+      - { label: "Rezumat", name: "excerpt", widget: "text" }
+      - { label: "Imagine copertă", name: "coverImage", widget: "image", required: false }
+      - { label: "Ciornă (nu apare pe site)", name: "draft", widget: "boolean", default: false, required: false }
+      - { label: "Titlu SEO", name: "seoTitle", widget: "string", required: false }
+      - { label: "Descriere SEO", name: "seoDesc", widget: "text", required: false }
+      - { label: "Conținut", name: "body", widget: "markdown" }
+
+  # ---------------------------------------------------------------- SETARI / TEXTE
+  - name: "settings"
+    label: "Setări și texte site"
+    editor: { preview: false }
+    files:
+      - name: "site"
+        label: "Date firmă, meniu, contact, SEO"
+        file: "src/data/site.json"
+        fields:
+          - { label: "Nume firmă", name: "brandName", widget: "string" }
+          - { label: "Nume scurt (logo)", name: "brandShort", widget: "string" }
+          - { label: "Slogan logo", name: "brandTagline", widget: "string" }
+          - { label: "Domeniu", name: "domain", widget: "string", hint: "Ex: https://danman.ro (fără / la final)" }
+          - { label: "Logo", name: "logo", widget: "image" }
+          - { label: "Telefon", name: "phone", widget: "string" }
+          - { label: "WhatsApp (doar cifre, cu prefix)", name: "whatsapp", widget: "string", required: false }
+          - { label: "Email", name: "email", widget: "string" }
+          - label: "Adresă"
+            name: "address"
+            widget: "object"
+            fields:
+              - { label: "Stradă și număr", name: "street", widget: "string" }
+              - { label: "Localitate", name: "locality", widget: "string" }
+              - { label: "Județ", name: "region", widget: "string" }
+              - { label: "Cod poștal", name: "postalCode", widget: "string", required: false }
+              - { label: "Țară (cod)", name: "country", widget: "string", default: "RO" }
+          - { label: "Program (text afișat)", name: "openingHoursText", widget: "string" }
+          - { label: "Program (format Google)", name: "openingHours", widget: "string", hint: "Ex: Mo-Fr 09:00-18:00", required: false }
+          - { label: "Timp de răspuns", name: "responseTime", widget: "string" }
+          - { label: "Zone deservite", name: "areaServed", widget: "list" }
+          - label: "Meniu"
+            name: "nav"
+            widget: "list"
+            summary: "{{fields.label}} → {{fields.href}}"
+            fields:
+              - { label: "Text", name: "label", widget: "string" }
+              - { label: "Link", name: "href", widget: "string" }
+          - { label: "Buton principal – text", name: "ctaLabel", widget: "string" }
+          - { label: "Buton principal – link", name: "ctaHref", widget: "string" }
+          - { label: "Text subsol", name: "footerText", widget: "text" }
+          - label: "Rețele sociale"
+            name: "social"
+            widget: "list"
+            summary: "{{fields.name}}"
+            fields:
+              - { label: "Nume", name: "name", widget: "string" }
+              - { label: "Link", name: "url", widget: "string" }
+          - label: "SEO implicit"
+            name: "seo"
+            widget: "object"
+            fields:
+              - { label: "Titlu implicit", name: "defaultTitle", widget: "string" }
+              - { label: "Descriere implicită", name: "defaultDescription", widget: "text" }
+              - { label: "Imagine pentru distribuire (Facebook/WhatsApp)", name: "ogImage", widget: "image" }
+              - { label: "Sufix titlu", name: "titleSuffix", widget: "string", hint: "Ex: „ | DanMan”" }
+
+      - name: "home"
+        label: "Prima pagină"
+        file: "src/data/home.json"
+        fields:
+          - { label: "Titlu SEO", name: "seoTitle", widget: "string" }
+          - { label: "Descriere SEO", name: "seoDesc", widget: "text" }
+          - label: "Secțiunea principală"
+            name: "hero"
+            widget: "object"
+            fields:
+              - { label: "Supratitlu", name: "eyebrow", widget: "string" }
+              - { label: "Titlu", name: "title", widget: "string" }
+              - { label: "Text", name: "lead", widget: "text" }
+              - { label: "Imagine", name: "image", widget: "image" }
+              - { label: "Descriere imagine", name: "imageAlt", widget: "string" }
+              - { label: "Buton 1 – text", name: "primaryLabel", widget: "string" }
+              - { label: "Buton 1 – link", name: "primaryHref", widget: "string" }
+              - { label: "Buton 2 – text", name: "secondaryLabel", widget: "string" }
+              - { label: "Buton 2 – link", name: "secondaryHref", widget: "string" }
+          - label: "Cifre de încredere"
+            name: "trust"
+            widget: "list"
+            hint: "Poți folosi {categorii}, {produse} sau {proiecte} – se înlocuiesc automat cu numărul real."
+            summary: "{{fields.value}} {{fields.label}}"
+            fields:
+              - { label: "Valoare", name: "value", widget: "string" }
+              - { label: "Etichetă", name: "label", widget: "string" }
+          - { label: "Secțiunea categorii", name: "categories", widget: "object", fields: [{ label: "Titlu", name: "title", widget: "string" }, { label: "Text", name: "lead", widget: "text" }] }
+          - label: "Avantaje"
+            name: "benefits"
+            widget: "object"
+            fields:
+              - { label: "Titlu", name: "title", widget: "string" }
+              - { label: "Text", name: "lead", widget: "text" }
+              - { label: "Elemente", name: "items", widget: "list", summary: "{{fields.title}}", fields: [{ label: "Titlu", name: "title", widget: "string" }, { label: "Text", name: "text", widget: "text" }] }
+          - label: "Cum lucrăm"
+            name: "process"
+            widget: "object"
+            fields:
+              - { label: "Titlu", name: "title", widget: "string" }
+              - { label: "Pași", name: "steps", widget: "list", summary: "{{fields.title}}", fields: [{ label: "Titlu", name: "title", widget: "string" }, { label: "Text", name: "text", widget: "text" }] }
+          - { label: "Produse recomandate", name: "featured", widget: "object", fields: [{ label: "Titlu", name: "title", widget: "string" }, { label: "Text", name: "lead", widget: "text" }] }
+          - { label: "Proiecte recente", name: "projects", widget: "object", fields: [{ label: "Titlu", name: "title", widget: "string" }, { label: "Text", name: "lead", widget: "text" }] }
+          - label: "Bandă finală (cerere ofertă)"
+            name: "cta"
+            widget: "object"
+            fields:
+              - { label: "Titlu", name: "title", widget: "string" }
+              - { label: "Text", name: "text", widget: "text" }
+              - { label: "Buton – text", name: "label", widget: "string" }
+              - { label: "Buton – link", name: "href", widget: "string" }
+
+      - name: "categories"
+        label: "Categorii de produse"
+        file: "src/data/categories.json"
+        fields:
+          - label: "Categorii"
+            name: "categories"
+            widget: "list"
+            summary: "{{fields.order}}. {{fields.name}}"
+            fields:
+              - { label: "Nume", name: "name", widget: "string" }
+              - { label: "Slug (adresa paginii)", name: "slug", widget: "string", hint: "Doar litere mici, cifre și cratimă. Nu-l schimba dacă există produse în categorie." }
+              - { label: "Ordine", name: "order", widget: "number", value_type: "int", default: 50 }
+              - { label: "Iconiță (Material Icons)", name: "icon", widget: "string", default: "category", hint: "Ex: bed, stairs, door_front – vezi fonts.google.com/icons" }
+              - { label: "Descriere (apare pe pagina categoriei)", name: "description", widget: "text" }
+              - { label: "Imagine copertă", name: "coverImage", widget: "image", required: false, hint: "Opțional. Implicit se folosește poza primului produs." }
+              - { label: "Titlu SEO", name: "seoTitle", widget: "string", required: false }
+              - { label: "Descriere SEO", name: "seoDesc", widget: "text", required: false }
+
+      - name: "pages"
+        label: "Texte pagini (Produse, Proiecte, Blog, Contact)"
+        file: "src/data/pages.json"
+        fields:
+          - label: "Pagina Produse"
+            name: "products"
+            widget: "object"
+            fields:
+              - { label: "Titlu", name: "title", widget: "string" }
+              - { label: "Text", name: "lead", widget: "text" }
+              - { label: "Titlu SEO", name: "seoTitle", widget: "string" }
+              - { label: "Descriere SEO", name: "seoDesc", widget: "text" }
+              - { label: "Casetă laterală – titlu", name: "sidebarTitle", widget: "string" }
+              - { label: "Casetă laterală – text", name: "sidebarText", widget: "string" }
+              - { label: "Casetă laterală – buton", name: "sidebarLabel", widget: "string" }
+              - { label: "Exemplu în căutare", name: "searchPlaceholder", widget: "string" }
+          - label: "Pagina Proiecte"
+            name: "projects"
+            widget: "object"
+            fields:
+              - { label: "Titlu", name: "title", widget: "string" }
+              - { label: "Text", name: "lead", widget: "text" }
+              - { label: "Titlu SEO", name: "seoTitle", widget: "string" }
+              - { label: "Descriere SEO", name: "seoDesc", widget: "text" }
+              - { label: "Text buton", name: "ctaLabel", widget: "string" }
+          - label: "Pagina Blog"
+            name: "blog"
+            widget: "object"
+            fields:
+              - { label: "Titlu", name: "title", widget: "string" }
+              - { label: "Text", name: "lead", widget: "text" }
+              - { label: "Titlu SEO", name: "seoTitle", widget: "string" }
+              - { label: "Descriere SEO", name: "seoDesc", widget: "text" }
+              - { label: "Mesaj când nu sunt articole", name: "emptyText", widget: "string" }
+          - label: "Pagina Contact"
+            name: "contact"
+            widget: "object"
+            fields:
+              - { label: "Titlu", name: "title", widget: "string" }
+              - { label: "Text", name: "lead", widget: "text" }
+              - { label: "Titlu SEO", name: "seoTitle", widget: "string" }
+              - { label: "Descriere SEO", name: "seoDesc", widget: "text" }
+              - { label: "Titlu formular", name: "formTitle", widget: "string" }
+              - { label: "Exemplu în câmpul mesaj", name: "messagePlaceholder", widget: "string" }
+              - { label: "Text buton trimitere", name: "submitLabel", widget: "string" }
+              - { label: "Mesaj după trimitere", name: "successMessage", widget: "string" }
+              - { label: "Notă confidențialitate", name: "privacyNote", widget: "string" }
+              - { label: "Titlu canale rapide", name: "quickTitle", widget: "string" }
+              - { label: "Imagini", name: "images", widget: "list", summary: "{{fields.alt}}", fields: [{ label: "Imagine", name: "image", widget: "image" }, { label: "Descriere", name: "alt", widget: "string" }] }
+          - label: "Texte implicite pe pagina de produs"
+            name: "productDefaults"
+            widget: "object"
+            hint: "Se folosesc când produsul nu are propriile texte."
+            fields:
+              - { label: "Titlu „Cum lucrăm”", name: "howWeWorkTitle", widget: "string" }
+              - { label: "Pași „Cum lucrăm”", name: "howWeWork", widget: "list" }
+              - { label: "Titlu personalizare", name: "customizationTitle", widget: "string" }
+              - { label: "Text personalizare", name: "customization", widget: "text" }
+              - { label: "Livrare și montaj (implicit)", name: "shipping", widget: "text" }
+              - { label: "Întreținere (implicit)", name: "care", widget: "text" }
+              - { label: "Întrebări frecvente (implicit)", name: "faqs", widget: "list", summary: "{{fields.q}}", fields: [{ label: "Întrebare", name: "q", widget: "string" }, { label: "Răspuns", name: "a", widget: "text" }] }
+              - { label: "Text buton ofertă", name: "ctaLabel", widget: "string" }
+          - label: "Pagina 404"
+            name: "notFound"
+            widget: "object"
+            fields:
+              - { label: "Titlu", name: "title", widget: "string" }
+              - { label: "Text", name: "text", widget: "text" }

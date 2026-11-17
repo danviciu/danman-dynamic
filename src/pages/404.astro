@@ -1,0 +1,42 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import pages from "../data/pages.json";
+import site from "../data/site.json";
+---
+
+<BaseLayout title={`${pages.notFound.title}${site.seo.titleSuffix}`} description={pages.notFound.text} noIndex>
+  <section class="not-found">
+    <p class="code">404</p>
+    <h1 class="section-title">{pages.notFound.title}</h1>
+    <p>{pages.notFound.text}</p>
+    <div class="actions">
+      <a class="cta-btn" href="/produse/">Vezi produsele</a>
+      <a class="secondary-btn" href={site.ctaHref}>{site.ctaLabel}</a>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .not-found {
+    text-align: center;
+    padding: 3rem 0;
+    display: grid;
+    gap: 0.8rem;
+    justify-items: center;
+  }
+
+  .code {
+    font-family: "Playfair Display", Georgia, serif;
+    font-size: 4rem;
+    color: var(--accent);
+    line-height: 1;
+  }
+
+  .actions {
+    display: flex;
+    gap: 0.8rem;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin-top: 0.6rem;
+  }
+</style>

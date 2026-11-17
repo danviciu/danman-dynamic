@@ -1,0 +1,107 @@
+---
+import type { GetStaticPaths } from "astro";
+import { render } from "astro:content";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import Breadcrumbs from "../../components/Breadcrumbs.astro";
+import Img from "../../components/Img.astro";
+import JsonLd from "../../components/JsonLd.astro";
+import site from "../../data/site.json";
+import { formatDate, getPosts } from "../../utils/catalog";
+import { absoluteImageUrl } from "../../utils/images";
+import { absoluteUrl } from "../../utils/seo";
+
+export const getStaticPaths = (async () => {
+  const posts = await getPosts();
+  return posts.map((post) => ({ params: { slug: post.slug }, props: { post } }));
+}) satisfies GetStaticPaths;
+
+const { post } = Astro.props;
+const { Content } = await render(post.entry);
+const data = post.entry.data;
+
+const articleSchema = {
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  headline: post.title,
+  description: post.excerpt,
+  datePublished: post.date.toISOString(),
+  url: absoluteUrl(post.url),
+  ...(post.cover ? { image: absoluteImageUrl(post.cover, site.domain) } : {}),
+  author: { "@type": "Organization", name: site.brandName, url: site.domain },
+  publisher: { "@id": `${site.domain}/#business` },
+};
+---
+
+<BaseLayout
+  title={data.seoTitle || `${post.title}${site.seo.titleSuffix}`}
+  description={data.seoDesc || post.excerpt}
+  canonicalPath={post.url}
+  ogImage={post.cover}
+  ogType="article"
+>
+  <JsonLd slot="head" data={articleSchema} />
+  <Breadcrumbs items={[{ label: "Blog", href: "/blog/" }, { label: post.title, href: post.url }]} />
+
+  <article class="post card">
+    {post.cover && <Img class="post-cover" src={post.cover} alt={post.title} priority sizes="(max-width: 1150px) 92vw, 1150px" />}
+    <div class="card-content post-content">
+      <time class="post-date" datetime={post.date.toISOString()}>{formatDate(post.date)}</time>
+      <h1>{post.title}</h1>
+      <div class="post-body">
+        <Content />
+      </div>
+      <a class="link-arrow" href="/blog/">&larr; Toate articolele</a>
+    </div>
+  </article>
+</BaseLayout>
+
+<style>
+  .post {
+    overflow: hidden;
+  }
+
+  .post :global(.post-cover) {
+    width: 100%;
+    max-height: 420px;
+    object-fit: cover;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .post-content {
+    padding: 1.6rem;
+    max-width: 760px;
+    margin: 0 auto;
+  }
+
+  .post-date {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--accent);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  .post-content h1 {
+    font-size: clamp(1.8rem, 3.4vw, 2.6rem);
+    margin: 0.4rem 0 1.2rem;
+  }
+
+  .post-body {
+    display: grid;
+    gap: 1rem;
+  }
+
+  .post-body :global(p),
+  .post-body :global(li) {
+    color: var(--text);
+  }
+
+  .post-body :global(img) {
+    border-radius: var(--radius);
+  }
+
+  .link-arrow {
+    display: inline-block;
+    margin-top: 1.6rem;
+  }
+</style>

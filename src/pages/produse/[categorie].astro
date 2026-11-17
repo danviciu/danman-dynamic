@@ -1,0 +1,72 @@
+---
+import type { GetStaticPaths } from "astro";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import PageIntro from "../../components/PageIntro.astro";
+import ProductCard from "../../components/ProductCard.astro";
+import ProjectCard from "../../components/ProjectCard.astro";
+import Breadcrumbs from "../../components/Breadcrumbs.astro";
+import CtaBanner from "../../components/CtaBanner.astro";
+import JsonLd from "../../components/JsonLd.astro";
+import site from "../../data/site.json";
+import { getActiveCategories, getProjects } from "../../utils/catalog";
+import { absoluteUrl } from "../../utils/seo";
+
+// O pagina statica (indexabila) pentru fiecare categorie care are produse.
+export const getStaticPaths = (async () => {
+  const categories = await getActiveCategories();
+  return categories.map((category) => ({ params: { categorie: category.slug }, props: { category } }));
+}) satisfies GetStaticPaths;
+
+const { category } = Astro.props;
+const projects = (await getProjects()).filter((p) => p.category?.slug === category.slug).slice(0, 6);
+const locality = site.address.region || site.address.locality;
+
+const title = category.seoTitle || `${category.name} din lemn masiv la comandă, ${locality}${site.seo.titleSuffix}`;
+const description =
+  category.seoDesc ||
+  `${category.description} Atelier propriu în ${site.address.locality}, ${site.address.region}. Cere ofertă.`.slice(0, 160);
+
+const itemList = {
+  "@context": "https://schema.org",
+  "@type": "ItemList",
+  name: `${category.name} din lemn masiv`,
+  itemListElement: category.products.map((product, index) => ({
+    "@type": "ListItem",
+    position: index + 1,
+    url: absoluteUrl(product.url),
+    name: product.title,
+  })),
+};
+---
+
+<BaseLayout title={title} description={description} canonicalPath={category.url} ogImage={category.cover}>
+  <JsonLd slot="head" data={itemList} />
+  <Breadcrumbs items={[{ label: "Produse", href: "/produse/" }, { label: category.name, href: category.url }]} />
+  <PageIntro title={`${category.name} din lemn masiv la comandă`} lead={category.description} />
+
+  <section class="card-grid" aria-label={`Produse din categoria ${category.name}`}>
+    {category.products.map((product) => <ProductCard product={product} />)}
+  </section>
+
+  {projects.length > 0 && (
+    <section class="section-block related">
+      <h2 class="section-title">Proiecte realizate: {category.name.toLowerCase()}</h2>
+      <div class="card-grid">
+        {projects.map((project) => <ProjectCard project={project} headingLevel="h3" />)}
+      </div>
+    </section>
+  )}
+
+  <CtaBanner
+    title={`Vrei ${category.name.toLowerCase()} pe măsura ta?`}
+    text="Trimite-ne dimensiunile și câteva fotografii ale spațiului. Revenim cu recomandări și o estimare."
+    label={site.ctaLabel}
+    href={`${site.ctaHref}?categorie=${encodeURIComponent(category.name)}`}
+  />
+</BaseLayout>
+
+<style>
+  .related {
+    margin-top: 3rem;
+  }
+</style>

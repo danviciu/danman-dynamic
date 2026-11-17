@@ -1,0 +1,58 @@
+---
+import Img from "./Img.astro";
+import type { ProjectView } from "../utils/catalog";
+
+interface Props {
+  project: ProjectView;
+  headingLevel?: "h2" | "h3";
+}
+
+const { project, headingLevel = "h2" } = Astro.props;
+const Heading = headingLevel;
+const meta = [project.location, project.year].filter(Boolean).join(" · ");
+---
+
+<article class="card project-card">
+  <a href={project.url} tabindex="-1" aria-hidden="true">
+    <Img src={project.cover} alt={project.title} sizes="(max-width: 700px) 100vw, (max-width: 1100px) 50vw, 360px" />
+  </a>
+  <div class="card-content">
+    {(project.category || meta) && (
+      <div class="project-meta">
+        {project.category && <span class="chip">{project.category.name}</span>}
+        {meta && <span>{meta}</span>}
+      </div>
+    )}
+    <Heading class="project-title"><a href={project.url}>{project.title}</a></Heading>
+    <p>{project.summary}</p>
+    <a class="link-arrow" href={project.url}>Vezi proiectul</a>
+  </div>
+</article>
+
+<style>
+  .project-card :global(img) {
+    width: 100%;
+    height: 240px;
+    object-fit: contain;
+    background: var(--bg);
+    border-bottom: 1px solid var(--line);
+  }
+
+  .project-title {
+    font-size: 1.2rem;
+  }
+
+  .project-title a:hover {
+    color: var(--accent);
+  }
+
+  .project-meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 0.5rem;
+    font-weight: 700;
+    color: var(--muted);
+    font-size: 0.88rem;
+  }
+</style>

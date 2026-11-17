@@ -1,0 +1,65 @@
+{
+  "products": {
+    "title": "Produse din lemn masiv",
+    "lead": "Piese unicat realizate manual, care îmbină tradiția tâmplăriei cu designul contemporan.",
+    "seoTitle": "Produse din lemn masiv la comandă | DanMan",
+    "seoDesc": "Catalog DanMan: paturi, mese, scări, uși, bucătării, dulapuri de baie și alte produse din lemn masiv, realizate la comandă în Săcele, Brașov.",
+    "sidebarTitle": "Proiect personalizat?",
+    "sidebarText": "Realizăm piese unicat adaptate spațiului tău.",
+    "sidebarLabel": "Solicită ofertă",
+    "searchPlaceholder": "Ex: paturi, uși, marchize..."
+  },
+  "projects": {
+    "title": "Proiecte realizate",
+    "lead": "Lucrări livrate cu atenție la proporții, funcționalitate și finisaj. Fiecare proiect e adaptat arhitecturii spațiului și stilului clientului.",
+    "seoTitle": "Proiecte realizate din lemn masiv | DanMan",
+    "seoDesc": "Proiecte de tâmplărie DanMan: scări, paturi, bucătării, dulapuri de baie, porți și foișoare din lemn masiv, realizate pentru clienți din Brașov și din țară.",
+    "ctaLabel": "Discutăm un proiect similar"
+  },
+  "blog": {
+    "title": "Blog",
+    "lead": "Note din atelier: materiale, îngrijirea mobilierului din lemn masiv și proiecte recente.",
+    "seoTitle": "Blog despre mobilier din lemn masiv | DanMan",
+    "seoDesc": "Articole despre mobilier din lemn masiv, esențe de lemn, finisaje, întreținere și proiecte DanMan.",
+    "emptyText": "Nu există încă articole publicate. Revino în curând."
+  },
+  "contact": {
+    "title": "Contact",
+    "lead": "Spune-ne pe scurt de ce ai nevoie și îți răspundem cu o estimare orientativă, termen de execuție și recomandări de materiale.",
+    "seoTitle": "Contact și cerere de ofertă | DanMan, Săcele, Brașov",
+    "seoDesc": "Cere ofertă pentru mobilier din lemn masiv la comandă. Contact DanMan: telefon, WhatsApp, email, atelier în Săcele, Brașov.",
+    "formTitle": "Trimite detaliile proiectului",
+    "messagePlaceholder": "Dimensiuni, material preferat, termen dorit...",
+    "submitLabel": "Trimite solicitarea",
+    "successMessage": "Mulțumim! Mesajul a fost trimis. Revenim în cel mai scurt timp.",
+    "privacyNote": "Folosim datele tale doar pentru a răspunde acestei solicitări.",
+    "quickTitle": "Canale rapide",
+    "images": [
+      { "image": "/img/marchize/20251125_1245_Intrare%20Cu%20Element%20Rustice_remix_01kax9pw5fe0yvgfmt9bam4z7q.webp", "alt": "Marchiză din lemn realizată la comandă" },
+      { "image": "/img/scari/20251125_1230_Scar%C4%83%20Interioar%C4%83%20Elegant%C4%83_remix_01kax8wdwvemx8szvm5e37z4ds.webp", "alt": "Scară interioară din lemn" },
+      { "image": "/img/paturi/20251124_0812_Pat%20din%20Lemn_remix_01kat7qvzmfqxvt38b39mq7rj9.webp", "alt": "Pat din lemn masiv" }
+    ]
+  },
+  "productDefaults": {
+    "howWeWorkTitle": "Cum lucrăm",
+    "howWeWork": [
+      "Consultare și măsurători la locație.",
+      "Ofertă și confirmarea materialelor și finisajelor.",
+      "Execuție, transport și montaj."
+    ],
+    "customizationTitle": "Personalizare",
+    "customization": "Putem ajusta dimensiunile, esența lemnului, nuanța și tipul de finisaj în funcție de stilul casei și de buget.",
+    "shipping": "Livrăm în Brașov și în țară. Detaliile de transport și montaj se stabilesc în ofertă.",
+    "care": "Oferim recomandări clare de întreținere, pentru a păstra finisajul și rezistența în timp.",
+    "faqs": [
+      { "q": "În cât timp primesc oferta?", "a": "De regulă în 24-48 de ore după discuția inițială și măsurătorile necesare." },
+      { "q": "Pot modifica proiectul după ofertă?", "a": "Da, actualizăm configurația și recalculăm prețul înainte de confirmarea finală." },
+      { "q": "Lucrați și în afara Brașovului?", "a": "Da, livrăm în toată țara. Transportul se stabilește transparent în ofertă." }
+    ],
+    "ctaLabel": "Cere ofertă pentru acest produs"
+  },
+  "notFound": {
+    "title": "Pagina nu a fost găsită",
+    "text": "Pagina căutată nu există sau a fost mutată. Te invităm să vezi produsele sau să ne contactezi."
+  }
+}

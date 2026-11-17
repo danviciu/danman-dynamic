@@ -1,4 +1,6 @@
 User-agent: *
 Allow: /
+Disallow: /admin/
+Disallow: /confirm/
 
 Sitemap: https://danman.ro/sitemap-index.xml

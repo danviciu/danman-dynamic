@@ -1,0 +1,51 @@
+---
+import JsonLd from "./JsonLd.astro";
+import { faqSchema } from "../utils/seo";
+
+interface Props {
+  items: Array<{ q: string; a: string }>;
+  title?: string;
+  /** adauga FAQPage JSON-LD (o singura data pe pagina) */
+  withSchema?: boolean;
+}
+
+const { items, title = "Întrebări frecvente", withSchema = true } = Astro.props;
+---
+
+{items.length > 0 && (
+  <section class="faq">
+    <h2>{title}</h2>
+    {items.map((faq) => (
+      <details>
+        <summary>{faq.q}</summary>
+        <p>{faq.a}</p>
+      </details>
+    ))}
+    {withSchema && <JsonLd data={faqSchema(items)} />}
+  </section>
+)}
+
+<style>
+  .faq h2 {
+    font-size: 1rem;
+    margin-bottom: 0.5rem;
+  }
+
+  details {
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 0.5rem 0.7rem;
+    margin-bottom: 0.45rem;
+    background: var(--surface);
+  }
+
+  summary {
+    cursor: pointer;
+    font-weight: 600;
+    color: var(--text);
+  }
+
+  details p {
+    margin-top: 0.4rem;
+  }
+</style>
