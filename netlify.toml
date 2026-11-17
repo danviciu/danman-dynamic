@@ -3,7 +3,7 @@
   publish = "dist"
 
 [build.environment]
-  NODE_VERSION = "20"
+  NODE_VERSION = "24"
 
 # IMPORTANT: /admin este o mini-SPA. Fara asta, /admin/ sau /admin/#/ poate pica in 404 in anumite cazuri.
 [[redirects]]
