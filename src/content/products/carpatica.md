@@ -42,10 +42,14 @@ options:
         cost_add: 600
         data_attr: "180x200"
 images:
-  - image: "/img/paturi/20251125_1510_Pat%20Lemn%20Profesionist_remix_01kaxj1q9bfbyvc5hh7v0532aq.webp"
-  - image: "/img/paturi/20251125_1510_Pat%20Lemn%20Profesionist_remix_01kaxj1q9af09vr1hdv16yyrm5.webp"
-  - image: "/img/paturi/20251125_1507_Cadru%20Pat%20Profesional_remix_01kaxhwz0be1w84343q2sxmn5z.webp"
   - image: "/img/paturi/20251210_1948_Adaug%C4%83%20A%C8%99ternuturi_remix_01kc4nxgyhe32t44jz7bqv4w7a.webp"
+    alt: "Pat Carpatica din lemn natur deschis, cu lenjerie roșie și picior masiv în prim-plan"
+  - image: "/img/paturi/20251125_1510_Pat%20Lemn%20Profesionist_remix_01kaxj1q9bfbyvc5hh7v0532aq.webp"
+    alt: "Detaliu cu piciorul masiv și cadrul patului Carpatica, din lemn natur"
+  - image: "/img/paturi/20251125_1510_Pat%20Lemn%20Profesionist_remix_01kaxj1q9af09vr1hdv16yyrm5.webp"
+    alt: "Colțul patului Carpatica, cu tăblia din scânduri orizontale"
+  - image: "/img/paturi/20251125_1507_Cadru%20Pat%20Profesional_remix_01kaxhwz0be1w84343q2sxmn5z.webp"
+    alt: "Cadrul complet al patului Carpatica, fără saltea"
 seoTitle: "Pat Carpatica din lemn masiv la comandă | DanMan"
 seoDesc: "Pat Carpatica din lemn masiv, cu linii curate și îmbinări solide, pentru saltele de 140, 160 sau 180 cm. Lucrat manual în atelierul DanMan din Săcele."
 ---

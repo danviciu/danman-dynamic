@@ -27,8 +27,10 @@ faqs:
   - q: "Se poate adapta intrării mele?"
     a: "Da, dimensiunile și nuanța finisajului se stabilesc după măsurători la fața locului."
 images:
-  - image: "/img/marchize/20251125_1457_Intrare%20Profesional%C4%83%20Cas%C4%83_remix_01kaxh8wxrfbk80n7076mxahzk.webp"
   - image: "/img/marchize/20251125_1500_Intrare%20Cu%20Copertin%C4%83%20Modern%C4%83_remix_01kaxhfam4ejt9sh9pf0pkx3z8.webp"
+    alt: "Marchiză din lemn cu acoperiș din țiglă și panou lateral din lamele verticale, deasupra unei uși duble"
+  - image: "/img/marchize/20251125_1457_Intrare%20Profesional%C4%83%20Cas%C4%83_remix_01kaxh8wxrfbk80n7076mxahzk.webp"
+    alt: "Marchiză din lemn în nuanță închisă cu panou lateral și burlan, la intrarea unei case"
 seoTitle: "Marchiză din lemn Urban Protect | DanMan"
 seoDesc: "Marchiză din lemn masiv cu acoperiș din țiglă ceramică, jgheaburi și burlane integrate, pentru intrări moderne. Realizată la comandă de DanMan, Brașov."
 ---

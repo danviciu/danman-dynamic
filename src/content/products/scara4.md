@@ -28,8 +28,9 @@ faqs:
     a: "Da, nuanța finisajului se stabilește împreună, la comandă."
 images:
   - image: "/img/scari/Scara%20Lorand.png"
+    alt: "Scară din lemn natur deschis, cu trepte deschise și balustradă cu șpaleți"
   - image: "/img/scari/Scara%20Lorand%20A.png"
-  - image: "/img/scari/20251125_1516_Scar%C4%83%20Modern%C4%83%20Elegant%C4%83_remix_01kaxjc57bfhftz45v8efbkgap.webp"
+    alt: "Detaliu cu treptele deschise și iluminarea LED a scării Lorand"
 seoTitle: "Scară Lorand cu trepte deschise din lemn | DanMan"
 seoDesc: "Scară interioară din lemn masiv cu trepte deschise și finisaj natural deschis, realizată la comandă de atelierul DanMan din Săcele, Brașov."
 ---
