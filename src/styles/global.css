@@ -64,6 +64,8 @@ a {
 img {
   display: block;
   max-width: 100%;
+  /* imaginile au width/height reale (anti layout-shift); fara asta s-ar intinde pe verticala */
+  height: auto;
 }
 
 .container {
@@ -268,7 +270,8 @@ img {
 
 .card-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  /* auto-fill: un singur card nu se mai intinde pe toata latimea */
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
   gap: 1rem;
 }
 
