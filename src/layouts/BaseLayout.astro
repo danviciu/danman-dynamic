@@ -88,11 +88,11 @@ const csp = [
 
     <script is:inline>
       // Token-urile Netlify Identity (invitatie/confirmare/resetare parola) ajung uneori
-      // pe alte pagini; le trimitem catre /admin/ unde sunt procesate.
+      // pe alte pagini; le trimitem catre /confirm/ unde sunt procesate.
       (function () {
         var h = window.location.hash || "";
-        if (/(invite|confirmation|recovery|email_change)_token=/.test(h) && window.location.pathname.indexOf("/admin") !== 0) {
-          window.location.replace("/admin/" + h);
+        if (/(invite|confirmation|recovery|email_change)_token=/.test(h)) {
+          window.location.replace("/confirm/" + h);
         }
         try {
           var stored = localStorage.getItem("danman-theme");

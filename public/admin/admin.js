@@ -2,9 +2,12 @@
 (function () {
   "use strict";
 
-  // Linkurile din emailurile Netlify (?token=...) ajung uneori ca query; Identity le vrea in hash.
-  if (location.search && !location.hash) {
-    location.replace("/admin/#" + location.search.replace(/^\?/, ""));
+  // Linkurile din emailurile Netlify (resetare parola, invitatie, confirmare) se proceseaza
+  // pe /confirm/, unde nu ruleaza Decap: Decap rescrie hash-ul URL-ului la pornire si
+  // fereastra „parola noua” nu mai apuca sa apara.
+  var tokenSource = location.hash || (location.search ? "#" + location.search.replace(/^\?/, "") : "");
+  if (/(invite|confirmation|recovery|email_change)_token=/.test(tokenSource)) {
+    location.replace("/confirm/" + tokenSource);
     return;
   }
 

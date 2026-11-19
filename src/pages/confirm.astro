@@ -1,54 +1,89 @@
 ---
-const title = "Confirmare cont";
+// Pagina care proceseaza linkurile din emailurile Netlify Identity:
+// resetare parola (recovery_token), invitatie (invite_token), confirmare cont, schimbare email.
+// Ruleaza DOAR widgetul Identity (fara Decap CMS), ca formularul de parola noua sa nu fie
+// intrerupt. Dupa autentificare, utilizatorul este trimis in /admin/.
 ---
+
 <!doctype html>
 <html lang="ro">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="robots" content="noindex,nofollow" />
-    <title>{title}</title>
+    <title>Cont administrare | DanMan</title>
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
     <script is:inline src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
   </head>
   <body>
     <main class="confirm-box">
-      <h1>Confirmare / Autentificare</h1>
-      <p>Dacă nu se deschide automat, așteaptă 2-3 secunde. Se va deschide fereastra de confirmare/logare.</p>
+      <h1>Cont administrare DanMan</h1>
+      <p id="status">Se încarcă…</p>
+      <p><a href="/admin/">Mergi la panoul de administrare</a></p>
     </main>
 
     <script is:inline>
       (function () {
-        if (typeof window === "undefined") return;
+        var hasToken = /(invite|confirmation|recovery|email_change)_token=/.test(location.hash);
+        var isRecovery = /recovery_token=/.test(location.hash);
+        var status = document.getElementById("status");
+        status.textContent = isRecovery
+          ? "Alege parola nouă în fereastra care s-a deschis."
+          : hasToken
+            ? "Finalizează pasul din fereastra care s-a deschis."
+            : "Autentifică-te sau cere resetarea parolei.";
 
-        function openIdentity() {
+        function setup() {
           var id = window.netlifyIdentity;
           if (!id) return false;
-          try {
-            if (typeof id.init === "function") id.init();
-            if (typeof id.open === "function") id.open();
-            id.on && id.on("login", function () {
-              window.location.href = "/admin/";
+          id.on("login", function () {
+            status.textContent = "Gata! Te ducem în panoul de administrare…";
+            setTimeout(function () {
+              location.href = "/admin/#/";
+            }, 800);
+          });
+          id.on("error", function (err) {
+            status.textContent =
+              "Linkul nu mai este valid sau a fost deja folosit. Cere un link nou: „Forgot password?”.";
+            console.error(err);
+          });
+          // Fara token in URL deschidem fereastra de login (de unde se poate cere resetarea).
+          // Cu token, widgetul deschide singur pagina potrivita (ex. „parola noua”).
+          if (!hasToken) {
+            id.on("init", function () {
+              id.open("login");
             });
-          } catch (e) {}
+          }
           return true;
         }
 
-        if (openIdentity()) return;
-
-        var tries = 0;
-        var t = setInterval(function () {
-          tries++;
-          if (openIdentity() || tries >= 50) clearInterval(t);
-        }, 100);
+        if (!setup()) {
+          var tries = 0;
+          var timer = setInterval(function () {
+            if (setup() || ++tries > 50) clearInterval(timer);
+          }, 100);
+        }
       })();
     </script>
 
     <style>
-      .confirm-box {
-        max-width: 720px;
-        margin: 48px auto;
-        padding: 0 16px;
+      body {
+        margin: 0;
+        background: #fdfcfb;
+        color: #1e293b;
         font-family: system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+      }
+
+      .confirm-box {
+        max-width: 560px;
+        margin: 64px auto;
+        padding: 0 16px;
+        text-align: center;
+      }
+
+      a {
+        color: #8b5e3c;
+        font-weight: 600;
       }
     </style>
   </body>
