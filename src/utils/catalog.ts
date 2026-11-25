@@ -187,7 +187,7 @@ const toProjectView = (entry: CollectionEntry<"projects">): ProjectView => {
     category: data.category ? categoryFor(data.category) : undefined,
     location: data.location,
     year: data.year,
-    summary: cleanText(data.shortDesc || data.story),
+    summary: cleanText(data.shortDesc) || summarize(data.story),
     story: cleanText(data.story || data.shortDesc),
     featured: data.featured,
     images: images.length > 0 ? images : [cover],

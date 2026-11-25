@@ -143,21 +143,58 @@ collections:
       - { label: "Titlu SEO", name: "seoTitle", widget: "string", required: false, hint: "Maxim 60 de caractere. Lasă gol pentru generare automată." }
       - { label: "Descriere SEO", name: "seoDesc", widget: "text", required: false, hint: "120-160 de caractere. Lasă gol pentru generare automată." }
 
-  # ---------------------------------------------------------------- PROIECTE
+  # ---------------------------------------------------------------- PROIECTE (simplu)
+  # Formular scurt: poze, denumire, categorie, localitate, descriere.
+  # Restul (an, rezumat, produse legate, SEO) e in „Proiecte – detalii avansate”.
   - name: "projects"
     label: "Proiecte"
     label_singular: "Proiect"
-    description: "Lucrări realizate pentru clienți."
+    description: "Adaugă o lucrare realizată: poze, denumire, categorie, localitate și descriere."
     folder: "src/content/projects"
     media_folder: "/public/img/uploads/proiecte"
     public_folder: "/img/uploads/proiecte"
     create: true
     slug: "{{slug}}"
     identifier_field: "title"
+    summary: "{{title}}"
+    sortable_fields: ["title", "category"]
     editor: { preview: false }
     fields:
-      - { label: "Titlu", name: "title", widget: "string" }
-      - { label: "Slug (adresa paginii)", name: "slug", widget: "string", required: false }
+      - label: "Poze"
+        name: "images"
+        widget: "list"
+        label_singular: "poză"
+        summary: "{{fields.image}}"
+        hint: "Apasă „Add poză”, apoi „Alege o imagine” → „Încarcă” (pe telefon poți face poza direct). Prima poză este coperta. Pozele se micșorează automat."
+        fields:
+          - { label: "Poză", name: "image", widget: "image", choose_url: false }
+      - { label: "Denumire", name: "title", widget: "string", hint: "Ex: Scară interioară din stejar – Brașov" }
+      - label: "Categorie"
+        name: "category"
+        widget: "relation"
+        required: false
+        collection: "settings"
+        file: "categories"
+        search_fields: ["categories.*.name"]
+        display_fields: ["categories.*.name"]
+        value_field: "categories.*.slug"
+      - { label: "Localitate", name: "location", widget: "string", required: false, hint: "Ex: Brașov. Ajută la apariția în căutările locale din Google." }
+      - { label: "Descriere", name: "story", widget: "text", hint: "Ce ai realizat: material, finisaj, detalii. Lasă un rând gol între paragrafe." }
+
+  # ---------------------------------------------------------------- PROIECTE (avansat)
+  - name: "projects_advanced"
+    label: "Proiecte – detalii avansate"
+    label_singular: "Proiect"
+    description: "Opțional. Câmpuri suplimentare pentru proiectele existente. Proiectele noi se adaugă din „Proiecte”."
+    folder: "src/content/projects"
+    media_folder: "/public/img/uploads/proiecte"
+    public_folder: "/img/uploads/proiecte"
+    create: false
+    slug: "{{slug}}"
+    identifier_field: "title"
+    editor: { preview: false }
+    fields:
+      - { label: "Denumire", name: "title", widget: "string" }
       - label: "Categorie"
         name: "category"
         widget: "relation"
@@ -170,16 +207,16 @@ collections:
       - { label: "Localitate", name: "location", widget: "string", required: false }
       - { label: "An", name: "year", widget: "number", value_type: "int", required: false }
       - { label: "Recomandat pe prima pagină", name: "featured", widget: "boolean", default: false, required: false }
-      - { label: "Ciornă (nu apare pe site)", name: "draft", widget: "boolean", default: false, required: false }
-      - label: "Imagini"
+      - { label: "Ascuns (nu apare pe site)", name: "draft", widget: "boolean", default: false, required: false }
+      - label: "Poze"
         name: "images"
         widget: "list"
         summary: "{{fields.image}}"
         fields:
-          - { label: "Imagine", name: "image", widget: "image" }
-          - { label: "Descriere imagine", name: "alt", widget: "string", required: false }
-      - { label: "Rezumat", name: "shortDesc", widget: "text", required: false, hint: "O propoziție, apare pe carduri." }
-      - { label: "Povestea proiectului", name: "story", widget: "text", required: false }
+          - { label: "Poză", name: "image", widget: "image" }
+          - { label: "Descriere poză (pentru Google)", name: "alt", widget: "string", required: false }
+      - { label: "Rezumat (opțional)", name: "shortDesc", widget: "text", required: false, hint: "O propoziție pentru carduri. Dacă e gol, se ia începutul descrierii." }
+      - { label: "Descriere", name: "story", widget: "text", required: false }
       - label: "Produse legate"
         name: "products"
         widget: "relation"
