@@ -1,9 +1,10 @@
 {
   "brandName": "DanMan Fine Woodworking",
   "brandShort": "DANMAN",
-  "brandTagline": "Fine Woodworking",
+  "brandTagline": "Woodworks",
   "domain": "https://danman.ro",
-  "logo": "/img/logo-danman-woodworks1.webp",
+  "logo": "/img/brand/logo-full.webp",
+  "logoMark": "/img/brand/logo-mark.webp",
   "phone": "+40 766 546 274",
   "whatsapp": "+40766546274",
   "email": "danvoicuteodorescu@gmail.com",
@@ -17,20 +18,46 @@
   "openingHoursText": "Luni - Vineri, 09:00 - 18:00",
   "openingHours": "Mo-Fr 09:00-18:00",
   "responseTime": "în medie 2-6 ore în zilele lucrătoare",
-  "areaServed": ["Săcele", "Brașov", "Județul Brașov", "România"],
+  "areaServed": [
+    "Săcele",
+    "Brașov",
+    "Județul Brașov",
+    "România"
+  ],
   "nav": [
-    { "label": "Acasă", "href": "/" },
-    { "label": "Produse", "href": "/produse" },
-    { "label": "Proiecte", "href": "/proiecte" },
-    { "label": "Blog", "href": "/blog" },
-    { "label": "Contact", "href": "/contact" }
+    {
+      "label": "Acasă",
+      "href": "/"
+    },
+    {
+      "label": "Produse",
+      "href": "/produse"
+    },
+    {
+      "label": "Proiecte",
+      "href": "/proiecte"
+    },
+    {
+      "label": "Blog",
+      "href": "/blog"
+    },
+    {
+      "label": "Contact",
+      "href": "/contact"
+    }
   ],
   "ctaLabel": "Cere ofertă",
   "ctaHref": "/contact",
   "footerText": "Atelier de tâmplărie din Săcele, Brașov. Mobilier și amenajări din lemn masiv, lucrate manual, la comandă.",
   "social": [
-    { "name": "Facebook", "url": "https://facebook.com/danman.ro" },
-    { "name": "Instagram", "url": "https://instagram.com/danman.ro" }
+    {
+      "name": "Facebook",
+      "url": "https://facebook.com/danman.ro"
+    },
+    {
+      "name": "Instagram",
+      "url": "https://instagram.com/danman.ro"
+    }
   ],
   "seo": {
     "defaultTitle": "DanMan | Mobilier din lemn masiv la comandă, Brașov",

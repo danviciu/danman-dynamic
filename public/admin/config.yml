@@ -17,7 +17,7 @@ local_backend: true
 locale: "ro"
 site_url: "https://danman.ro"
 display_url: "https://danman.ro"
-logo_url: "/img/logo-danman-woodworks1.webp"
+logo_url: "/img/brand/logo-full.webp"
 
 # Pozele urcate din admin. Pe telefon, butonul „Încarcă” deschide camera sau galeria.
 # Pozele sunt comprimate automat in browser (upload-helper.js) si optimizate WebP la build.
@@ -263,7 +263,8 @@ collections:
           - { label: "Nume scurt (logo)", name: "brandShort", widget: "string" }
           - { label: "Slogan logo", name: "brandTagline", widget: "string" }
           - { label: "Domeniu", name: "domain", widget: "string", hint: "Ex: https://danman.ro (fără / la final)" }
-          - { label: "Logo", name: "logo", widget: "image" }
+          - { label: "Logo complet (subsol, Google)", name: "logo", widget: "image" }
+          - { label: "Simbol logo (header, pătrat)", name: "logoMark", widget: "image", required: false }
           - { label: "Telefon", name: "phone", widget: "string" }
           - { label: "WhatsApp (doar cifre, cu prefix)", name: "whatsapp", widget: "string", required: false }
           - { label: "Email", name: "email", widget: "string" }

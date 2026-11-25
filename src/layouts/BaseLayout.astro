@@ -29,6 +29,7 @@ const canonical = new URL(normalizedPath, site.domain).toString();
 const pathname = Astro.url.pathname;
 const ogImageUrl = absoluteImageUrl(ogImage, site.domain);
 const logoUrl = toUrlPath(site.logo);
+const markUrl = toUrlPath(site.logoMark || site.logo);
 const phoneHref = `tel:${site.phone.replace(/[^\d+]/g, "")}`;
 const isActive = (href: string) =>
   href === "/" ? pathname === "/" : pathname.startsWith(href.replace(/\/$/, ""));
@@ -59,11 +60,12 @@ const csp = [
     <meta name="description" content={description} />
     <meta name="robots" content={noIndex ? "noindex,nofollow" : "index,follow,max-image-preview:large"} />
     <link rel="canonical" href={canonical} />
-    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
-    <link rel="icon" href="/favicon.ico" sizes="any" />
-    <link rel="apple-touch-icon" href={logoUrl} />
+    <link rel="icon" href="/favicon.ico" sizes="32x32" />
+    <link rel="icon" href="/favicon-32.png" type="image/png" sizes="32x32" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="manifest" href="/site.webmanifest" />
     <link rel="sitemap" href="/sitemap-index.xml" />
-    <meta name="theme-color" content="#8b5e3c" />
+    <meta name="theme-color" content="#111111" />
 
     <meta property="og:type" content={ogType} />
     <meta property="og:locale" content="ro_RO" />
@@ -109,7 +111,8 @@ const csp = [
     <header class="site-header">
       <div class="container nav-row">
         <a class="brand" href="/" aria-label={`${site.brandName} – pagina principală`}>
-          <span class="brand-mark" aria-hidden="true">{site.brandShort.charAt(0)}</span>
+          <img class="brand-logo" src={markUrl} alt="" width="48" height="48" />
+
           <span class="brand-text">
             <span class="brand-name">{site.brandShort}</span>
             <span class="brand-sub">{site.brandTagline}</span>
@@ -145,12 +148,8 @@ const csp = [
     <footer class="site-footer">
       <div class="container footer-grid">
         <div>
-          <a class="brand" href="/">
-            <span class="brand-mark" aria-hidden="true">{site.brandShort.charAt(0)}</span>
-            <span class="brand-text">
-              <span class="brand-name">{site.brandShort}</span>
-              <span class="brand-sub">{site.brandTagline}</span>
-            </span>
+          <a class="footer-logo" href="/" aria-label={`${site.brandName} – pagina principală`}>
+            <img src={logoUrl} alt={site.brandName} width="140" height="145" loading="lazy" decoding="async" />
           </a>
           <p class="footer-about">{site.footerText}</p>
           <address class="footer-about">{addressText()}</address>
@@ -200,6 +199,32 @@ const csp = [
     font-size: 0.75rem;
     letter-spacing: 0.1em;
     color: var(--text);
+  }
+
+  .brand-logo {
+    width: 48px;
+    height: 48px;
+    border-radius: 10px;
+    flex-shrink: 0;
+    object-fit: cover;
+    background: #111;
+  }
+
+  .site-footer :global(a),
+  .site-footer address {
+    overflow-wrap: anywhere;
+  }
+
+  .footer-logo {
+    display: inline-block;
+    margin-bottom: 0.8rem;
+  }
+
+  .footer-logo img {
+    width: 140px;
+    height: auto;
+    border-radius: 12px;
+    background: #111;
   }
 
   address {
