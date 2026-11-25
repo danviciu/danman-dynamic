@@ -75,7 +75,7 @@ const productSchema = {
       <div class="card-content">
         <a class="chip" href={`/produse/${product.category.slug}/`}>{product.category.name}</a>
         <h1>{product.title}</h1>
-        {product.shortDesc && <p class="lead">{product.shortDesc}</p>}
+        {data.shortDesc && <p class="lead">{product.shortDesc}</p>}
 
         <dl class="meta-grid">
           <div>

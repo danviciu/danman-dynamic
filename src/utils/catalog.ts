@@ -44,6 +44,15 @@ export const paragraphs = (value: string | undefined | null) =>
     .map((p) => p.replace(/\s*\n\s*/g, " ").trim())
     .filter(Boolean);
 
+/** Rezumat automat (pentru carduri/Google) din descriere: prima propozitie, max ~160 caractere. */
+export const summarize = (value: string | undefined | null, max = 160) => {
+  const text = paragraphs(value).join(" ");
+  if (text.length <= max) return text;
+  const firstSentence = text.match(/^.{40,}?[.!?](\s|$)/)?.[0]?.trim();
+  if (firstSentence && firstSentence.length <= max) return firstSentence;
+  return `${text.slice(0, max - 1).replace(/\s+\S*$/, "")}…`;
+};
+
 /* ---------- categorii ---------- */
 
 export interface Category {
@@ -101,7 +110,7 @@ const toProductView = (entry: CollectionEntry<"products">): ProductView => {
     title: data.title,
     category,
     featured: data.featured,
-    shortDesc: cleanText(data.shortDesc),
+    shortDesc: cleanText(data.shortDesc) || summarize(data.longDesc),
     price: data.price,
     priceFrom: data.priceFrom,
     priceLabel: formatPrice(data),

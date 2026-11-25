@@ -27,7 +27,7 @@ const products = defineCollection({
     leadTimeDays: z.number().optional(),
     materials: z.array(z.string()).optional(),
     finishes: z.array(z.string()).optional(),
-    shortDesc: z.string(),
+    shortDesc: z.string().optional(),
     longDesc: z.string(),
     materialsText: z.string().optional(),
     dimensionsText: z.string().optional(),

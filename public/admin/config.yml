@@ -30,25 +30,62 @@ slug:
   sanitize_replacement: "-"
 
 collections:
-  # ---------------------------------------------------------------- PRODUSE
+  # ---------------------------------------------------------------- PRODUSE (simplu, ca un anunt)
+  # Formular scurt: poze, denumire, categorie, descriere, pret. Restul se completeaza
+  # automat pe site (rezumat, titlu SEO, adresa paginii) sau din „Produse – detalii avansate”.
   - name: "products"
     label: "Produse"
     label_singular: "Produs"
-    description: "Produsele din catalog. Pozele le poți încărca direct de pe telefon."
+    description: "Adaugă un produs ca pe OLX: poze, denumire, categorie, descriere și preț."
     folder: "src/content/products"
     media_folder: "/public/img/uploads/produse"
     public_folder: "/img/uploads/produse"
     create: true
     slug: "{{slug}}"
     identifier_field: "title"
-    summary: "{{title}} — {{category}}"
+    summary: "{{title}}"
     sortable_fields: ["title", "category", "price"]
     view_groups:
       - { label: "Categorie", field: "category" }
     editor: { preview: false }
     fields:
-      - { label: "Titlu", name: "title", widget: "string" }
-      - { label: "Slug (adresa paginii)", name: "slug", widget: "string", required: false, hint: "Ex: pat-carpatica. Lasă gol ca să fie generat din titlu. Nu-l schimba după publicare (se pierd linkurile din Google)." }
+      - label: "Poze"
+        name: "images"
+        widget: "list"
+        allow_add: true
+        add_to_top: false
+        label_singular: "poză"
+        summary: "{{fields.image}}"
+        hint: "Apasă „Add poză”, apoi „Alege o imagine” → „Încarcă” (pe telefon poți face poza direct). Prima poză este coperta. Pozele se micșorează automat."
+        fields:
+          - { label: "Poză", name: "image", widget: "image", choose_url: false }
+      - { label: "Denumire", name: "title", widget: "string", hint: "Ex: Pat din stejar cu tăblie" }
+      - label: "Categorie"
+        name: "category"
+        widget: "relation"
+        collection: "settings"
+        file: "categories"
+        search_fields: ["categories.*.name"]
+        display_fields: ["categories.*.name"]
+        value_field: "categories.*.slug"
+      - { label: "Descriere", name: "longDesc", widget: "text", hint: "Descrie produsul: material, dimensiuni, finisaj. Lasă un rând gol între paragrafe." }
+      - { label: "Preț (RON)", name: "price", widget: "number", value_type: "int", min: 0, required: false, hint: "Lasă gol pentru „Preț la cerere”." }
+
+  # ---------------------------------------------------------------- PRODUSE (avansat)
+  - name: "products_advanced"
+    label: "Produse – detalii avansate"
+    label_singular: "Produs"
+    description: "Opțional. Câmpuri suplimentare pentru produsele existente: întrebări frecvente, opțiuni, SEO etc. Produsele noi se adaugă din „Produse”."
+    folder: "src/content/products"
+    media_folder: "/public/img/uploads/produse"
+    public_folder: "/img/uploads/produse"
+    create: false
+    slug: "{{slug}}"
+    identifier_field: "title"
+    summary: "{{title}} — {{category}}"
+    editor: { preview: false }
+    fields:
+      - { label: "Denumire", name: "title", widget: "string" }
       - label: "Categorie"
         name: "category"
         widget: "relation"
@@ -58,20 +95,19 @@ collections:
         display_fields: ["categories.*.name"]
         value_field: "categories.*.slug"
       - { label: "Recomandat pe prima pagină", name: "featured", widget: "boolean", default: false, required: false }
-      - { label: "Ciornă (nu apare pe site)", name: "draft", widget: "boolean", default: false, required: false }
-      - label: "Imagini"
+      - { label: "Ascuns (nu apare pe site)", name: "draft", widget: "boolean", default: false, required: false }
+      - label: "Poze"
         name: "images"
         widget: "list"
-        hint: "Prima imagine este coperta produsului. Trage de elemente ca să schimbi ordinea."
         summary: "{{fields.image}}"
         fields:
-          - { label: "Imagine", name: "image", widget: "image" }
-          - { label: "Descriere imagine (pentru Google și accesibilitate)", name: "alt", widget: "string", required: false }
+          - { label: "Poză", name: "image", widget: "image" }
+          - { label: "Descriere poză (pentru Google)", name: "alt", widget: "string", required: false }
       - { label: "Preț fix (RON)", name: "price", widget: "number", value_type: "int", min: 0, required: false }
       - { label: "Preț de la (RON)", name: "priceFrom", widget: "number", value_type: "int", min: 0, required: false, hint: "Folosit doar dacă nu există preț fix." }
       - { label: "Termen de execuție (zile)", name: "leadTimeDays", widget: "number", value_type: "int", min: 0, required: false }
-      - { label: "Descriere scurtă", name: "shortDesc", widget: "text", hint: "1-2 propoziții. Apare pe carduri și în Google." }
-      - { label: "Descriere completă", name: "longDesc", widget: "text", hint: "Lasă un rând gol între paragrafe." }
+      - { label: "Rezumat (opțional)", name: "shortDesc", widget: "text", required: false, hint: "1-2 propoziții pentru carduri și Google. Dacă e gol, se ia începutul descrierii." }
+      - { label: "Descriere", name: "longDesc", widget: "text" }
       - { label: "Materiale (listă)", name: "materials", widget: "list", required: false }
       - { label: "Finisaje (listă)", name: "finishes", widget: "list", required: false }
       - { label: "Materiale (text)", name: "materialsText", widget: "text", required: false }
@@ -105,7 +141,7 @@ collections:
               - { label: "Cost suplimentar (RON)", name: "cost_add", widget: "number", value_type: "int", default: 0, required: false }
               - { label: "Cod valoare", name: "data_attr", widget: "string", required: false }
       - { label: "Titlu SEO", name: "seoTitle", widget: "string", required: false, hint: "Maxim 60 de caractere. Lasă gol pentru generare automată." }
-      - { label: "Descriere SEO", name: "seoDesc", widget: "text", required: false, hint: "120-160 de caractere." }
+      - { label: "Descriere SEO", name: "seoDesc", widget: "text", required: false, hint: "120-160 de caractere. Lasă gol pentru generare automată." }
 
   # ---------------------------------------------------------------- PROIECTE
   - name: "projects"
